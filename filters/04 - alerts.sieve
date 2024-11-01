@@ -1,0 +1,203 @@
+# ALERTS
+# Stay in inbox, although may expire.
+# Don't resurface anything else to inbox besides alerts
+#
+# Rules:
+# - ANY match in here MUST call 'stop'.
+# - Matches in here with received date beyond migration date MAY be sent to inbox.
+
+# ALERTS - Potentially serious security alerts
+# Surface regardless of age, to make sure to delete if no longer relevant.
+
+if allof(
+  not header :comparator "i;unicode-casemap" :matches "subject" [
+    "*benefits*"
+  ],
+  header :comparator "i;unicode-casemap" :matches "subject" [
+    "*breach*",
+    "*card*not*",
+    "*declin*",
+    "*fraud*",
+    "*large purchase*",
+    "*security*"
+  ]
+) {
+  fileinto "alerts";
+  fileinto "security";
+  if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+    fileinto "inbox";
+  }
+  stop;
+}
+
+# ALERTS - failed email deliveries
+
+if allof(
+  header :comparator "i;unicode-casemap" :matches [
+    "from", 
+    "X-Simplelogin-Original-From"
+    ] [
+    "*mail delivery subsystem*"
+  ],
+
+  header :comparator "i;unicode-casemap" :matches "subject" [
+    "*delivery status*"
+  ]
+) {
+  expire "day" "${non_critical_alerts_expiry_days}";
+  fileinto "expiring";
+  fileinto "alerts";
+  if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+    fileinto "inbox";
+  }
+  stop;
+}
+
+# ALERTS - discount codes (long expiration)
+
+if allof(
+  header :comparator "i;unicode-casemap" :regex "subject" [
+    ".*(^|[^a-zA-Z0-9])[0-9]{1,3}%([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])discount([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])free([^a-zA-Z0-9]|$).*"
+  ],
+  not header :comparator "i;unicode-casemap" :regex "subject" [
+    ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*"
+  ]) {
+    expire "day" "${paper_trail_expiry_relative_days}";
+    fileinto "expiring"; 
+    fileinto "shopping";
+    fileinto "alerts";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "inbox";
+  }
+  stop;
+}
+
+# ALERTS - exclusions
+# All subject to date check to avoid dredging up old irrelevant items
+# if re-running on whole mailbox, and Conversations contact group check
+# to avoid alerting on manually started conversation threads.
+
+if allof(
+  not header :list "from" ":addrbook:personal?label=Conversations",
+  not header :comparator "i;unicode-casemap" :regex "subject" [
+    # Amazon associates reports
+    ".*(^|[^a-zA-Z0-9])(associate|report).*id([^a-zA-Z0-9]|$).*",
+    "^fw: .*",
+    "^fwd: .*",
+    ".*(^|[^a-zA-Z0-9])get started([^a-zA-Z0-9]|$).*",
+    "^re: .*",
+    ".*(^|[^a-zA-Z0-9])tip(s)?([^a-zA-Z0-9]|$).*"
+  ]) {
+
+  # ALERTS - regular alerts
+
+  if header :comparator "i;unicode-casemap" :regex "Subject" [
+    ".*(^|[^a-zA-Z0-9])account[^a-zA-Z0-9].*change([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])action([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])able([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])alert([^a-zA-Z0-9]|$).*",
+    # annual statement, but these tend to be more important
+    ".*(^|[^a-zA-Z0-9])annual([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])can('?t| ?not)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])cancell?(ed|ing)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])confirm([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])could[n ']n?o?'?t([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])did you mean([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])dispute([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])end(s|ing)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])expir(y|ed|es|ing|ation)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])fail([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])feedback([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])hold([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])id([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])identity([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])impact(ed)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
+    ".*(new|you|now).*owner([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])outstanding([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])passport([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])primary([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])reactivate(d)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])reschedule(d)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])remind(er)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])remove(d)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])requir([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])renew(al|ing)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])reversal([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)account[^a-zA-Z0-9].*mail([^a-zA-Z0-9]|$).*", # Travelingmailbox physical mail items
+    ".*(^|[^a-zA-Z0-9])review([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])revision([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])safe(ty)?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])sensitive([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])service[^a-zA-Z0-9].*[^a-zA-Z0-9]end([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])special([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])time([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])tr(y|ied|ing)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])unable([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])urgent([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])were(n'?t| not)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])will not([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])won'?t([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])visas?([^a-zA-Z0-9]|$).*"
+  ] {
+    fileinto "alerts";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "inbox";
+    }
+    stop;
+  }
+
+  # ALERTS - user prompts, expiring prompts
+  # These are most likely appearing while you're actively working;
+  # Expire in case they weren't deleted at the time.
+
+  if allof(
+    header :comparator "i;unicode-casemap" :regex "subject" [
+      ".*(^|[^a-zA-Z0-9])account([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])autopay([^a-zA-Z0-9]|$).*",
+      ".*card([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])code([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])device([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])email([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])login([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])passkey([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])password([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])profile([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])sign[- ][io]n([^a-zA-Z0-9]|$).*"
+    ],
+    header :comparator "i;unicode-casemap" :regex "subject" [
+      ".*(^|[^a-zA-Z0-9])activat(e|ed|ion)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])add(ed|ing)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])approve(d)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])authenticat(e|ed|ion)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])confirm(ed)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])one-time([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])new([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])set up([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])ready([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])reset([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])update(d|ing)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])verif(y|ied|ication)([^a-zA-Z0-9]|$).*"
+    ]
+  ) {
+    if not header :comparator "i;unicode-casemap" :regex "subject" [
+      ".*(^|[^a-zA-Z0-9])new([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])tax([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])welcome([^a-zA-Z0-9]|$).*"
+    ] {
+      expire "day" "${non_critical_alerts_expiry_days}";
+      fileinto "expiring";
+    }
+    fileinto "alerts";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "inbox";
+    }
+    stop;
+  }
+}

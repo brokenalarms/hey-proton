@@ -238,6 +238,13 @@ if anyof(
 }
 
 # LABEL DECORATION - support tickets and fun tickets
+
+ if header :comparator "i;unicode-casemap" :regex ["subject"] [
+    "^\[[0-9]+-[0-9].*\]$" # Google support tickets
+  ] {
+    fileinto "support";
+  }
+
   if header :comparator "i;unicode-casemap" :regex ["subject"] [
     ".*(^|[^a-zA-Z0-9])ticket( |s|ing)?([^a-zA-Z0-9]|$).*" # not 'Ticketmaster' alone
   ] {

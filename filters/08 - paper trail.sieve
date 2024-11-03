@@ -21,6 +21,7 @@ if header :comparator "i;unicode-casemap" :regex ["Subject"] [
   # contain more important context, e.g., medical,
   # otherwise surface to inbox
   if header :comparator "i;unicode-casemap" :regex ["Subject"] [
+    ".*(^|[^a-zA-Z0-9])available([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])bank(ing)?([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])card([^a-zA-Z0-9]|$).*",
@@ -147,7 +148,7 @@ if allof(
    ".*(^|[^a-zA-Z0-9])eft([^a-zA-Z0-9]|$).*",
    ".*(^|[^a-zA-Z0-9])electronic funds transfer([^a-zA-Z0-9]|$).*",
    ".*(^|[^a-zA-Z0-9])listing([^a-zA-Z0-9]|$).*",
-   ".*(^|[^a-zA-Z0-9])payment([^a-zA-Z0-9]|$).*",
+   ".*(^|[^a-zA-Z0-9])pay(ment)?([^a-zA-Z0-9]|$).*",
    ".*(^|[^a-zA-Z0-9])trade([^a-zA-Z0-9]|$).*",
    ".*(^|[^a-zA-Z0-9])transaction([^a-zA-Z0-9]|$).*",
    ".*(^|[^a-zA-Z0-9])withdrawal([^a-zA-Z0-9]|$).*",
@@ -160,7 +161,8 @@ if allof(
   ".*(^|[^a-zA-Z0-9])initiat(ed|ing)([^a-zA-Z0-9]|$).*",
   ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
   ".*(^|[^a-zA-Z0-9])receiv(ed|ing)([^a-zA-Z0-9]|$).*",
-  ".*(^|[^a-zA-Z0-9])sent\\b([^a-zA-Z0-9]|$).*",
+  ".*(^|[^a-zA-Z0-9])sent([^a-zA-Z0-9]|$).*",
+  ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",
   ".*(^|[^a-zA-Z0-9])successful([^a-zA-Z0-9]|$).*",
   ".*(^|[^a-zA-Z0-9])transfer(red|ring)?([^a-zA-Z0-9]|$).*",
   ".*(^|[^a-zA-Z0-9])your([^a-zA-Z0-9]|$).*"

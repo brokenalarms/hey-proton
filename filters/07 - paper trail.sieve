@@ -25,9 +25,9 @@ if not anyof (
     header :list "from" ":addrbook:personal?label=Support",
     header :comparator "i;unicode-casemap" :regex "subject" [
       # <copy LABEL DECORATION - conversations>
-      "^fw: .*",
-      "^fwd: .*",
-      "^re: .*",
+      "(^|\[Possible phishing attempt\] )fw: .*",
+      "(^|\[Possible phishing attempt\] )fwd: .*",
+      "(^|\[Possible phishing attempt\] )re: .*",
       # </copy LABEL DECORATION - conversations>
       # <copy LABEL DECORATION - licence key checks>
       ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",

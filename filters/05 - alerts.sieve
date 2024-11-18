@@ -102,9 +102,9 @@ if allof(
     ".*(^|[^a-zA-Z0-9])(associate|report).*id([^a-zA-Z0-9]|$).*", # Amazon associates reports
     ".*(^|[^a-zA-Z0-9])get started([^a-zA-Z0-9]|$).*",
     # <copy LABEL DECORATION - conversations>
-    "^fw: .*",
-    "^fwd: .*",
-    "^re: .*"
+    "(^|\[Possible phishing attempt\] )fw: .*",
+    "(^|\[Possible phishing attempt\] )fwd: .*",
+    "(^|\[Possible phishing attempt\] )re: .*"
     # </copy LABEL DECORATION - conversations>
   ]) {
 

@@ -69,11 +69,11 @@ if header :comparator "i;unicode-casemap" :matches "subject" [
 # LABEL DECORATION - conversations
 
 if header :comparator "i;unicode-casemap" :matches "subject" [
-    # <LABEL DECORATION - conversations>
-    "^fw: .*",
-    "^fwd: .*",
-    "^re: .*"
-    # </LABEL DECORATION - conversations>
+  # <LABEL DECORATION - conversations>
+  "(^|\[Possible phishing attempt\] )fw: .*",
+  "(^|\[Possible phishing attempt\] )fwd: .*",
+  "(^|\[Possible phishing attempt\] )re: .*"
+  # </LABEL DECORATION - conversations>
 ] {
   fileinto "conversations";
 }
@@ -277,7 +277,7 @@ if allof(
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*"
     # </label decoration - licence keys>
   ],
 

@@ -34,8 +34,6 @@ if not anyof (
       ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])renewal([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])subscription([^a-zA-Z0-9]|$).*",
       # </copy LABEL DECORATION - licence key checks>
       ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
     ]) {

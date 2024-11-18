@@ -88,10 +88,6 @@ Although less portable than having this all written in Sieve, in practice the co
   <img src="docs/adding%20contacts.gif" alt="adding contacts" width="300"/>
 </div>
 
-### Unwanted contacts
-
-This is a special optional contact group for mail that you don't want to block, but you don't want to see or have further labelled at all. Items will be archived and expire in 7 days.
-
 ## Contact group versus email alias classification
 
 I used to create emails like `company.category.subcategory@mydomain.com` for automatic label generation from the `category` and `subcategory`. While effective, it proved brittle: for instance, merging my `banking` and `investments` labels into a single `finance` label left my old `company.banking@mydomain.com` addresses no longer able to generate useful labels, requiring manual updates.
@@ -115,7 +111,7 @@ You will need to go through the code and understand the labels used to modify fo
 However, some labels are suggested for minimum baseline functionality. These are:
 
 - Folders: `The Feed`, `Paper Trail` and `Screener`.
-- Contact Groups: `Newsletters`, `My Addresses` and optional `My Old Addresses` as below.
+- Contact Groups: `Newsletters`, `My Addresses` and optional `My Old Addresses` and `My Migration Exceptions` as below.
 - Minimum labels: `alerts`, `security` `expiring`,`needs admin`, and `newsletters`.
 - Paper Trail labels: `receipts` `returns`, `shopping`, `statements`, `tracking` and `transactions`
 
@@ -136,15 +132,30 @@ scripts/generate.sh
 
 to generate `/dist/output.sieve`, ready to paste into Proton Mail as a single filter.
 
-### `My Addresses` and `My Old Addresses`
+### Optional contact groups
+
+#### `My Addresses`
 
 Emails will be ignored if they are sent from a mail in the `My Addresses` contact group. This is used to exclude sent items from further classification, as I prefer.
+
+#### `My Old Addresses`
 
 Email adresses can also be added to an `My Old Addresses` contact group if they refer to old pre-Proton accounts for which you wish to be reminded to update the senders/accounts. Use this if you want this mail also marked as `needs admin` and sent to the `Screener`, to remind you to update the accounts still containing this address.
 
 This can be further managed by the variable `migration_date_in_days_ago` to make sure every single old email copied to proton is not flagged on first run. It is also specified as a relative rather than absolute day to ensure that after you have fixed a bunch of accounts, but still have the old emails, these will not all get flagged up again if you re-run from scratch some time later.
 
 It is recommended though that you run the filters originally with `migration_date_in_days_ago` backdated a month or two, migrate any obvious addresses, and then set it to 0 going forward.
+
+#### `Unwanted` contacts
+
+This is a special optional `Unwanted` contact group for mail that you don't want to block, but you don't want to see or have further labelled at all. Items will be archived and expire in 7 days.
+
+#### `My Migration Exceptions`
+
+This is another optional contact group - members won't get flagged up as `needs admin` if they are not yet migrated. Use this for use cases like:
+- senders that you know you need to migrate, but can't yet (waiting on response); or
+- for mail that you can't ever migrate
+  - for example, if you have moved all email from a Google account, but still use Drive or Photos on it, you can still expect emails from `@google.com` to that address.
 
 ### Example user config files
 

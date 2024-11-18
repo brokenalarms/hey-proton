@@ -150,7 +150,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])did you mean([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])disclosure([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])dispute([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])end(s|ing)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9-])end(s|ing)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])expir(y|ed|es|ing|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])fail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])hold([^a-zA-Z0-9]|$).*",

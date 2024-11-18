@@ -248,20 +248,28 @@ if allof(
   if header :comparator "i;unicode-casemap" :regex ["subject"] [
     ".*(^|[^a-zA-Z0-9])ticket( |s|ing)?([^a-zA-Z0-9]|$).*" # not 'Ticketmaster' alone
   ] {
-  if header :comparator "i;unicode-casemap" :regex ["subject"] [
-      ".*(^|[^a-zA-Z0-9])account([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])case([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])close(d)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])create(d)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])get([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])id([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])number([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])open(ed)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])support([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])tech([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])ticket( id )?#?[0-9]{1,}([^a-zA-Z0-9]|$).*"
-    ] {
+  if anyof(
+      header :comparator "i;unicode-casemap" :matches [
+        "from",
+        "X-Simplelogin-Original-From"
+      ] [
+        "*support*"
+      ],
+      header :comparator "i;unicode-casemap" :regex ["subject"] [
+        ".*(^|[^a-zA-Z0-9])account([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])case([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])close(d)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])create(d)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])get([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])id([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])number([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])open(ed)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])support([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])tech([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])ticket( id )?#?[0-9]{1,}([^a-zA-Z0-9]|$).*"
+    ]
+  ) {
       fileinto "support";
     } else {
       fileinto "tickets";
@@ -272,6 +280,7 @@ if allof(
 # LABEL DECORATION - software licences & subscriptions
 
 if allof(
+
   header :comparator "i;unicode-casemap" :regex "subject" [
     # <label decoration - licence keys>
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",

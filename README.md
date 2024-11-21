@@ -199,20 +199,28 @@ You will then trigger `dist/output.sieve` generation on each commit.
 
 ### Proton/Sieve Gotchas
 
-#### Marking as "seen" is buggy or non-deterministic.
+#### Sucessfully marking as "seen" requires understanding of explicit versus implicit `keep`.
 
-For best results, I do it after each group of expiry and filing into folders, e.g.:
+Initially, I thought that `addflag` was non-deterministic as sometimes it worked and sometimes it didn't. Other posts on Reddit indicated similar confusion.
+
+However, my understanding of these representing syncrhronous steps was incorrect - `addflag` actually only adds to a currently-accruing state of flags, that is not applied until either:
+- a `fileinto` command happens which explicitly also runs `keep` which only then applies the accumulated flags; or
+- the filter code is finished, at which stage `keep` is implicitly run to set the flags.
+
+Therefore if you run:
 
 ```
-  expire "day" "${paper_trail_expiry_relative_days}";
-  addflag "\\Seen";
-  fileinto "Paper Trail";
-  fileinto "expiring";
-  fileinto "tracking";
-  addflag "\\Seen";
+fileinto "my-label";
+addflag "\\Seen";
+stop;
 ```
+...will not successfully apply the `seen` flag, as `keep` has been run explicitly by `fileinto` and is therefore no longer run implicitly after `addflag`!
+
+Very un-ascertainable from the code on the page and maybe a questionable design decision today, but good to finally know!
 
 #### `expiry` has an undocumented maximum expiration period.
+
+UPDATE: Proton have now added this to the documentation at my request - thanks! I still wish it wasn't arbitrarily restricted to 2 years, though 😉
 
 The `proton.vnd.expiry` extension has a maximum supported expiration date of 2 years (730 days).
 
@@ -237,6 +245,6 @@ if currentdate :zone "+0000" :matches "julian" "*" {
 }
 ```
 
-### 'fileinto' application order
+### 'fileinto' UI order is simply alphabetical.
 
-After driving myself crazy trying to figure out how new labels were applied, and why it didn't seem deterministic, I realized it just displays them in alphabetical order 😂
+Maybe obvious, but after driving myself crazy trying to figure out how new labels were applied, and why it didn't seem deterministic that the applied order corresponded to UI order, I realized that the UI just displays them in alphabetical order. 😂

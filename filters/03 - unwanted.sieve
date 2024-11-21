@@ -12,8 +12,8 @@
 # Emails I receive but can't opt out of
 if header :list "from" ":addrbook:personal?label=Unwanted" {
   expire "day" "${expiry_grace_period_days}";
-  fileinto "expiring";
   addflag "\\Seen";
+  fileinto "expiring";
   fileinto "archive";
   stop;
 }
@@ -37,7 +37,6 @@ if header :comparator "i;unicode-casemap" :matches [
     expire "day" "${expiry_grace_period_days}";
     addflag "\\Seen";
     fileinto "expiring"; 
-    addflag "\\Seen";
   }
   stop;
 }
@@ -69,8 +68,8 @@ if anyof(
   if header :comparator "i;unicode-casemap" :matches ["subject"] [
     "*accepted:*"
   ] {
-    fileinto "Unwanted";
     addflag "\\Seen";
+    fileinto "Unwanted";
   }
   stop;
 }

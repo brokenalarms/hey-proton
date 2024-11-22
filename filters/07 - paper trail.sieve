@@ -194,6 +194,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])sent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])successful([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])transfer(red|ring)?([^a-zA-Z0-9]|$).*"
       ]
     )
@@ -245,7 +246,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])submit(ted)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])summary([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])thank([^a-zA-Z0-9]|$).*"
+        ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*"
       ])
     ) {
 

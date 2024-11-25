@@ -247,7 +247,8 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])submit(ted)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])summary([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*"
+        ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])your([^a-zA-Z0-9]|$).*"
       ])
     ) {
 

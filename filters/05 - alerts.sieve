@@ -216,6 +216,7 @@ if allof(
         ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])pass(code|key|word)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])profile([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])rent payment([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sign[ -][io]n([^a-zA-Z0-9]|$).*"
       ],
       header :comparator "i;unicode-casemap" :regex "subject" [

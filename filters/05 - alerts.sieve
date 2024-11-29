@@ -224,6 +224,7 @@ if allof(
         ".*(^|[^a-zA-Z0-9])approve(d)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])authenticat(e|ed|ion)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])coming up([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])confirm(ed)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])identification([^a-zA-Z0-9]|$).*", # "Your Requested Online Banking Identification Code"
         ".*(^|[^a-zA-Z0-9])linked([^a-zA-Z0-9]|$).*", # "now linked in your account" versus download link

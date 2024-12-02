@@ -146,13 +146,14 @@ This can be further managed by the variable `migration_date_in_days_ago` to make
 
 It is recommended though that you run the filters originally with `migration_date_in_days_ago` backdated a month or two, migrate any obvious addresses, and then set it to 0 going forward.
 
-#### `Unwanted` contacts
+#### `Screened Out` contacts
 
-This is a special optional `Unwanted` contact group for mail that you don't want to block, but you don't want to see or have further labelled at all. Items will be archived and expire in 7 days.
+This is a special optional `Screened Out` contact group for mail that you don't want to block, but you don't want to see or have further labelled at all. Items will be archived and expire in 7 days.
 
 #### `My Migration Exceptions`
 
 This is another optional contact group - members won't get flagged up as `needs admin` if they are not yet migrated. Use this for use cases like:
+
 - senders that you know you need to migrate, but can't yet (waiting on response); or
 - for mail that you can't ever migrate
   - for example, if you have moved all email from a Google account, but still use Drive or Photos on it, you can still expect emails from `@google.com` to that address.
@@ -204,6 +205,7 @@ You will then trigger `dist/output.sieve` generation on each commit.
 Initially, I thought that `addflag` was non-deterministic as sometimes it worked and sometimes it didn't. Other posts on Reddit indicated similar confusion.
 
 However, my understanding of these representing syncrhronous steps was incorrect - `addflag` actually only adds to a currently-accruing state of flags, that is not applied until either:
+
 - a `fileinto` command happens which explicitly also runs `keep` which only then applies the accumulated flags; or
 - the filter code is finished, at which stage `keep` is implicitly run to set the flags.
 
@@ -214,6 +216,7 @@ fileinto "my-label";
 addflag "\\Seen";
 stop;
 ```
+
 ...will not successfully apply the `seen` flag, as `keep` has been run explicitly by `fileinto` and is therefore no longer run implicitly after `addflag`!
 
 Very un-ascertainable from the code on the page and maybe a questionable design decision today, but good to finally know!

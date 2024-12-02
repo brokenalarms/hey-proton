@@ -319,5 +319,5 @@ if allof(
 # if header :list "from" ":addrbook:personal?label=${contact group}" {
   # fileinto "${label}";
 # }
-# do not include Newsletters or Unwanted here.
-{{contact groups.txt fileinto expansion excluding My Addresses, My Old Addresses, Newsletters, Unwanted}}
+# do not include Newsletters or Screened Out here.
+{{contact groups.txt fileinto expansion excluding My Addresses, My Old Addresses, Newsletters, Screened Out}}

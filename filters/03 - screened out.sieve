@@ -1,4 +1,4 @@
-# UNWANTED
+# Screened Out
 # Emails I never want to see in inbox or read,
 # but would like some awareness of being proccesed if desired.
 #
@@ -6,11 +6,11 @@
 # - ANY match in here MUST:
 #  - call `stop`
 #  - set the mail to expire.
-# - 'Unwanted' folder MUST NOT be used as a destination beyond this file.
+# - 'Screened Out' folder MUST NOT be used as a destination beyond this file.
 
-# UNWANTED - unwanted contacts
+# Screened Out - Screened Out contacts
 # Emails I receive but can't opt out of
-if header :list "from" ":addrbook:personal?label=Unwanted" {
+if header :list "from" ":addrbook:personal?label=Screened Out" {
   expire "day" "${expiry_grace_period_days}";
   addflag "\\Seen";
   fileinto "expiring";
@@ -18,7 +18,7 @@ if header :list "from" ":addrbook:personal?label=Unwanted" {
   stop;
 }
 
-# UNWANTED - Craigslist
+# Screened Out - Craigslist
 # Needs specific rules since it already has its own email aliasing system
 if header :comparator "i;unicode-casemap" :matches [
   "from",
@@ -36,13 +36,14 @@ if header :comparator "i;unicode-casemap" :matches [
     # Posting notification; I manage these via my craigslist app
     expire "day" "${expiry_grace_period_days}";
     addflag "\\Seen";
-    fileinto "expiring"; 
+    fileinto "expiring";
+    fileinto "Screened Out"; 
   }
   stop;
 }
 
-# UNWANTED - calendar items
-# Generally unwanted and trying to migrate away from email-based reminders,
+# Screened Out - calendar items
+# Generally Screened Out and trying to migrate away from email-based reminders,
 # but want to flag up those that come through, before "reminder"s
 # hit Alerts.
 
@@ -69,7 +70,7 @@ if anyof(
     "*accepted:*"
   ] {
     addflag "\\Seen";
-    fileinto "Unwanted";
+    fileinto "Screened Out";
   }
   stop;
 }

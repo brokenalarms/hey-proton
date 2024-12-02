@@ -26,6 +26,13 @@ if allof(
     "X-Original-To",
     "X-Simplelogin-Envelope-To"
   ] ":addrbook:personal?label=My Old Addresses",
+  not header :list [
+    "bcc",
+    "cc",
+    "to",
+    "X-Original-To",
+    "X-Simplelogin-Envelope-To"
+  ] ":addrbook:personal?label=My Migration Exceptions",
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"
 ) {
   fileinto "needs admin";

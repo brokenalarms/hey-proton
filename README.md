@@ -221,6 +221,8 @@ stop;
 
 Very un-ascertainable from the code on the page and maybe a questionable design decision today, but good to finally know!
 
+Not that this _doesn't_ apply to `expire` since it's implemented by Proton - I got it confirmed from the Proton team that `expire` applies immediately and is not subject to implicit `keep`.
+
 #### `expiry` has an undocumented maximum expiration period.
 
 UPDATE: Proton have now added this to the documentation at my request - thanks! I still wish it wasn't arbitrarily restricted to 2 years, though 😉

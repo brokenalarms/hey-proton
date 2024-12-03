@@ -11,7 +11,7 @@
 # Screened Out - Screened Out contacts
 # Emails I receive but can't opt out of
 if header :list "from" ":addrbook:personal?label=Screened Out" {
-  expire "day" "${expiry_grace_period_days}";
+  expire "day" "${screened_out_expiry_days}";
   addflag "\\Seen";
   fileinto "expiring";
   fileinto "archive";
@@ -34,7 +34,7 @@ if header :comparator "i;unicode-casemap" :matches [
     "*automated*message*"
   ] {
     # Posting notification; I manage these via my craigslist app
-    expire "day" "${expiry_grace_period_days}";
+    expire "day" "${screened_out_expiry_days}";
     addflag "\\Seen";
     fileinto "expiring";
     fileinto "Screened Out"; 
@@ -63,7 +63,7 @@ if anyof(
     ".*notification.*@.*",
     ".*reminder.*event.*"
 ]) {
-  expire "day" "${calendar_expiry_days}";
+  expire "day" "${screened_out_expiry_days}";
   fileinto "expiring";
   fileinto "calendar";
   if header :comparator "i;unicode-casemap" :matches ["subject"] [

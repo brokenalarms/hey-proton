@@ -16,6 +16,8 @@ set "migration_date_in_days_ago" "0";
 
 set "newsletter_expiry_days" "90";
 
+set "screened_out_expiry_days" "30";
+
 # on initial run for inbox cleanup, if a newsletter should already be expired,
 # do we want a grace period to have the chance to check first?
 set "expiry_grace_period_days" "7";
@@ -25,7 +27,6 @@ set "expiry_grace_period_days" "7";
 # but if you set to 2000, it just doesn't set it.
 set "paper_trail_expiry_days" "730";
 set "non_critical_alerts_expiry_days" "7";
-set "calendar_expiry_days" "30";
 
 # Current date
 if currentdate :zone "+0000" :matches "julian" "*" {

@@ -85,7 +85,6 @@ if allof(
 
 if allof(
   not header :list "from" ":addrbook:personal?label=Conversations",
-  not header :list "from" ":addrbook:personal?label=Screened Out",
   # exclude "your bill is ready for review"
   not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
   anyof (

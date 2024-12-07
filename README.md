@@ -47,7 +47,7 @@ Most of what you recieve via email is a `receipt`, `statement`, `return`, `track
 Anything going into the `Paper Trail` is marked as seen and set to expire in 2 years, unless it has an attachment or is part of your personal `conversations`.
 
 ### Screener
-
+_UPDATE - I don't find this plus the 'needs admin' label necessary in the Inbox Zero world that these filters enable, and have since removed._
 Except for important or timely alerts, any messages from contacts you haven't seen before should go to the `Screener` first, and have those contacts classified in some way before their emails will fully enter your workflow in future.
 
 ### The Feed
@@ -90,7 +90,7 @@ Although less portable than having this all written in Sieve, in practice the co
 
 ## Contact group versus email alias classification
 
-I used to create emails like `company.category.subcategory@mydomain.com` for automatic label generation from the `category` and `subcategory`. While effective, it proved brittle: for instance, merging my `banking` and `investments` labels into a single `finance` label left my old `company.banking@mydomain.com` addresses no longer able to generate useful labels, requiring manual updates.
+I used to create emails like `company.category.subcategory@mydomain.com` for automatic label generation from the `category` and `subcategory`. While effective, it proved brittle: for instance, merging my `banking` and `investments` labels into a single `finance` label left Old `company.banking@mydomain.com` addresses no longer able to generate useful labels, requiring manual updates.
 
 Now, I use Proton contact groups and just generate email addresses like `companyorwebsitename.randomword@mydomain.com`, separate from labeling. Assigning them to contact groups on first receipt offers flexibility and allows grouping different emails under one contact.
 
@@ -111,7 +111,7 @@ You will need to go through the code and understand the labels used to modify fo
 However, some labels are suggested for minimum baseline functionality. These are:
 
 - Folders: `The Feed`, `Paper Trail` and `Screener`.
-- Contact Groups: `Newsletters`, `My Addresses` and optional `My Old Addresses` and `My Migration Exceptions` as below.
+- Contact Groups: `Newsletters`, `My Addresses` and optional `Old Addresses` and `Migration Exceptions` as below.
 - Minimum labels: `alerts`, `security` `expiring`,`needs admin`, and `newsletters`.
 - Paper Trail labels: `receipts` `returns`, `shopping`, `statements`, `tracking` and `transactions`
 
@@ -138,9 +138,9 @@ to generate `/dist/output.sieve`, ready to paste into Proton Mail as a single fi
 
 Emails will be ignored if they are sent from a mail in the `My Addresses` contact group. This is used to exclude sent items from further classification, as I prefer.
 
-#### `My Old Addresses`
+#### `Old Addresses`
 
-Email adresses can also be added to an `My Old Addresses` contact group if they refer to old pre-Proton accounts for which you wish to be reminded to update the senders/accounts. Use this if you want this mail also marked as `needs admin` and sent to the `Screener`, to remind you to update the accounts still containing this address.
+Email adresses can also be added to an `Old Addresses` contact group if they refer to old pre-Proton accounts for which you wish to be reminded to update the senders/accounts. Use this if you want this mail also marked as `needs admin` and sent to the `Screener`, to remind you to update the accounts still containing this address.
 
 This can be further managed by the variable `migration_date_in_days_ago` to make sure every single old email copied to proton is not flagged on first run. It is also specified as a relative rather than absolute day to ensure that after you have fixed a bunch of accounts, but still have the old emails, these will not all get flagged up again if you re-run from scratch some time later.
 
@@ -150,7 +150,7 @@ It is recommended though that you run the filters originally with `migration_dat
 
 This is a special optional `Screened Out` contact group for mail that you don't want to block, but you don't want to see or have further labelled at all. Items will be archived and expire in 7 days.
 
-#### `My Migration Exceptions`
+#### `Migration Exceptions`
 
 This is another optional contact group - members won't get flagged up as `needs admin` if they are not yet migrated. Use this for use cases like:
 

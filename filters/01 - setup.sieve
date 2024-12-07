@@ -68,6 +68,6 @@ if not allof(
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "0",
   string :comparator "i;ascii-numeric" :value "ge" "${mail_age_in_days}" "0"
 ) {
-  fileinto "sieve issue";
+  fileinto "needs admin";
   stop;
 }

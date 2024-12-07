@@ -25,18 +25,18 @@ if allof(
     "to",
     "X-Original-To",
     "X-Simplelogin-Envelope-To"
-  ] ":addrbook:personal?label=My Old Addresses",
+  ] ":addrbook:personal?label=Old Addresses",
   not header :list [
     "bcc",
     "cc",
     "to",
     "X-Original-To",
     "X-Simplelogin-Envelope-To"
-  ] ":addrbook:personal?label=My Migration Exceptions",
+  ] ":addrbook:personal?label=Migration Exceptions",
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"
 ) {
   fileinto "needs admin";
-  fileinto "Screener";
+  fileinto "inbox";
   stop;
 }
 
@@ -57,8 +57,7 @@ if allof(
 if allof(
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
   not header :list "from" ":addrbook:personal") {
-  fileinto "needs admin";
-  fileinto "Screener";
+  fileinto "inbox";
   stop;
 }
 

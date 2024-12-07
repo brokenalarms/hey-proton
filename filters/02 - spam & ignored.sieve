@@ -19,7 +19,7 @@ if allof (
 if allof(
   anyof(
     header :list "from" ":addrbook:personal?label=My Addresses",
-    header :list "from" ":addrbook:personal?label=My Old Addresses"
+    header :list "from" ":addrbook:personal?label=Old Addresses"
   ),
   not header :comparator "i;unicode-casemap" :regex [
       "to",

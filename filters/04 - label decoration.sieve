@@ -292,6 +292,7 @@ if allof(
 
   not header :comparator "i;unicode-casemap" :matches ["subject", "from"] [
     "*change*",
+    "*corrected link*",
     "*dmv*",
     "*urgent*",
     "*warning*",

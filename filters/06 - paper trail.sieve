@@ -225,8 +225,10 @@ if not anyof (
     ],
 
     header :comparator "i;unicode-casemap" :regex "Subject" [
-      # REI - picking up gear in person
-        ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*"
+        # REI - picking up gear in person
+        ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
+        # Lyft
+        ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*"
     ], 
 
     allof (

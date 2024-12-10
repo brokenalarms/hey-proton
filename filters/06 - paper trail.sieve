@@ -234,6 +234,7 @@ if not anyof (
     allof (
       header :comparator "i;unicode-casemap" :matches "Subject" [
         "*charge*",
+        "*credit*",
         "*domain*",
         "*order*",
         "*payment*",
@@ -248,6 +249,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])confirm(ed|ation)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])details([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])from([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])issued([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])plac(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",

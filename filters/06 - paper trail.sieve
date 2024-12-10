@@ -89,6 +89,7 @@ if not anyof (
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
       fileinto "Paper Trail";
+      stop;
     }
 
   } elsif anyof(
@@ -149,6 +150,7 @@ if not anyof (
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
       fileinto "Paper Trail";
+      stop;
     }
   } elsif anyof(
 
@@ -212,6 +214,7 @@ if not anyof (
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
       fileinto "Paper Trail";
+      stop;
     }
   } elsif anyof(
 
@@ -278,6 +281,7 @@ if not anyof (
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
       fileinto "Paper Trail";
+      stop;
     }
   }
 }

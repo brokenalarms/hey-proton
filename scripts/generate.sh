@@ -91,7 +91,7 @@ generate_expanded_lines() {
             # Extract exclusion elements if present into the global exclude_elements array
             exclude_elements=()
             if [[ -n "${BASH_REMATCH[2]}" ]]; then
-                IFS=',' read -ra exclude_elements <<< "${BASH_REMATCH[2]}"
+                IFS=',' read -ra exclude_elements <<< "$(echo "${BASH_REMATCH[2]}" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | sed -E 's/[[:space:]]*,[[:space:]]*/,/g')"
             fi
 
             # Output the opening HTML-like comment with calculated whitespace and trimmed line

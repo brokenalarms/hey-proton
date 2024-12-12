@@ -313,6 +313,22 @@ if allof(
   }
 }
 
+# LABEL DECORATION - legal
+
+if header :comparator "i;unicode-casemap" :regex [
+    "from",
+    "X-Simplelogin-Original-From",
+    "subject"
+    ] [
+      "e-?3",
+      ".*greencard.*",
+      ".*h1-?b.*",
+      ".*passport.*",
+      ".*visa.*"
+  ] {
+    fileinto "legal";
+  }
+
 # LABEL DECORATION - contact groups
 # to populate without using generate script,
 # add your own contact groups in the format, where ${contact group} matches

@@ -159,7 +159,6 @@ if allof(
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])now([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])outstanding([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])passport([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])primary([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reactivate(d)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reschedule(d)?([^a-zA-Z0-9]|$).*",

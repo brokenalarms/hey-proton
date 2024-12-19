@@ -196,6 +196,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])initiat(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])pick(ing)?[ -]?up([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])processed([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])receiv(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",

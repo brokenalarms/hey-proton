@@ -86,8 +86,6 @@ if allof(
 
 if allof(
   not header :list "from" ":addrbook:personal?label=Conversations",
-  # exclude "your bill is ready for review"
-  not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
   anyof (
     # exclude all statements, unless annual
     not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])statement([^a-zA-Z0-9]|$).*", 
@@ -100,7 +98,9 @@ if allof(
   ),
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])(associate|report).*id([^a-zA-Z0-9]|$).*", # Amazon associates reports
+    ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*", # exclude "your bill is ready for review"
     ".*(^|[^a-zA-Z0-9])get started([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])Fidelity Alerts: EFT([^a-zA-Z0-9]|$).*",
     # <copy LABEL DECORATION - conversations>
     "(^|\[Possible phishing attempt\] )fw: .*",
     "(^|\[Possible phishing attempt\] )fwd: .*",

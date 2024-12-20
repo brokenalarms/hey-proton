@@ -97,9 +97,10 @@ if not anyof (
     # PAPER TRAIL - tracking
 
     header :comparator "i;unicode-casemap" :regex "subject" [
-      ".*(^|[^a-zA-Z0-9])delivered:([^a-zA-Z0-9]|$).*"
-      ".*(^|[^a-zA-Z0-9])pick(- )?up confirm(ed|ation)([^a-zA-Z0-9]|$).*"
-      ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*"
+      ".*(^|[^a-zA-Z0-9])arrived:([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])delivered:([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])pick(- )?up confirm(ed|ation)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*confirm(ed|ation)([^a-zA-Z0-9]|$).*"
     ],
 

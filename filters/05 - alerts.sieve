@@ -202,7 +202,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])code: [0-9]{4,}([^a-zA-Z0-9]|$).*",  # Monarch code: 234324
       ".*(^|[^a-zA-Z0-9])pin code([^a-zA-Z0-9]|$).*",  # 'Pin code for order status check'
       ".*(^|[^a-zA-Z0-9])your code([^a-zA-Z0-9]|$).*",  # "Here is your code" (don't add your to main limbs, too broad)
-      ".*(^|[^a-zA-Z0-9])sign in to([^a-zA-Z0-9]|$).*"  # email login links
+      ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*"  # email login links
     ],
     allof(
       header :comparator "i;unicode-casemap" :regex "subject" [

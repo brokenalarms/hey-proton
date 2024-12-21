@@ -168,8 +168,8 @@ if not anyof (
           header :comparator "i;unicode-casemap" :regex "Subject" [
           ".*(^|[^a-zA-Z0-9])bought([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
-          ".*(^|[^a-zA-Z0-9])received money([^a-zA-Z0-9]|$).*",
-          ".*(^|[^a-zA-Z0-9])sent money([^a-zA-Z0-9]|$).*",
+          ".*(^|[^a-zA-Z0-9])(sent|received) money([^a-zA-Z0-9]|$).*",
+          ".*(^|[^a-zA-Z0-9])(sent|received).*gift([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])sold([^a-zA-Z0-9]|$).*" 
           ]
       )

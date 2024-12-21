@@ -224,6 +224,7 @@ if not anyof (
     # Comes last as catch all for more specific paper trail states above.
 
     header :comparator "i;unicode-casemap" :regex "Subject" [
+      ".*: \$.*(USD|AUD|GBP).*",
       ".*invoice.*",
       ".*(^|[^a-zA-Z0-9])order #? ?[0-9]+([^a-zA-Z0-9]|$).*",
       ".*receipt.*"

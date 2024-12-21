@@ -170,6 +170,7 @@ if not anyof (
           ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])(sent|received) money([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])(sent|received).*gift([^a-zA-Z0-9]|$).*",
+          ".*(^|[^a-zA-Z0-9])requests \$.*USD.*",
           ".*(^|[^a-zA-Z0-9])sold([^a-zA-Z0-9]|$).*" 
           ]
       )

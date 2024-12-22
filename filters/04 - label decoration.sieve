@@ -320,7 +320,7 @@ if header :comparator "i;unicode-casemap" :regex [
     "X-Simplelogin-Original-From",
     "subject"
     ] [
-      "e-?3",
+      ".*e-?3.*",
       ".*greencard.*",
       ".*h1-?b.*",
       ".*passport.*",

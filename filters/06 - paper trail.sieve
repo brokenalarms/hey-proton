@@ -223,19 +223,22 @@ if not anyof (
     # PAPER TRAIL - receipts
     # Comes last as catch all for more specific paper trail states above.
 
+    # specific cases
     header :comparator "i;unicode-casemap" :regex "Subject" [
-      ".*: \$.*(USD|AUD|GBP).*",
+      # REI - picking up gear in person
+      ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
+      # Lyft
+      ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*",
+      # Paypal: "seller: $xxx.xx USD"
+      ".*: \$.*(USD|AUD|GBP).*"
+    ],
+
+    # general
+    header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*invoice.*",
       ".*(^|[^a-zA-Z0-9])order #? ?[0-9]+([^a-zA-Z0-9]|$).*",
       ".*receipt.*"
     ],
-
-    header :comparator "i;unicode-casemap" :regex "Subject" [
-        # REI - picking up gear in person
-        ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
-        # Lyft
-        ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*"
-    ], 
 
     allof (
       header :comparator "i;unicode-casemap" :matches "Subject" [

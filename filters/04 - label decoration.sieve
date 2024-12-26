@@ -163,6 +163,7 @@ if anyof(
 # LABEL DECORATION - calendar
 if header :comparator "i;unicode-casemap" :matches [
   "from",
+  "X-Simplelogin-Original-From",
   "subject"
   ] [
   "*calendar*"

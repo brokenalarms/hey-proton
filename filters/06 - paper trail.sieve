@@ -161,7 +161,7 @@ if not anyof (
 
     # Venmo transactions, without adding overly broad "you(r)" to main limbs
     header :comparator "i;unicode-casemap" :regex "Subject" [
-          ".*(^|[^a-zA-Z0-9])requests \\$.*USD.*",
+          ".*(^|[^a-zA-Z0-9])requests.*[0-9]{1,}\\.[0-9]{2,2}.*"
     ],
 
     allof(
@@ -236,7 +236,7 @@ if not anyof (
       # Lyft
       ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*",
       # Paypal: "seller: $xxx.xx USD"
-      ".*: \\$.*"
+      ".*:.{1,2}[0-9]{1,}\\.[0-9]{2,2}.*"
     ],
 
     # general

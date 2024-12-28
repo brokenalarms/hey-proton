@@ -61,6 +61,7 @@ if allof(
 if allof(
   header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])[0-9]{1,3}%([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])discount([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])voucher([^a-zA-Z0-9]|$).*"
@@ -113,8 +114,9 @@ if allof(
   # Although these are generally wanted, we surface them as alerts so we can unsubscribe and delete.
   if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
-      ".*(^|[^a-zA-Z0-9])information([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*"
+      ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])credit([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])information([^a-zA-Z0-9]|$).*"
     ],
     header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])feedback([^a-zA-Z0-9]|$).*",

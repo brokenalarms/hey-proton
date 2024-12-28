@@ -232,7 +232,7 @@ if not anyof (
       # Lyft
       ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*",
       # Paypal: "seller: $xxx.xx USD"
-      ".*: \$.*(USD|AUD|GBP).*"
+      ".*: \\$.*"
     ],
 
     # general

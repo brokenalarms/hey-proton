@@ -16,19 +16,27 @@
 # and after first contact review, the mail can be manually sent to that folder
 # without needing to manipulate it further to match items in it.
 
-if not anyof (
-    # header :matches "X-Attached" "*",
-    # header :contains "Content-Type" "multipart/mixed",
+if anyof(
+  # allow messages to test addresses to be forwarded (faster testing without rewriting 'subject')
+  header :comparator "i;unicode-casemap" :regex [
+    "to",
+    "X-Original-To"
+  ] [
+    {{test address regexes.txt string expansion}}
+  ],
+  not anyof (
+    header :comparator "i;unicode-casemap" :regex "subject" [
+      # <copy LABEL DECORATION - conversations>
+      "(^|\[Possible phishing attempt\] )fw: .*",
+      "(^|\[Possible phishing attempt\] )fwd: .*",
+      "(^|\[Possible phishing attempt\] )re: .*"
+      # </copy LABEL DECORATION - conversations>
+    ],
     header :list "from" ":addrbook:personal?label=Conversations",
     header :list "from" ":addrbook:personal?label=Family",
     header :list "from" ":addrbook:personal?label=Personal",
     header :list "from" ":addrbook:personal?label=Support",
     header :comparator "i;unicode-casemap" :regex "subject" [
-      # <copy LABEL DECORATION - conversations>
-      "(^|\[Possible phishing attempt\] )fw: .*",
-      "(^|\[Possible phishing attempt\] )fwd: .*",
-      "(^|\[Possible phishing attempt\] )re: .*",
-      # </copy LABEL DECORATION - conversations>
       # <copy LABEL DECORATION - licence key checks>
       ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
@@ -36,7 +44,8 @@ if not anyof (
       ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
       # </copy LABEL DECORATION - licence key checks>
       ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
-    ]) {
+    ])
+  ) {
       
   # PAPER TRAIL - statements
 

@@ -113,8 +113,6 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])package([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])payment([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])purchase([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])forwarding([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])shipment([^a-zA-Z0-9]|$).*"
       ],
@@ -161,8 +159,13 @@ if not anyof (
     # NB don't put "you" and "your" in each limb, too broad
     # (e.g., "your flight to SF is waiting for you")
 
+    # Venmo transactions, without adding overly broad "you(r)" to main limbs
+    header :comparator "i;unicode-casemap" :regex "Subject" [
+          ".*(^|[^a-zA-Z0-9])requests \\$.*USD.*",
+    ],
+
     allof(
-      # Venmo/Kraken transactions, without adding overly broad "you(r)" to main limbs
+      # Kraken transactions, without adding overly broad "you(r)" to main limbs
       header :comparator "i;unicode-casemap" :regex "Subject" [
         ".*(^|[^a-zA-Z0-9])you([^a-zA-Z0-9]|$).*"
       ],
@@ -170,8 +173,7 @@ if not anyof (
           header :comparator "i;unicode-casemap" :regex "Subject" [
           ".*(^|[^a-zA-Z0-9])bought([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
-          ".*(^|[^a-zA-Z0-9])you (sent|received).*(money|gift|$).*",
-          ".*(^|[^a-zA-Z0-9])requests \$.*USD.*",
+          ".*(^|[^a-zA-Z0-9])(sent|received).*(money|gift|$).*",
           ".*(^|[^a-zA-Z0-9])sold([^a-zA-Z0-9]|$).*" 
           ]
       )
@@ -186,6 +188,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])electronic funds transfer([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])listing([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])pay(ment)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])purchase([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])rent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])request([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])trade([^a-zA-Z0-9]|$).*",
@@ -193,6 +196,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])withdrawal([^a-zA-Z0-9]|$).*"
       ],
       header :comparator "i;unicode-casemap" :regex "Subject" [
+        ".*(^|[^a-zA-Z0-9])approve(d|al)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])authorized([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])bought([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])confirm(ed|ation)?([^a-zA-Z0-9]|$).*",

@@ -76,6 +76,7 @@ if anyof(
     ],
     header :comparator "i;unicode-casemap" :regex "subject" [
       ".*(^|[^a-zA-Z0-9])authoriz(e|ed|ing|ation)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])by mail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])confirm(ed|ing|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])complete(d|ing)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",

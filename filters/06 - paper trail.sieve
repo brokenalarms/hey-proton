@@ -60,11 +60,11 @@ if anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-    fileinto "Paper Trail";
-
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
     }
+    fileinto "Paper Trail";
+    stop;
   } elsif allof (
 
     # PAPER TRAIL - returns

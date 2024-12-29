@@ -60,10 +60,10 @@ if anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
+    fileinto "Paper Trail";
 
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-      fileinto "Paper Trail";
     }
   } elsif allof (
 
@@ -94,13 +94,11 @@ if anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-      fileinto "Paper Trail";
-      stop;
     }
-
+    fileinto "Paper Trail";
+    stop;
   } elsif anyof(
 
     # PAPER TRAIL - tracking
@@ -122,6 +120,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])package([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])payment([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])forwarding([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])shipment([^a-zA-Z0-9]|$).*"
       ],
@@ -156,12 +155,11 @@ if anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-      fileinto "Paper Trail";
-      stop;
     }
+    fileinto "Paper Trail";
+    stop;
   } elsif anyof(
 
     # PAPER TRAIL - transactions
@@ -230,9 +228,9 @@ if anyof(
 
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-      fileinto "Paper Trail";
-      stop;
     }
+    fileinto "Paper Trail";
+    stop;
   } elsif anyof(
 
     # PAPER TRAIL - receipts
@@ -299,11 +297,10 @@ if anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-      fileinto "Paper Trail";
-      stop;
     }
+    fileinto "Paper Trail";
+    stop;
   }
 }

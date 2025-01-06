@@ -138,7 +138,8 @@ if allof(
   # sole words sufficient to indicating attention is needed
   if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
-      ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*" # exclude Eventbrite Visa meeting invites
+      ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
+      ".*(^|[^a-zA-Z0-9])amazon([^a-zA-Z0-9]|$).*" # Amazon cancellations can go to Paper Trail
     ],
     header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])action([^a-zA-Z0-9]|$).*",

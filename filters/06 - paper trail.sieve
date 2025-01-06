@@ -243,6 +243,7 @@ if anyof(
       ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
       # Lyft
       ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])your Lyft bike ride([^a-zA-Z0-9]|$).*",
       # Paypal: "seller: $xxx.xx USD"
       ".*:.{1,2}[0-9]{1,}\\.[0-9]{2,2}.*"
     ],
@@ -270,6 +271,7 @@ if anyof(
       ],
 
       header :comparator "i;unicode-casemap" :regex "Subject" [
+        ".*(^|[^a-zA-Z0-9])accepted([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])confirm(ed|ation)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])details([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])from([^a-zA-Z0-9]|$).*",

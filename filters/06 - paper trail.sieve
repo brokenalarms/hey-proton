@@ -52,7 +52,7 @@ if anyof(
   if header :comparator "i;unicode-casemap" :regex ["Subject"] [
     ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])report.*securities([^a-zA-Z0-9]|$).*", # Fidelity securites loan statements
-    ".*(^|[^a-zA-Z0-9])e?statement([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])statement([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])your.*transaction history([^a-zA-Z0-9]|$).*"
     ] {
 
@@ -201,6 +201,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])request([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])trade([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])transaction([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])transfer([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])withdrawal([^a-zA-Z0-9]|$).*"
       ],
       header :comparator "i;unicode-casemap" :regex "Subject" [
@@ -218,7 +219,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])successful([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])transfer(red|ring)?([^a-zA-Z0-9]|$).*"
+        ".*(^|[^a-zA-Z0-9])transfer(red|ring)([^a-zA-Z0-9]|$).*"
       ]
     )
   ) {
@@ -278,8 +279,10 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])issued([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])plac(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])refund(ed)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])submit(ted)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])succe(ss|eded)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])summary([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])your([^a-zA-Z0-9]|$).*"

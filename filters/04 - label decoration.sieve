@@ -94,7 +94,11 @@ if allof(
 }
 
 if allof(
-  header :comparator "i;unicode-casemap" :regex ["subject"] [
+  header :comparator "i;unicode-casemap" :regex [
+    "from",
+    "X-Simplelogin-Original-From",
+    "subject"
+  ] [
     ".*(^|[^a-zA-Z0-9])tax(ed|able|ation)?([^a-zA-Z0-9]|$).*"
   ],
   not header :comparator "i;unicode-casemap" :matches ["subject"] [

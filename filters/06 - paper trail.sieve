@@ -122,7 +122,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])arriv(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])cancel(led|ling)?([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])coming([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])coming (soon|today|tomorrow)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])complet(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])clear(ed)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])deliver(y|ed|ing)?([^a-zA-Z0-9]|$).*",
@@ -130,6 +130,7 @@ if not anyof (
         ".*(^|[^a-zA-Z0-9])get ready([^a-zA-Z0-9]|$).*", # UPS - "get ready for your package"
         ".*(^|[^a-zA-Z0-9])notif(y|ied|ication)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])on (the|its) way([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])out for([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])print(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])process(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])(re)?schedul(ed|ing)([^a-zA-Z0-9]|$).*",
@@ -238,6 +239,7 @@ if not anyof (
     header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*invoice.*",
       ".*(^|[^a-zA-Z0-9])order #? ?[0-9]+([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])ordered:([^a-zA-Z0-9]|$).*",
       ".*receipt.*"
     ],
 

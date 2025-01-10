@@ -138,6 +138,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])notif(y|ied|ication)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])on (the|its) way([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])out for([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])prepar(e|ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])print(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])process(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])(re)?schedul(ed|ing)([^a-zA-Z0-9]|$).*",
@@ -146,8 +147,6 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])sign(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])status([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])track(ed|ing)?([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])prepar(e|ed|ing)([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])process(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])updat(e|ed|ing)([^a-zA-Z0-9]|$).*"
       ]
   )) {
@@ -158,7 +157,7 @@ if anyof(
     fileinto "expiring";
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-    }
+    } 
     fileinto "Paper Trail";
     stop;
   } elsif anyof(
@@ -213,7 +212,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])initiat(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])pick(ing)?[ -]?up([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])processed([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])process(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])receiv(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",

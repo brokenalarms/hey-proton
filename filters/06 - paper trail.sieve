@@ -235,7 +235,8 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])started([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])successful([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])transfer(red|ring)([^a-zA-Z0-9]|$).*"
+        ".*(^|[^a-zA-Z0-9])transfer(red|ring)([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])working([^a-zA-Z0-9]|$).*"
       ]
     )
   ) {

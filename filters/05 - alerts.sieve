@@ -230,6 +230,7 @@ if allof(
         ".*(^|[^a-zA-Z0-9])device([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])email([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])log[ -]?in([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])pass(code|key|word)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])profile([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])rent payment([^a-zA-Z0-9]|$).*",
@@ -241,7 +242,7 @@ if allof(
         ".*(^|[^a-zA-Z0-9])approve(d)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])authenticat(e|ed|ion)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])confirm(ed)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])confirm(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])identification([^a-zA-Z0-9]|$).*", # "Your Requested Online Banking Identification Code"
         ".*(^|[^a-zA-Z0-9])linked([^a-zA-Z0-9]|$).*", # "now linked in your account" versus download link
         ".*(^|[^a-zA-Z0-9])log(ged | |-)?in([^a-zA-Z0-9]|$).*", # allows for 'login code' or 'link to login', but not 'code' here as too broad

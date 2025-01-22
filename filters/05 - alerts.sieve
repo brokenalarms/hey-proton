@@ -138,7 +138,6 @@ if allof(
   }
 
   # ALERTS - single words
-  # sole words sufficient to indicating attention is needed
   if allof(
     not header :comparator "i;unicode-casemap" :regex [
       "Subject",
@@ -151,6 +150,7 @@ if allof(
       ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail
       ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*" # safestor monthly renewals can go to Paper Trail
     ],
+    # sole words sufficient to indicating attention is needed
     header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])action([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])alert(s|ed|ing)?([^a-zA-Z0-9]|$).*",
@@ -168,7 +168,8 @@ if allof(
       ".*(^|[^a-zA-Z0-9])fail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])hold([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])impact(ed)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])important(^|[^a-zA-Z0-9]).*",
+      ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]).*",
+      ".*(^|[^a-zA-Z0-9])issue([^a-zA-Z0-9]).*",
       ".*(^|[^a-zA-Z0-9])mailbox([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])new mail([^a-zA-Z0-9]|$).*",

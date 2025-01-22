@@ -339,6 +339,7 @@ if header :comparator "i;unicode-casemap" :regex [
     "X-Simplelogin-Original-From",
     "subject"
     ] [
+      ".*my ?health.*",
       ".*health ?care.*",
       ".*medical.*",
       ".*phys(io|ical )therapy.*",

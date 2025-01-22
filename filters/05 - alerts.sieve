@@ -245,6 +245,7 @@ if allof(
         ".*(^|[^a-zA-Z0-9])one[ -]time([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])new([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])set up([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])single[ -]use([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])ready([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])reset([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])update(d|ing)([^a-zA-Z0-9]|$).*", # not update, need action

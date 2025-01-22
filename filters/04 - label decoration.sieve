@@ -319,7 +319,6 @@ if allof(
 }
 
 # LABEL DECORATION - legal
-
 if header :comparator "i;unicode-casemap" :regex [
     "from",
     "X-Simplelogin-Original-From",
@@ -335,7 +334,6 @@ if header :comparator "i;unicode-casemap" :regex [
   }
 
 # LABEL DECORATION - medical
-
 if header :comparator "i;unicode-casemap" :regex [
     "from",
     "X-Simplelogin-Original-From",

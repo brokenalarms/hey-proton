@@ -226,6 +226,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])coming up([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])completed?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])confirm(ed|ation)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])execut(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])for.*2[0-9]{3}([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])initiat(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",

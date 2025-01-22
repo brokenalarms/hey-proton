@@ -180,9 +180,11 @@ if anyof(
     # NB don't put "you" and "your" in each limb, too broad
     # (e.g., "your flight to SF is waiting for you")
 
-    # Venmo transactions, without adding overly broad "you(r)" to main limbs
     header :comparator "i;unicode-casemap" :regex "Subject" [
-          ".*(^|[^a-zA-Z0-9])requests.*[0-9]{1,}\\.[0-9]{2,2}.*"
+          # Venmo transactions, without adding overly broad "you(r)" to main limbs
+          ".*(^|[^a-zA-Z0-9])requests.*[0-9]{1,}\\.[0-9]{2,2}.*",
+          # Schwab etrade confirmations
+          ".*(^|[^a-zA-Z0-9])econfirms([^a-zA-Z0-9]|$).*"
     ],
 
     allof(

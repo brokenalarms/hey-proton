@@ -241,6 +241,9 @@ if anyof(
 
     # specific cases
     header :comparator "i;unicode-casemap" :regex "Subject" [
+      # Reverb
+      ".*(^|[^a-zA-Z0-9])has sold([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
       # REI - picking up gear in person
       ".*(^|[^a-zA-Z0-9])thanks for picking up([^a-zA-Z0-9]|$).*",
       # Lyft
@@ -264,6 +267,7 @@ if anyof(
         "*credit*",
         "*domain*",
         "*earnings*",
+        "*item*",
         "*order*",
         "*payment*",
         "*purchase*",
@@ -284,6 +288,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])refund(ed)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])sold([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])submit(ted)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])succe(ss|eded)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])summary([^a-zA-Z0-9]|$).*",

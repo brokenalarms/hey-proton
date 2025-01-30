@@ -27,9 +27,9 @@ if anyof(
   not anyof (
     header :comparator "i;unicode-casemap" :regex "subject" [
       # <copy LABEL DECORATION - conversations>
-      "(^|\[Possible phishing attempt\] )fw: .*",
-      "(^|\[Possible phishing attempt\] )fwd: .*",
-      "(^|\[Possible phishing attempt\] )re: .*"
+      ".*fw: .*",
+      ".*fwd: .*",
+      ".*re: .*"
       # </copy LABEL DECORATION - conversations>
     ],
     header :list "from" ":addrbook:personal?label=Conversations",

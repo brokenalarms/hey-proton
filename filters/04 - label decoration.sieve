@@ -68,11 +68,11 @@ if header :comparator "i;unicode-casemap" :matches "subject" [
 
 # LABEL DECORATION - conversations
 
-if header :comparator "i;unicode-casemap" :matches "subject" [
+if header :comparator "i;unicode-casemap" :regex "subject" [
   # <LABEL DECORATION - conversations>
-  "(^|\[Possible phishing attempt\] )fw: .*",
-  "(^|\[Possible phishing attempt\] )fwd: .*",
-  "(^|\[Possible phishing attempt\] )re: .*"
+  ".*fw: .*",
+  ".*fwd: .*",
+  ".*re: .*"
   # </LABEL DECORATION - conversations>
 ] {
   fileinto "conversations";

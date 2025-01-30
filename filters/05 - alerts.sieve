@@ -103,9 +103,9 @@ if allof(
     ".*(^|[^a-zA-Z0-9])get started([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])Fidelity Alerts: EFT([^a-zA-Z0-9]|$).*",
     # <copy LABEL DECORATION - conversations>
-    "(^|\[Possible phishing attempt\] )fw: .*",
-    "(^|\[Possible phishing attempt\] )fwd: .*",
-    "(^|\[Possible phishing attempt\] )re: .*"
+    ".*fw: .*",
+    ".*fwd: .*",
+    ".*re: .*"
     # </copy LABEL DECORATION - conversations>
   ]) {
 

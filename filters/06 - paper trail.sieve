@@ -249,7 +249,9 @@ if anyof(
       ".*(^|[^a-zA-Z0-9])your ride with([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])your Lyft bike ride([^a-zA-Z0-9]|$).*",
       # Paypal: "seller: $xxx.xx USD"
-      ".*:.{1,2}[0-9]{1,}\\.[0-9]{2,2}.*"
+      ".*:.{1,2}[0-9]{1,}\\.[0-9]{2,2}.*",
+      # Storage - these are sent every month
+      ".*(^|[^a-zA-Z0-9])safestor policy renewal([^a-zA-Z0-9]|$).*"
     ],
 
     # general

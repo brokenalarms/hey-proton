@@ -6,7 +6,11 @@
 # put into any other contact group (e.g., "Learning").
 
 # THE FEED - contact groups indicator
-if header :list "from" ":addrbook:personal?label=Newsletters" {
+if header :list [
+  "from",
+  "to",
+  "X-Original-To"
+  ] ":addrbook:personal?label=Newsletters" {
   fileinto "The Feed";
   fileinto "newsletters";
   if not anyof(

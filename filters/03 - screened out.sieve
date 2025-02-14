@@ -10,7 +10,10 @@
 
 # Screened Out - Screened Out contacts
 # Emails I receive but can't opt out of
-if header :list "from" ":addrbook:personal?label=Screened Out" {
+if header :list [
+  "from",
+  "to",
+  "X-Original-To"] ":addrbook:personal?label=Screened Out" {
   expire "day" "${screened_out_expiry_days}";
   addflag "\\Seen";
   fileinto "expiring";

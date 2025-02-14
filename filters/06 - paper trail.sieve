@@ -32,10 +32,22 @@ if anyof(
       ".*re: .*"
       # </copy LABEL DECORATION - conversations>
     ],
-    header :list "from" ":addrbook:personal?label=Conversations",
-    header :list "from" ":addrbook:personal?label=Family",
-    header :list "from" ":addrbook:personal?label=Personal",
-    header :list "from" ":addrbook:personal?label=Support",
+    header :list [
+      "from",
+      "to",
+      "X-Original-To"] ":addrbook:personal?label=Conversations",
+    header :list [
+      "from",
+      "to",
+      "X-Original-To"] ":addrbook:personal?label=Family",
+    header :list [
+      "from",
+      "to",
+      "X-Original-To"] ":addrbook:personal?label=Personal",
+    header :list [
+      "from",
+      "to",
+      "X-Original-To"] ":addrbook:personal?label=Support",
     header :comparator "i;unicode-casemap" :regex "subject" [
       # <copy LABEL DECORATION - licence key checks>
       ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",

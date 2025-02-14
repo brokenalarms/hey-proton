@@ -86,7 +86,10 @@ if allof(
 # that still contain an 'alerting' subject.
 
 if allof(
-  not header :list "from" ":addrbook:personal?label=Conversations",
+  not header :list [
+  "from",
+  "to",
+  "X-Original-To"] ":addrbook:personal?label=Conversations",
   anyof (
     # exclude all statements, unless annual
     not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])statement([^a-zA-Z0-9]|$).*", 

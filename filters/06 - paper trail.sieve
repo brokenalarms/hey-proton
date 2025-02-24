@@ -129,6 +129,7 @@ if anyof(
       header :comparator "i;unicode-casemap" :regex "subject" [
         ".*(^|[^a-zA-Z0-9])delivery([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])driver([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])gear([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])item([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
@@ -147,6 +148,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])deliver(y|ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])dispatch(ed|ing)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])get ready([^a-zA-Z0-9]|$).*", # UPS - "get ready for your package"
+        ".*(^|[^a-zA-Z0-9])making moves([^a-zA-Z0-9]|$).*", # Peak Design
         ".*(^|[^a-zA-Z0-9])notif(y|ied|ication)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])on (the|its) way([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])out for([^a-zA-Z0-9]|$).*",
@@ -288,7 +290,7 @@ if anyof(
         "*purchase*",
         "*rental*",
         "*sale*",
-        "*shopping*",
+        "*shopping*",   
         "*ultimate rewards*"
       ],
 

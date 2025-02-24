@@ -237,8 +237,8 @@ if anyof(
   ) {
 
     fileinto "transactions";
-    expire "day" "${paper_trail_expiry_relative_days}";
-    fileinto "expiring";
+    # expire "day" "${paper_trail_expiry_relative_days}";
+    # fileinto "expiring";
 
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
@@ -322,8 +322,8 @@ if anyof(
       fileinto "shopping";
     }
 
-    expire "day" "${paper_trail_expiry_relative_days}";
-    fileinto "expiring";
+    # expire "day" "${paper_trail_expiry_relative_days}";
+    # fileinto "expiring";
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
     }

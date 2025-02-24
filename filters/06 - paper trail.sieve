@@ -191,6 +191,7 @@ if anyof(
       anyof(
           header :comparator "i;unicode-casemap" :regex "Subject" [
           ".*(^|[^a-zA-Z0-9])bought([^a-zA-Z0-9]|$).*",
+          ".*(^|[^a-zA-Z0-9])converted([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])paid([^a-zA-Z0-9]|$).*",
           ".*(^|[^a-zA-Z0-9])(sent|received).*(money|gift|$).*",
           ".*(^|[^a-zA-Z0-9])sold([^a-zA-Z0-9]|$).*" 
@@ -277,6 +278,7 @@ if anyof(
     allof (
       header :comparator "i;unicode-casemap" :matches "Subject" [
         "*charge*",
+        "*checkout*",
         "*credit*",
         "*domain*",
         "*earnings*",

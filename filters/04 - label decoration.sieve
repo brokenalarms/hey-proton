@@ -334,6 +334,21 @@ if header :comparator "i;unicode-casemap" :regex [
     fileinto "legal";
   }
 
+# LABEL DECORATION - medical
+
+if header :comparator "i;unicode-casemap" :regex [
+    "from",
+    "X-Simplelogin-Original-From",
+    "subject"
+    ] [
+      ".*health ?care.*",
+      ".*medical.*",
+      ".*phys(io|ical )therapy.*",
+      ".*vaccin.*"
+  ] {
+    fileinto "medical";
+  }
+
 # LABEL DECORATION - contact groups
 # to populate without using generate script,
 # add your own contact groups in the format, where ${contact group} matches

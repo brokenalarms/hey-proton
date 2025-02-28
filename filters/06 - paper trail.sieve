@@ -232,6 +232,7 @@ if anyof(
         ".*(^|[^a-zA-Z0-9])receiv(ed|ing)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])sent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])set([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])started([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])successful([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])transfer(red|ring)([^a-zA-Z0-9]|$).*"

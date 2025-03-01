@@ -140,9 +140,15 @@ if allof(
   # ALERTS - single words
   # sole words sufficient to indicating attention is needed
   if allof(
-    not header :comparator "i;unicode-casemap" :regex "Subject" [
+    not header :comparator "i;unicode-casemap" :regex [
+      "Subject",
+      "From",
+      "To",
+      "X-Simplelogin-Original-From",
+      "X-Simplelogin-Envelope-To"
+      ] [
       ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
-      ".*(^|[^a-zA-Z0-9])amazon([^a-zA-Z0-9]|$).*", # Amazon cancellations can go to Paper Trail
+      ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail
       ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*" # safestor monthly renewals can go to Paper Trail
     ],
     header :comparator "i;unicode-casemap" :regex "Subject" [

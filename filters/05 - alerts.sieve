@@ -149,7 +149,8 @@ if allof(
       ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
       ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail
       ".*(^|[^a-zA-Z0-9])ending in([^a-zA-Z0-9]|$).*", # not 'account ending in'
-      ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*" # safestor monthly renewals can go to Paper Trail
+      ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*", # safestor monthly renewals can go to Paper Trail
+      ".*sign up.*" # asking you to sign up for text alerts
     ],
     # sole words sufficient to indicating attention is needed
     header :comparator "i;unicode-casemap" :regex "Subject" [
@@ -188,7 +189,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)account[^a-zA-Z0-9].*mail([^a-zA-Z0-9]|$).*", # Travelingmailbox physical mail items
       ".*(^|[^a-zA-Z0-9])review([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])revision([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])safe(ty)?([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])safety([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])sensitive([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])service[^a-zA-Z0-9].*[^a-zA-Z0-9]end([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])special([^a-zA-Z0-9]|$).*",

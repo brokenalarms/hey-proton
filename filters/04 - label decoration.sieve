@@ -180,8 +180,7 @@ if header :comparator "i;unicode-casemap" :matches [
 if allof(
   header :comparator "i;unicode-casemap" :matches "subject" [
     "*boarding*",
-    "*flight*",
-    "*trip*"
+    "*flight*"
   ],
 
   header :comparator "i;unicode-casemap" :regex "subject" [
@@ -319,7 +318,18 @@ if allof(
 }
 
 # LABEL DECORATION - legal
-if header :comparator "i;unicode-casemap" :regex [
+
+if allof(
+  not header :comparator "i;unicode-casemap" :regex [
+      "Subject",
+      "From",
+      "To",
+      "X-Simplelogin-Original-From",
+      "X-Simplelogin-Envelope-To"
+      ] [
+     "J. ?Crew" #not J.Crew Passport! 
+    ], 
+  header :comparator "i;unicode-casemap" :regex [
     "from",
     "X-Simplelogin-Original-From",
     "subject"
@@ -329,7 +339,7 @@ if header :comparator "i;unicode-casemap" :regex [
       ".*h1-?b.*",
       ".*passport.*",
       ".*visa.*"
-  ] {
+  ]) {
     fileinto "legal";
   }
 

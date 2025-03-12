@@ -251,7 +251,7 @@ if allof(
   }
 
   if header :comparator "i;unicode-casemap" :regex ["subject"] [
-    ".*(^|[^a-zA-Z0-9])ticket( |s|ing)?([^a-zA-Z0-9]|$).*" # not 'Ticketmaster' alone
+    ".*(^|[^a-zA-Z0-9])ticket.*"
   ] {
   if anyof(
       header :comparator "i;unicode-casemap" :matches [

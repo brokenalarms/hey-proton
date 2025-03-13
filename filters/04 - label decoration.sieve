@@ -294,7 +294,8 @@ if allof(
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*"
+    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])subscription confirmation([^a-zA-Z0-9]|$).*"
     # </label decoration - licence keys>
   ],
 

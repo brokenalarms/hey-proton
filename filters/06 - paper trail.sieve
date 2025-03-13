@@ -298,6 +298,7 @@ if anyof(
         "*rental*",
         "*sale*",
         "*shopping*",   
+        "*subscription*",
         "*ultimate rewards*"
       ],
 

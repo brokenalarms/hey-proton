@@ -249,7 +249,11 @@ if allof(
     fileinto "support";
   }
 
-  if header :comparator "i;unicode-casemap" :regex ["subject"] [
+  if header :comparator "i;unicode-casemap" :regex [
+    "from",
+    "to",
+    "X-Original-To",
+    "subject"] [
     ".*(^|[^a-zA-Z0-9])ticket.*"
   ] {
   if anyof(

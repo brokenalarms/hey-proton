@@ -146,7 +146,6 @@ if allof(
       "X-Simplelogin-Original-From",
       "X-Simplelogin-Envelope-To"
       ] [
-      ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
       ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail
       ".*(^|[^a-zA-Z0-9])ending in([^a-zA-Z0-9]|$).*", # not 'account ending in'
       ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*", # safestor monthly renewals can go to Paper Trail

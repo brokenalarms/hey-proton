@@ -285,7 +285,11 @@ if anyof(
     ],
 
     allof (
-      header :comparator "i;unicode-casemap" :matches "Subject" [
+      header :comparator "i;unicode-casemap" :matches [
+        "Subject",
+        "From",
+        "To"
+      ] [
         "*charge*",
         "*checkout*",
         "*credit*",
@@ -297,8 +301,9 @@ if anyof(
         "*purchase*",
         "*rental*",
         "*sale*",
-        "*shopping*",   
+        "*shopping*",
         "*subscription*",
+        "*ticket*",
         "*ultimate rewards*"
       ],
 

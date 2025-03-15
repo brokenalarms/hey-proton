@@ -171,7 +171,6 @@ if allof(
       ".*(^|[^a-zA-Z0-9])impact(ed)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])issue([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])mailbox([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])new mail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",

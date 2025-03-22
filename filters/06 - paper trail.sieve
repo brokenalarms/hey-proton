@@ -309,7 +309,7 @@ if anyof(
 
       header :comparator "i;unicode-casemap" :regex "Subject" [
         ".*(^|[^a-zA-Z0-9])accepted([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])complet(e|ed|tion)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])complet(e|ed|tion)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])confirm(ed|ation)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])details([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])from([^a-zA-Z0-9]|$).*",

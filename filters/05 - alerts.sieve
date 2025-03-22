@@ -69,10 +69,10 @@ if allof(
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*"
   ]) {
-    expire "day" "${paper_trail_expiry_relative_days}";
-    fileinto "expiring"; 
     fileinto "shopping";
     fileinto "alerts";
+    expire "day" "${paper_trail_expiry_relative_days}";
+    fileinto "expiring"; 
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
       fileinto "inbox";
   }
@@ -176,7 +176,6 @@ if allof(
       ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])new mail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])now([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])outstanding([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])primary([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reactivate(d)?([^a-zA-Z0-9]|$).*",

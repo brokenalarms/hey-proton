@@ -16,48 +16,39 @@
 # and after first contact review, the mail can be manually sent to that folder
 # without needing to manipulate it further to match items in it.
 
-if anyof(
-  # allow messages to test addresses to be forwarded (faster testing without rewriting 'subject')
-  header :comparator "i;unicode-casemap" :regex [
-    "to",
-    "X-Original-To"
-  ] [
-    {{test address regexes.txt string expansion}}
+if not anyof(
+  header :comparator "i;unicode-casemap" :regex "subject" [
+    # <copy LABEL DECORATION - conversations>
+    ".*fw: .*",
+    ".*fwd: .*",
+    ".*re: .*"
+    # </copy LABEL DECORATION - conversations>
   ],
-  not anyof (
-    header :comparator "i;unicode-casemap" :regex "subject" [
-      # <copy LABEL DECORATION - conversations>
-      ".*fw: .*",
-      ".*fwd: .*",
-      ".*re: .*"
-      # </copy LABEL DECORATION - conversations>
-    ],
-    header :list [
-      "from",
-      "to",
-      "X-Original-To"] ":addrbook:personal?label=Conversations",
-    header :list [
-      "from",
-      "to",
-      "X-Original-To"] ":addrbook:personal?label=Family",
-    header :list [
-      "from",
-      "to",
-      "X-Original-To"] ":addrbook:personal?label=Personal",
-    header :list [
-      "from",
-      "to",
-      "X-Original-To"] ":addrbook:personal?label=Support",
-    header :comparator "i;unicode-casemap" :regex "subject" [
-      # <copy LABEL DECORATION - licence key checks>
-      ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
-      # </copy LABEL DECORATION - licence key checks>
-      ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
-    ])
-  ) {
+  header :list [
+    "from",
+    "to",
+    "X-Original-To"] ":addrbook:personal?label=Conversations",
+  header :list [
+    "from",
+    "to",
+    "X-Original-To"] ":addrbook:personal?label=Family",
+  header :list [
+    "from",
+    "to",
+    "X-Original-To"] ":addrbook:personal?label=Personal",
+  header :list [
+    "from",
+    "to",
+    "X-Original-To"] ":addrbook:personal?label=Support",
+  header :comparator "i;unicode-casemap" :regex "subject" [
+    # <copy LABEL DECORATION - licence key checks>
+    ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
+    # </copy LABEL DECORATION - licence key checks>
+    ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
+  ]) {
       
   # PAPER TRAIL - statements
 

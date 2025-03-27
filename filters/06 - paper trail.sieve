@@ -113,6 +113,7 @@ if not anyof(
       ".*(^|[^a-zA-Z0-9])pick(- )?up confirm(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*confirm(ed|ation)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])shipping.*accept(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])your shipment([^a-zA-Z0-9]|$).*"
     ],
 

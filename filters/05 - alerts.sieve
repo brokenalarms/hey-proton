@@ -191,7 +191,6 @@ if allof(
       ".*(^|[^a-zA-Z0-9])safety([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])sensitive([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])service[^a-zA-Z0-9].*[^a-zA-Z0-9]end([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])special([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])tr(y|ied|ing)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])unable([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])unusual([^a-zA-Z0-9]|$).*",

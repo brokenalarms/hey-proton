@@ -119,6 +119,7 @@ if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])credit([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])feedback sports    ([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])information([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])interest([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])savings([^a-zA-Z0-9]|$).*"

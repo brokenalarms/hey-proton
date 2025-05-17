@@ -135,10 +135,20 @@ if allof(
 
 # LABEL DECORATION - reservations
 
-if header :comparator "i;unicode-casemap" :matches "subject" [
-  "*booking*",
-  "*reservation*"
-] {
+if anyof(
+  header :comparator "i;unicode-casemap" :matches "subject" [
+    "*booking*",
+    "*reservation*"],
+  header :comparator "i;unicode-casemap" :matches "from" [
+    # some of these generate unique email addresses so can't be managed through Proton UI
+    "*agoda*",
+    "*airbnb*",
+    "*booking.com*",
+    "*kayak.com",
+    "*skyscanner*"
+    ]
+  )
+{
   fileinto "reservations";
 }
 

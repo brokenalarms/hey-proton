@@ -6,7 +6,6 @@
 #
 # Rules
 # ANY match in here MUST:
-# - set to expire and label as `expiring`; AND
 # IF the contact is an existing contact
 # - move to `Paper Trail` folder
 # - mark as seen
@@ -49,6 +48,8 @@ if not anyof(
     # </copy LABEL DECORATION - licence key checks>
     ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
   ]) {
+
+  # PAPER TRAIL - auto archive by 
       
   # PAPER TRAIL - statements
 

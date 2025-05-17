@@ -201,6 +201,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])deposit([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])eft([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])electronic funds transfer([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])expense([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])listing([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])(auto)?pay(ment)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])purchase([^a-zA-Z0-9]|$).*",
@@ -212,6 +213,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])withdrawal([^a-zA-Z0-9]|$).*"
       ],
       header :comparator "i;unicode-casemap" :regex "Subject" [
+        ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])approve(d|al)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])authorized([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])bought([^a-zA-Z0-9]|$).*",

@@ -290,6 +290,7 @@ if not anyof(
         "*credit*",
         "*domain*",
         "*earnings*",
+        "*forwarding request*",
         "*item*",
         "*order*",
         "*payment*",

@@ -177,7 +177,8 @@ if allof(
       ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])issue([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])new mail([^a-zA-Z0-9]|$).*",
+      # traveling mailbox - item has been received and scanned, not just received
+      ".*(^|[^a-zA-Z0-9])traveling mailbox: new mail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])outstanding([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])primary([^a-zA-Z0-9]|$).*",
@@ -188,7 +189,6 @@ if allof(
       ".*(^|[^a-zA-Z0-9])requir([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])renew(al|ing)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reversal([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])receiv(e|ed|ing)account[^a-zA-Z0-9].*mail([^a-zA-Z0-9]|$).*", # Travelingmailbox physical mail items
       ".*(^|[^a-zA-Z0-9])review([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])revision([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])safety([^a-zA-Z0-9]|$).*",

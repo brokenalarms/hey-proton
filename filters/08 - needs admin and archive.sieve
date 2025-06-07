@@ -85,3 +85,23 @@ if allof(
   stop;
 }
 
+if allof(
+  anyof(
+    header :list [
+      "from",
+      "X-Simplelogin-Original-From"
+    ] ":addrbook:personal?label=auto-archive",
+    header :comparator "i;unicode-casemap" :matches [
+      "from",
+      "X-Simplelogin-Original-From"
+    ] [
+      "*through booking.com*",
+      "*via booking.com*"
+    ]
+  ),
+  string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"
+) {
+  addflag "\\Seen";
+  fileinto "archive";
+  stop;
+}

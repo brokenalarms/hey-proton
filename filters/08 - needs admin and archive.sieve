@@ -61,7 +61,7 @@ if allof(
   stop;
 }
 
-# ARCHIVE - for addresses we are aware of and want to hide in future (airbnb, booking.com, view through app instead)
+# ARCHIVE - for addresses we are aware of and want to hide in future (airbnb, booking.com, agoda, view through app instead)
 # and that arent't alerts, auto hide/archive these
 
 if allof(
@@ -70,12 +70,11 @@ if allof(
       "from",
       "X-Simplelogin-Original-From"
     ] ":addrbook:personal?label=auto-archive",
-    header :comparator "i;unicode-casemap" :matches [
+    header :comparator "i;unicode-casemap" :regex [
       "from",
       "X-Simplelogin-Original-From"
     ] [
-      "through booking.com",
-      "via booking.com"
+      ".*(through|via) (agoda|booking).com.*",
     ]
   ),
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"

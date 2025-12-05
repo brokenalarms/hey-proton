@@ -74,7 +74,7 @@ if allof(
       "from",
       "X-Simplelogin-Original-From"
     ] [
-      ".*(through|via) (agoda|booking).com.*",
+      ".*(through|via) (agoda|booking).com.*"
     ]
   ),
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"

@@ -4,8 +4,8 @@
 input_dir="filters"
 
 # Output files for split filter groups
-output_file_1="dist/output-01-04.sieve"  # Setup + spam/ignored + screened out + label decoration
-output_file_2="dist/output-05-08.sieve"  # Setup + alerts + paper trail + feed + needs admin/archive
+output_file_1="dist/output-01-05.sieve"  # Setup + spam/ignored + screened out + label decoration
+output_file_2="dist/output-06-08.sieve"  # Setup + alerts + paper trail + feed + needs admin/archive
 
 # Filter file groups (01 is shared as setup/variables)
 setup_file="$input_dir/01 - setup.sieve"
@@ -13,9 +13,9 @@ group_1_files=(
     "$input_dir/02 - spam & ignored.sieve"
     "$input_dir/03 - screened out.sieve"
     "$input_dir/04 - label decoration.sieve"
+    "$input_dir/05 - alerts.sieve"
 )
 group_2_files=(
-    "$input_dir/05 - alerts.sieve"
     "$input_dir/06 - paper trail.sieve"
     "$input_dir/07 - the feed.sieve"
     "$input_dir/08 - needs admin and archive.sieve"

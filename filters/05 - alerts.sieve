@@ -126,12 +126,51 @@ if allof(
     ],
     header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])feedback([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])rat(e|ing)([^a-zA-Z0-9]|$).*", 
+      ".*(^|[^a-zA-Z0-9])rat(e|ing)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])review(ing|s)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])tell us([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])waiting for you([^a-zA-Z0-9]|$).*"
+      ".*(^|[^a-zA-Z0-9])waiting for you([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])your experience with your([^a-zA-Z0-9]|$).*"
     ]
   ) {
+    fileinto "alerts";
+    fileinto "needs admin";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "inbox";
+    }
+    stop;
+  }
+
+  # ALERTS - cart reminders and form confirmations (expire after 7 days)
+  if header :comparator "i;unicode-casemap" :regex "Subject" [
+    ".*(^|[^a-zA-Z0-9])cart.*(expir|wait|left|miss|forget|abandon)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])we saved your([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])still in your cart([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])you left something behind([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])don't (let|miss|forget)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])we (got|received) your (email|message|request)([^a-zA-Z0-9]|$).*"
+  ] {
+    expire "day" "${non_critical_alerts_expiry_days}";
+    fileinto "expiring";
+    fileinto "alerts";
+    fileinto "needs admin";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "inbox";
+    }
+    stop;
+  }
+
+  # ALERTS - marketing noise (surface to unsubscribe, then expire)
+  if allof(
+    not header :list "from" ":addrbook:personal?label=Newsletters",
+    header :comparator "i;unicode-casemap" :regex "subject" [
+      ".*(^|[^a-zA-Z0-9])webinar([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])webcast([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])register now([^a-zA-Z0-9]|$).*"
+    ]
+  ) {
+    expire "day" "${non_critical_alerts_expiry_days}";
+    fileinto "expiring";
     fileinto "alerts";
     fileinto "needs admin";
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
@@ -150,7 +189,7 @@ if allof(
       "X-Simplelogin-Envelope-To"
       ] [
       ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
-      ".*(^|[^a-zA-Z0-9])issue [0-9]([^a-zA-Z0-9]|$).*", # excluding newsletter issues
+      ".*(^|[^a-zA-Z0-9])issue [0-9]+([^a-zA-Z0-9]|$).*", # excluding newsletter issues
       ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail
       ".*(^|[^a-zA-Z0-9])ending in([^a-zA-Z0-9]|$).*", # not 'account ending in'
       ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*", # safestor monthly renewals can go to Paper Trail
@@ -165,6 +204,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])chang(e|ed|ing)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])connect(e|ed|ing)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])could[n ']n?o?'?t([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])credit(s)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])decision([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])did you mean([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])disclosure([^a-zA-Z0-9]|$).*",
@@ -172,6 +212,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9-])end(s|ing)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])expir(y|ed|es|ing|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])fail([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])fee(s)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])hold([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])impact(ed)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*",
@@ -182,6 +223,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])outstanding([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])primary([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])pricing([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reactivate(d)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])reschedule(d)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])remind(er)?([^a-zA-Z0-9]|$).*",

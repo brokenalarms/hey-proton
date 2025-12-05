@@ -1,8 +1,25 @@
 #!/bin/bash
 
 # Directory containing files to process
-input_dir="filters"  # Directory path
-output_file="dist/output.sieve"  # Final concatenated output
+input_dir="filters"
+
+# Output files for split filter groups
+output_file_1="dist/output-01-04.sieve"  # Setup + spam/ignored + screened out + label decoration
+output_file_2="dist/output-05-08.sieve"  # Setup + alerts + paper trail + feed + needs admin/archive
+
+# Filter file groups (01 is shared as setup/variables)
+setup_file="$input_dir/01 - setup.sieve"
+group_1_files=(
+    "$input_dir/02 - spam & ignored.sieve"
+    "$input_dir/03 - screened out.sieve"
+    "$input_dir/04 - label decoration.sieve"
+)
+group_2_files=(
+    "$input_dir/05 - alerts.sieve"
+    "$input_dir/06 - paper trail.sieve"
+    "$input_dir/07 - the feed.sieve"
+    "$input_dir/08 - needs admin and archive.sieve"
+)
 
 # Array to store list file paths
 list_files=(
@@ -28,8 +45,9 @@ expansion_functions=(
     "expand_to_string_syntax"
 )
 
-# Clear or create the output file
-> "$output_file"
+# Clear or create the output files
+> "$output_file_1"
+> "$output_file_2"
 
 list_elements=()
 exclude_elements=()
@@ -189,17 +207,29 @@ filter_excluded_elements() {
     list_elements=("${included_elements[@]}")
 }
 
-# Process each file in the directory
-for file in "$input_dir"/*.sieve; do
+process_file() {
+    local file="$1"
+    local output="$2"
     if [[ -f "$file" ]]; then
-        # Read each line from the file
         while IFS= read -r line || [[ -n "$line" ]]; do
-            # Use generate_expanded_lines to process each line
-            generate_expanded_lines "$line" >> "$output_file"
+            generate_expanded_lines "$line" >> "$output"
         done < "$file"
     fi
+}
+
+# Process group 1: 01 + 02-04
+process_file "$setup_file" "$output_file_1"
+for file in "${group_1_files[@]}"; do
+    process_file "$file" "$output_file_1"
 done
-# Copy the output file to the clipboard
-pbcopy < "$output_file"
-printf "Output saved to %s and copied to the clipboard\n" "$output_file"
+
+# Process group 2: 01 + 05-08
+process_file "$setup_file" "$output_file_2"
+for file in "${group_2_files[@]}"; do
+    process_file "$file" "$output_file_2"
+done
+
+printf "Output saved to:\n  %s\n  %s\n" "$output_file_1" "$output_file_2"
+printf "\nCopied %s to clipboard (use pbcopy < %s for the other)\n" "$output_file_1" "$output_file_2"
+pbcopy < "$output_file_1"
 exit 0

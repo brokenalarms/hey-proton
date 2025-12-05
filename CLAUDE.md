@@ -1,0 +1,3 @@
+- goals for the program are in README.md, check as part of CLAUDE.md.
+- augmentation of filters should be incorporated to existing rules where appropriate to expand their applicability, but should never change the logic or actions any existing rules, unless there is a bug I have specifically requested be fixed.
+- don't add comments to existing rules unless explicitly instructed. Ones to explain a new rule that follow the format of the existing ones are ok.

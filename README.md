@@ -65,6 +65,14 @@ Finally, only those emails:
 
 will actually make it to your Inbox and ask for your attention.
 
+### Expiration Philosophy
+
+Expiration sets emails to auto-delete after a period - it doesn't hide them. Archiving and marking as seen hides emails.
+
+- **Non-critical alerts** (cart reminders, webinar invites, upsells): Surface to inbox with "needs admin" tag for unsubscribing, then auto-expire in 7 days.
+- **Paper trail** (receipts, tracking, transactions): Mark as seen (don't need attention) but kept for reference. These are things you don't need to see but might need later.
+- **Screened out**: Archive + mark as seen + expire = truly hidden and eventually deleted.
+
 ## Interplay with Proton contact groups
 
 Using Protons' contact groups, we can create a contact to hold a new unknown email to one or more new contacts, and also individually assign each of the emails under a contact to different contact groups:

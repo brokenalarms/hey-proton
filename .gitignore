@@ -14,6 +14,7 @@ dist/**
 !dist/README.md
 
 # User-specific files
+.claude/
 *.rsuser
 *.suo
 *.user

@@ -189,22 +189,15 @@ Each sieve filter is designed to run in a specific order and and conform to cert
 - The exception to this is for `alerts`; if you do want to file anything into `Inbox`, you can
   check against `${migration_julian_day}` first to avoid dredging up your deep mail history.
 
-### Setting Up a `git` pre-commit hook
+### Setting Up the `git` pre-push hook
 
-Rather than run the `generate.sh` script each time, can also symlink it as a `git` pre-commit hook if you wish to make further changes to it as a repository:
+To automatically run `generate.sh` before each push, configure git to use the `.githooks` directory:
 
 ```bash
-# Navigate to the .git/hooks directory
-cd .git/hooks
-
-# Create a symlink to the pre-commit hook script in your repository
-ln -s ../../scripts/generate.sh pre-commit
-
-# Make the hook script executable
-chmod +x ../../scripts/generate.sh
+git config core.hooksPath .githooks
 ```
 
-You will then trigger `dist/output.sieve` generation on each commit.
+You will then trigger `dist/output.sieve` generation on each push.
 
 ### Proton/Sieve Gotchas
 

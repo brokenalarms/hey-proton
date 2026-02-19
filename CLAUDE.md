@@ -8,7 +8,7 @@
 
 Key behaviors:
 - `01 - setup.sieve` is always prepended to every output file (required for each Proton filter to function independently).
-- `CHARACTER_LIMIT=0` (default): uses hardcoded two-group split (`default_group_indices` in the script). `CHARACTER_LIMIT=N`: greedy size-aware split at filter boundaries.
+- `CHARACTER_LIMIT`: Proton's per-filter character limit. Filters are packed greedily to stay within it. Set to 0 to disable splitting.
 - After generating, the script copies each output to clipboard in turn and prompts the user to paste into Proton before advancing to the next.
 - Private data files (`private/contact groups.txt`, `private/email alias regexes.txt`, `private/test address regexes.txt`) are gitignored; `private-examples/` contains representative fixtures.
 - Tests: `bash tests/generate_test.sh` (uses example fixtures for any missing private files, cleans up after itself).

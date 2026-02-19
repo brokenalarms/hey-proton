@@ -61,11 +61,11 @@ run_generate_with_limit() {
 
 run_generate
 
-# 1. Default split produces exactly 2 output files
+# 1. Configured CHARACTER_LIMIT produces exactly 2 output files with example data
 count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
 [[ "$count" == "2" ]] \
-    && ok "default split produces 2 output files" \
-    || fail "default split produces 2 output files (got $count)"
+    && ok "configured CHARACTER_LIMIT produces 2 output files" \
+    || fail "configured CHARACTER_LIMIT produces 2 output files (got $count)"
 
 # 2. Setup prepended to each output: first line matches setup first line
 setup_first=$(head -1 "filters/01 - setup.sieve")
@@ -101,7 +101,15 @@ run_generate
     && ok "stale output files removed on re-run" \
     || fail "stale output files removed on re-run"
 
-# 6. Size-aware splitting: tight CHARACTER_LIMIT produces more than 2 files
+# 6. CHARACTER_LIMIT=0 produces exactly 1 output file (no split)
+rm -f "$DIST"/output-*.sieve
+run_generate_with_limit 0
+nosplit_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
+[[ "$nosplit_count" == "1" ]] \
+    && ok "CHARACTER_LIMIT=0 produces 1 output file (no split)" \
+    || fail "CHARACTER_LIMIT=0 produces 1 output file (no split) (got $nosplit_count)"
+
+# 7. Size-aware splitting: tight CHARACTER_LIMIT produces more than 2 files
 rm -f "$DIST"/output-*.sieve
 run_generate_with_limit 4000
 split_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
@@ -109,7 +117,7 @@ split_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
     && ok "CHARACTER_LIMIT=4000 produces more than 2 output files (got $split_count)" \
     || fail "CHARACTER_LIMIT=4000 produces more than 2 output files (got $split_count)"
 
-# 7. With tight limit, each output file contains setup content
+# 8. With tight limit, each output file contains setup content
 for f in "$DIST"/output-*.sieve; do
     first=$(head -1 "$f")
     [[ "$first" == "$setup_first" ]] \
@@ -117,7 +125,7 @@ for f in "$DIST"/output-*.sieve; do
         || fail "setup in $(basename "$f") under tight CHARACTER_LIMIT"
 done
 
-# 8. No output file is empty
+# 9. No output file is empty
 for f in "$DIST"/output-*.sieve; do
     sz=$(wc -c < "$f")
     [[ $sz -gt 0 ]] \

@@ -4,11 +4,10 @@
 # Configuration
 # ============================================================
 
-# Proton Mail's character limit per filter.
-# Set to 0 to use the default hardcoded split (01-05 / 06-08).
-# Set to a positive number to enable automatic size-aware splitting.
+# Maximum characters per Proton Mail filter, as enforced by Proton.
+# Filters are packed greedily to stay within this limit.
 # To find your limit: paste a filter into Proton and note when it rejects it.
-CHARACTER_LIMIT=0
+CHARACTER_LIMIT=32000
 
 # Directory containing files to process
 input_dir="filters"
@@ -25,13 +24,6 @@ filter_files=(
     "$input_dir/06 - paper trail.sieve"
     "$input_dir/07 - the feed.sieve"
     "$input_dir/08 - needs admin and archive.sieve"
-)
-
-# Default hardcoded groups used when CHARACTER_LIMIT=0.
-# Each entry lists filter_files indices (0-based) for one output.
-default_group_indices=(
-    "0 1 2 3"    # 02-05: spam/ignored, screened out, label decoration, alerts
-    "4 5 6"      # 06-08: paper trail, the feed, needs admin and archive
 )
 
 # Private data files used for macro expansion
@@ -270,7 +262,7 @@ for file in "${filter_files[@]}"; do
 done
 
 # ============================================================
-# Grouping: size-aware or hardcoded
+# Grouping
 # ============================================================
 
 groups=()  # Each entry is a space-separated list of filter_files indices
@@ -299,7 +291,9 @@ if [[ $CHARACTER_LIMIT -gt 0 ]]; then
     done
     [[ ${#current_indices[@]} -gt 0 ]] && groups+=("${current_indices[*]}")
 else
-    groups=("${default_group_indices[@]}")
+    all_indices=()
+    for i in "${!filter_files[@]}"; do all_indices+=($i); done
+    groups=("${all_indices[*]}")
 fi
 
 # ============================================================

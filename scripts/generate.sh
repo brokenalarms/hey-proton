@@ -1,27 +1,32 @@
 #!/bin/bash
 
+# ============================================================
+# Configuration
+# ============================================================
+
+# Maximum characters per Proton Mail filter, as enforced by Proton.
+# Filters are packed greedily to stay within this limit.
+# To find your limit: paste a filter into Proton and note when it rejects it.
+CHARACTER_LIMIT=32000
+
 # Directory containing files to process
 input_dir="filters"
 
-# Output files for split filter groups
-output_file_1="dist/output-01-05.sieve"  # Setup + spam/ignored + screened out + label decoration
-output_file_2="dist/output-06-08.sieve"  # Setup + alerts + paper trail + feed + needs admin/archive
-
-# Filter file groups (01 is shared as setup/variables)
+# Setup file prepended to every output group
 setup_file="$input_dir/01 - setup.sieve"
-group_1_files=(
+
+# All filter files in processing order (setup is handled separately)
+filter_files=(
     "$input_dir/02 - spam & ignored.sieve"
     "$input_dir/03 - screened out.sieve"
     "$input_dir/04 - label decoration.sieve"
     "$input_dir/05 - alerts.sieve"
-)
-group_2_files=(
     "$input_dir/06 - paper trail.sieve"
     "$input_dir/07 - the feed.sieve"
     "$input_dir/08 - needs admin and archive.sieve"
 )
 
-# Array to store list file paths
+# Private data files used for macro expansion
 list_files=(
     "private/contact groups.txt"
     "private/contact groups.txt"
@@ -45,9 +50,9 @@ expansion_functions=(
     "expand_to_string_syntax"
 )
 
-# Clear or create the output files
-> "$output_file_1"
-> "$output_file_2"
+# ============================================================
+# Helper functions (unchanged)
+# ============================================================
 
 list_elements=()
 exclude_elements=()
@@ -217,19 +222,124 @@ process_file() {
     fi
 }
 
-# Process group 1: 01 + 02-04
-process_file "$setup_file" "$output_file_1"
-for file in "${group_1_files[@]}"; do
-    process_file "$file" "$output_file_1"
+# ============================================================
+# Clipboard support
+# ============================================================
+
+copy_to_clipboard() {
+    local file="$1"
+    if command -v pbcopy &>/dev/null; then
+        pbcopy < "$file"
+    elif command -v xclip &>/dev/null; then
+        xclip -selection clipboard < "$file"
+    elif command -v xsel &>/dev/null; then
+        xsel --clipboard --input < "$file"
+    else
+        return 1
+    fi
+}
+
+# ============================================================
+# Build: expand all filters to temp files
+# ============================================================
+
+tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
+
+setup_tmp="$tmp_dir/setup"
+> "$setup_tmp"
+process_file "$setup_file" "$setup_tmp"
+setup_size=$(wc -c < "$setup_tmp")
+
+filter_tmps=()
+filter_sizes=()
+for file in "${filter_files[@]}"; do
+    tmp="$tmp_dir/$(basename "$file")"
+    > "$tmp"
+    process_file "$file" "$tmp"
+    filter_tmps+=("$tmp")
+    filter_sizes+=("$(wc -c < "$tmp")")
 done
 
-# Process group 2: 01 + 05-08
-process_file "$setup_file" "$output_file_2"
-for file in "${group_2_files[@]}"; do
-    process_file "$file" "$output_file_2"
+# ============================================================
+# Grouping
+# ============================================================
+
+groups=()  # Each entry is a space-separated list of filter_files indices
+
+if [[ $CHARACTER_LIMIT -gt 0 ]]; then
+    current_indices=()
+    current_size=$setup_size
+
+    for i in "${!filter_tmps[@]}"; do
+        size=${filter_sizes[$i]}
+        if [[ ${#current_indices[@]} -eq 0 ]]; then
+            current_indices=($i)
+            current_size=$((setup_size + size))
+            if [[ $current_size -gt $CHARACTER_LIMIT ]]; then
+                printf "Warning: filter %d alone with setup is %d chars, over the %d limit.\n" \
+                    $((i + 2)) "$current_size" "$CHARACTER_LIMIT" >&2
+            fi
+        elif [[ $((current_size + size)) -le $CHARACTER_LIMIT ]]; then
+            current_indices+=($i)
+            current_size=$((current_size + size))
+        else
+            groups+=("${current_indices[*]}")
+            current_indices=($i)
+            current_size=$((setup_size + size))
+        fi
+    done
+    [[ ${#current_indices[@]} -gt 0 ]] && groups+=("${current_indices[*]}")
+else
+    all_indices=()
+    for i in "${!filter_files[@]}"; do all_indices+=($i); done
+    groups=("${all_indices[*]}")
+fi
+
+# ============================================================
+# Write output files
+# ============================================================
+
+rm -f dist/output-*.sieve
+
+output_files=()
+for g in "${!groups[@]}"; do
+    output="dist/output-$(printf "%02d" $((g + 1))).sieve"
+    output_files+=("$output")
+    cp "$setup_tmp" "$output"
+    for i in ${groups[$g]}; do
+        cat "${filter_tmps[$i]}" >> "$output"
+    done
 done
 
-printf "Output saved to:\n  %s\n  %s\n" "$output_file_1" "$output_file_2"
-printf "\nCopied %s to clipboard (use pbcopy < %s for the other)\n" "$output_file_1" "$output_file_2"
-pbcopy < "$output_file_1"
+# ============================================================
+# Report and interactive guided paste
+# ============================================================
+
+total=${#output_files[@]}
+printf "Generated %d filter file(s):\n" "$total"
+for f in "${output_files[@]}"; do
+    printf "  %s  (%d chars)\n" "$f" "$(wc -c < "$f")"
+done
+printf "\n"
+
+for n in "${!output_files[@]}"; do
+    file="${output_files[$n]}"
+    num=$((n + 1))
+
+    if copy_to_clipboard "$file"; then
+        printf "Filter %d of %d copied to clipboard.\n" "$num" "$total"
+    else
+        printf "Filter %d of %d: clipboard unavailable — paste from %s\n" "$num" "$total" "$file"
+    fi
+
+    if [[ $num -lt $total ]]; then
+        printf "Paste into Proton Mail, then press Enter for the next filter... "
+        read -r
+        printf "\n"
+    else
+        printf "Paste into Proton Mail. Done!\n"
+    fi
+done
+
 exit 0

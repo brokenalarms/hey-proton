@@ -131,14 +131,16 @@ Using separate files for user-specific setup data along with script-based expans
 
 The `scripts/generate.sh` script is used to expand entries in files in your `/private` directory. You will need to create the source text files in `private` yourself since they contain personal information.
 
-You can run this script directly one-time in Bash to populate `/dist/output.sieve`:
+You can run this script directly one-time in Bash:
 
 ```bash
 chmod +x scripts/generate.sh
 scripts/generate.sh
 ```
 
-to generate `/dist/output.sieve`, ready to paste into Proton Mail as a single filter.
+This generates one or more files in `dist/`, copies the first to your clipboard, and walks you through pasting each one into Proton Mail in order. Press Enter after pasting each filter when prompted.
+
+By default the output is split into two filters matching Proton's size limit. If you need a different split — because you've added rules, or you know Proton's exact character limit — set `CHARACTER_LIMIT` at the top of `generate.sh` to a positive number and the script will split automatically at filter boundaries to stay within it.
 
 ### Optional contact groups
 
@@ -197,7 +199,7 @@ To automatically run `generate.sh` before each push, configure git to use the `.
 git config core.hooksPath .githooks
 ```
 
-You will then trigger `dist/output.sieve` generation on each push.
+You will then trigger `dist/output-*.sieve` generation on each push.
 
 ### Proton/Sieve Gotchas
 

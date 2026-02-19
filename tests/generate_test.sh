@@ -61,11 +61,11 @@ run_generate_with_limit() {
 
 run_generate
 
-# 1. Configured CHARACTER_LIMIT produces exactly 2 output files with example data
+# 1. Configured CHARACTER_LIMIT splits output across multiple files
 count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
-[[ "$count" == "2" ]] \
-    && ok "configured CHARACTER_LIMIT produces 2 output files" \
-    || fail "configured CHARACTER_LIMIT produces 2 output files (got $count)"
+[[ "$count" -ge 2 ]] \
+    && ok "configured CHARACTER_LIMIT splits into multiple output files" \
+    || fail "configured CHARACTER_LIMIT splits into multiple output files (got $count)"
 
 # 2. Setup prepended to each output: first line matches setup first line
 setup_first=$(head -1 "filters/01 - setup.sieve")

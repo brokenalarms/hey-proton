@@ -7,11 +7,13 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 GENERATE="scripts/generate.sh"
 DIST="dist"
+FAIL_FAST=0
+[[ "${1:-}" == "--fail-fast" ]] && FAIL_FAST=1
 
 pass=0; fail=0
 
 ok()   { printf "PASS  %s\n" "$1"; pass=$((pass + 1)); }
-fail() { printf "FAIL  %s\n" "$1"; fail=$((fail + 1)); exit 1; }
+fail() { printf "FAIL  %s\n" "$1"; fail=$((fail + 1)); (( FAIL_FAST )) && exit 1 || true; }
 
 # ── fixtures ──────────────────────────────────────────────────────────────────
 

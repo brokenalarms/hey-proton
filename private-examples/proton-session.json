@@ -1,0 +1,6 @@
+{
+  "UID": "your-session-uid-from-browser-devtools",
+  "AccessToken": "your-access-token-from-authorization-header",
+  "RefreshToken": "your-refresh-token-optional",
+  "FILTER_NAME_PREFIX": "hey-proton"
+}

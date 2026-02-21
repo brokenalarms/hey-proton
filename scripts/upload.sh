@@ -186,16 +186,20 @@ lookup_id_by_name() {
 # Upload each output file
 # ============================================================
 
+# ordered_ids: IDs of our filters in source file order, for the order call
+ordered_ids=()
+
 for f in "${target_files[@]}"; do
     if [[ ! -f "$f" ]]; then
         printf "Warning: %s not found, skipping.\n" "$f" >&2
         continue
     fi
 
-    # Derive the filter name from the filename: output-01.sieve → hey-proton-01
+    # Derive the filter name from the filename:
+    #   output-07 - the feed.sieve → hey-proton-07 - the feed
     basename_f=$(basename "$f" .sieve)
-    number="${basename_f#output-}"
-    filter_name="${NAME_PREFIX}-${number}"
+    slug="${basename_f#output-}"
+    filter_name="${NAME_PREFIX}-${slug}"
 
     sieve_content=$(cat "$f")
     existing_id=$(lookup_id_by_name "$filter_name")
@@ -206,19 +210,42 @@ for f in "${target_files[@]}"; do
         '{"Name": $name, "Status": 1, "Version": 2, "Sieve": $sieve}')
 
     if [[ -n "$existing_id" ]]; then
-        printf "Updating  %-30s (id: %s)\n" "$filter_name" "$existing_id"
+        printf "Updating  %-40s (id: %s)\n" "$filter_name" "$existing_id"
         if [[ "$dry_run" == false ]]; then
             response=$(api_put "mail/v4/filters/$existing_id" "$body")
             check_response_code "$response" "update $filter_name"
         fi
+        ordered_ids+=("$existing_id")
     else
         printf "Creating  %s\n" "$filter_name"
         if [[ "$dry_run" == false ]]; then
             response=$(api_post "mail/v4/filters" "$body")
             check_response_code "$response" "create $filter_name"
+            new_id=$(printf "%s" "$response" | jq -r '.Filter.ID // empty')
+            ordered_ids+=("$new_id")
         fi
     fi
 done
+
+# ============================================================
+# Set filter execution order
+# ============================================================
+
+if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
+    # Append IDs of any non-hey-proton filters so they are preserved
+    other_ids=()
+    while IFS= read -r id; do
+        [[ -n "$id" ]] && other_ids+=("$id")
+    done < <(printf "%s" "$filters_response" | \
+        jq -r --arg prefix "$NAME_PREFIX" \
+        '.Filters[] | select(.Name | startswith($prefix) | not) | .ID')
+
+    all_ids=("${ordered_ids[@]}" "${other_ids[@]+"${other_ids[@]}"}")
+    order_body=$(printf '%s\n' "${all_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')
+    order_response=$(api_put "mail/v4/filters/order" "$order_body")
+    check_response_code "$order_response" "set filter order"
+    printf "Filter order set.\n"
+fi
 
 if [[ "$dry_run" == true ]]; then
     printf "\n(dry run — no changes made)\n"

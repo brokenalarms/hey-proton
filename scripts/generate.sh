@@ -269,9 +269,8 @@ rm -f dist/output-*.sieve
 
 output_files=()
 for i in "${!filter_files[@]}"; do
-    basename_f=$(basename "${filter_files[$i]}")
-    number="${basename_f:0:2}"
-    output="dist/output-${number}.sieve"
+    basename_f=$(basename "${filter_files[$i]}" .sieve)
+    output="dist/output-${basename_f}.sieve"
     output_files+=("$output")
     cp "$setup_tmp" "$output"
     cat "${filter_tmps[$i]}" >> "$output"

@@ -78,21 +78,21 @@ done
 
 # 3. Filter 02 content is in output-02 (not output-03)
 filter02_marker="spamtest :value"
-grep -q "$filter02_marker" "$DIST/output-02.sieve" \
-    && ok "filter 02 content in output-02" \
-    || fail "filter 02 content in output-02"
-grep -q "$filter02_marker" "$DIST/output-03.sieve" 2>/dev/null \
-    && fail "filter 02 content must not be in output-03" \
-    || ok "filter 02 content not in output-03"
+grep -q "$filter02_marker" "$DIST/output-02 - spam & ignored.sieve" \
+    && ok "filter 02 content in output-02 - spam & ignored" \
+    || fail "filter 02 content in output-02 - spam & ignored"
+grep -q "$filter02_marker" "$DIST/output-03 - screened out.sieve" 2>/dev/null \
+    && fail "filter 02 content must not be in output-03 - screened out" \
+    || ok "filter 02 content not in output-03 - screened out"
 
 # 4. Filter 06 content is in output-06 (not output-02)
 filter06_marker="PAPER TRAIL"
-grep -q "$filter06_marker" "$DIST/output-06.sieve" \
-    && ok "filter 06 content in output-06" \
-    || fail "filter 06 content in output-06"
-grep -q "$filter06_marker" "$DIST/output-02.sieve" 2>/dev/null \
-    && fail "filter 06 content must not be in output-02" \
-    || ok "filter 06 content not in output-02"
+grep -q "$filter06_marker" "$DIST/output-06 - paper trail.sieve" \
+    && ok "filter 06 content in output-06 - paper trail" \
+    || fail "filter 06 content in output-06 - paper trail"
+grep -q "$filter06_marker" "$DIST/output-02 - spam & ignored.sieve" 2>/dev/null \
+    && fail "filter 06 content must not be in output-02 - spam & ignored" \
+    || ok "filter 06 content not in output-02 - spam & ignored"
 
 # 5. Stale output files are removed on re-run
 touch "$DIST/output-99.sieve"

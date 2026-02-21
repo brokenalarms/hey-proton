@@ -153,15 +153,16 @@ Body:
 
 ## Filter naming convention for this repo
 
-`generate.sh` outputs `dist/output-01.sieve`, `dist/output-02.sieve`, etc.
-The upload script (`scripts/upload.sh`) maps these to Proton filter names using
-the pattern `hey-proton-NN`:
+`generate.sh` outputs one file per source filter, preserving the source slug:
 
-| File                  | Proton filter name |
-|-----------------------|--------------------|
-| `dist/output-01.sieve` | `hey-proton-01`   |
-| `dist/output-02.sieve` | `hey-proton-02`   |
-| …                     | …                  |
+| Source filter file              | Output file                                    | Proton filter name                        |
+|---------------------------------|------------------------------------------------|-------------------------------------------|
+| `02 - spam & ignored.sieve`     | `dist/output-02 - spam & ignored.sieve`        | `hey-proton-02 - spam & ignored`          |
+| `07 - the feed.sieve`           | `dist/output-07 - the feed.sieve`              | `hey-proton-07 - the feed`                |
+| …                               | …                                              | …                                         |
+
+`upload.sh` derives the Proton filter name by stripping `output-` from the
+filename stem and prepending the prefix: `hey-proton-NN - <slug>`.
 
 To use a different prefix, set `FILTER_NAME_PREFIX` in `private/proton-session.json`
 or override with the `--prefix` flag (see `scripts/upload.sh --help`).

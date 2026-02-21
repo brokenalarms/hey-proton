@@ -3,15 +3,16 @@
 #
 # REQUIREMENTS:
 #   - jq (JSON processor): brew install jq | apt install jq
-#   - Session credentials in private/proton-session.json
+#   - Session credentials: env vars (preferred) or private/proton-session.json
 #     (see private-examples/proton-session.json and docs/proton-api.md)
 #
 # USAGE:
-#   bash scripts/upload.sh [--prefix <name>] [--dry-run] [output-NN.sieve ...]
+#   PROTON_UID=<uid> PROTON_TOKEN=<token> bash scripts/upload.sh [--prefix <name>] [--dry-run] [output-NN.sieve ...]
 #
+#   Env vars take priority over private/proton-session.json.
 #   With no file arguments, uploads all dist/output-*.sieve files.
 #   --prefix    Override the Proton filter name prefix (default: value from
-#               private/proton-session.json, or "hey-proton").
+#               env/proton-session.json, or "hey-proton").
 #   --dry-run   Show what would be created/updated without making API calls.
 #
 # SECURITY: See docs/proton-api.md before using.
@@ -67,24 +68,29 @@ if ! command -v curl &>/dev/null; then
 fi
 
 # ============================================================
-# Load credentials
+# Load credentials (env vars take priority over JSON file)
 # ============================================================
 
-if [[ ! -f "$session_file" ]]; then
-    printf "Error: %s not found.\n" "$session_file" >&2
-    printf "Copy private-examples/proton-session.json to private/ and fill in your credentials.\n" >&2
-    printf "See docs/proton-api.md for instructions.\n" >&2
-    exit 1
-fi
+UID_VALUE="${PROTON_UID:-}"
+ACCESS_TOKEN="${PROTON_TOKEN:-}"
+NAME_PREFIX="hey-proton"
 
-UID_VALUE=$(jq -r '.UID // empty' "$session_file")
-ACCESS_TOKEN=$(jq -r '.AccessToken // empty' "$session_file")
-NAME_PREFIX=$(jq -r '.FILTER_NAME_PREFIX // "hey-proton"' "$session_file")
+if [[ -z "$UID_VALUE" || -z "$ACCESS_TOKEN" ]]; then
+    if [[ ! -f "$session_file" ]]; then
+        printf "Error: credentials required. Either set PROTON_UID and PROTON_TOKEN,\n" >&2
+        printf "or create %s from private-examples/proton-session.json.\n" "$session_file" >&2
+        printf "See docs/proton-api.md for instructions.\n" >&2
+        exit 1
+    fi
+    [[ -z "$UID_VALUE" ]]     && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
+    [[ -z "$ACCESS_TOKEN" ]]  && ACCESS_TOKEN=$(jq -r '.AccessToken // empty' "$session_file")
+    NAME_PREFIX=$(jq -r '.FILTER_NAME_PREFIX // "hey-proton"' "$session_file")
+fi
 
 [[ -n "$prefix_override" ]] && NAME_PREFIX="$prefix_override"
 
 if [[ -z "$UID_VALUE" || -z "$ACCESS_TOKEN" ]]; then
-    printf "Error: UID and AccessToken are required in %s.\n" "$session_file" >&2
+    printf "Error: UID and AccessToken are required.\n" >&2
     printf "See docs/proton-api.md for how to obtain them from your browser.\n" >&2
     exit 1
 fi

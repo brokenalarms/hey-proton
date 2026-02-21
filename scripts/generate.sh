@@ -262,54 +262,26 @@ for file in "${filter_files[@]}"; do
 done
 
 # ============================================================
-# Grouping
-# ============================================================
-
-groups=()  # Each entry is a space-separated list of filter_files indices
-
-if [[ $CHARACTER_LIMIT -gt 0 ]]; then
-    current_indices=()
-    current_size=$setup_size
-
-    for i in "${!filter_tmps[@]}"; do
-        size=${filter_sizes[$i]}
-        if [[ ${#current_indices[@]} -eq 0 ]]; then
-            current_indices=($i)
-            current_size=$((setup_size + size))
-            if [[ $current_size -gt $CHARACTER_LIMIT ]]; then
-                printf "Warning: filter %d alone with setup is %d chars, over the %d limit.\n" \
-                    $((i + 2)) "$current_size" "$CHARACTER_LIMIT" >&2
-            fi
-        elif [[ $((current_size + size)) -le $CHARACTER_LIMIT ]]; then
-            current_indices+=($i)
-            current_size=$((current_size + size))
-        else
-            groups+=("${current_indices[*]}")
-            current_indices=($i)
-            current_size=$((setup_size + size))
-        fi
-    done
-    [[ ${#current_indices[@]} -gt 0 ]] && groups+=("${current_indices[*]}")
-else
-    all_indices=()
-    for i in "${!filter_files[@]}"; do all_indices+=($i); done
-    groups=("${all_indices[*]}")
-fi
-
-# ============================================================
-# Write output files
+# Write output files (one per source filter)
 # ============================================================
 
 rm -f dist/output-*.sieve
 
 output_files=()
-for g in "${!groups[@]}"; do
-    output="dist/output-$(printf "%02d" $((g + 1))).sieve"
+for i in "${!filter_files[@]}"; do
+    basename_f=$(basename "${filter_files[$i]}")
+    number="${basename_f:0:2}"
+    output="dist/output-${number}.sieve"
     output_files+=("$output")
     cp "$setup_tmp" "$output"
-    for i in ${groups[$g]}; do
-        cat "${filter_tmps[$i]}" >> "$output"
-    done
+    cat "${filter_tmps[$i]}" >> "$output"
+    if [[ $CHARACTER_LIMIT -gt 0 ]]; then
+        combined=$((setup_size + filter_sizes[i]))
+        if [[ $combined -gt $CHARACTER_LIMIT ]]; then
+            printf "Warning: %s is %d chars, over the %d limit.\n" \
+                "$output" "$combined" "$CHARACTER_LIMIT" >&2
+        fi
+    fi
 done
 
 # ============================================================

@@ -61,11 +61,11 @@ run_generate_with_limit() {
 
 run_generate
 
-# 1. Configured CHARACTER_LIMIT splits output across multiple files
+# 1. Always produces exactly one output file per source filter (02–08)
 count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
-[[ "$count" -ge 2 ]] \
-    && ok "configured CHARACTER_LIMIT splits into multiple output files" \
-    || fail "configured CHARACTER_LIMIT splits into multiple output files (got $count)"
+[[ "$count" -eq 7 ]] \
+    && ok "produces exactly 7 output files (one per source filter)" \
+    || fail "produces exactly 7 output files (one per source filter) (got $count)"
 
 # 2. Setup prepended to each output: first line matches setup first line
 setup_first=$(head -1 "filters/01 - setup.sieve")
@@ -76,23 +76,23 @@ for f in "$DIST"/output-*.sieve; do
         || fail "setup first line present in $(basename "$f")"
 done
 
-# 3. Filter 02 content is in output-01 (not output-02)
+# 3. Filter 02 content is in output-02 (not output-03)
 filter02_marker="spamtest :value"
-grep -q "$filter02_marker" "$DIST/output-01.sieve" \
-    && ok "filter 02 content in output-01" \
-    || fail "filter 02 content in output-01"
-grep -q "$filter02_marker" "$DIST/output-02.sieve" 2>/dev/null \
-    && fail "filter 02 content must not be in output-02" \
-    || ok "filter 02 content not in output-02"
+grep -q "$filter02_marker" "$DIST/output-02.sieve" \
+    && ok "filter 02 content in output-02" \
+    || fail "filter 02 content in output-02"
+grep -q "$filter02_marker" "$DIST/output-03.sieve" 2>/dev/null \
+    && fail "filter 02 content must not be in output-03" \
+    || ok "filter 02 content not in output-03"
 
-# 4. Filter 06 content is in output-02 (not output-01)
+# 4. Filter 06 content is in output-06 (not output-02)
 filter06_marker="PAPER TRAIL"
-grep -q "$filter06_marker" "$DIST/output-02.sieve" \
-    && ok "filter 06 content in output-02" \
-    || fail "filter 06 content in output-02"
-grep -q "$filter06_marker" "$DIST/output-01.sieve" 2>/dev/null \
-    && fail "filter 06 content must not be in output-01" \
-    || ok "filter 06 content not in output-01"
+grep -q "$filter06_marker" "$DIST/output-06.sieve" \
+    && ok "filter 06 content in output-06" \
+    || fail "filter 06 content in output-06"
+grep -q "$filter06_marker" "$DIST/output-02.sieve" 2>/dev/null \
+    && fail "filter 06 content must not be in output-02" \
+    || ok "filter 06 content not in output-02"
 
 # 5. Stale output files are removed on re-run
 touch "$DIST/output-99.sieve"
@@ -101,28 +101,28 @@ run_generate
     && ok "stale output files removed on re-run" \
     || fail "stale output files removed on re-run"
 
-# 6. CHARACTER_LIMIT=0 produces exactly 1 output file (no split)
+# 6. CHARACTER_LIMIT=0 (no warning check) still produces 7 output files
 rm -f "$DIST"/output-*.sieve
 run_generate_with_limit 0
 nosplit_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
-[[ "$nosplit_count" == "1" ]] \
-    && ok "CHARACTER_LIMIT=0 produces 1 output file (no split)" \
-    || fail "CHARACTER_LIMIT=0 produces 1 output file (no split) (got $nosplit_count)"
+[[ "$nosplit_count" -eq 7 ]] \
+    && ok "CHARACTER_LIMIT=0 still produces 7 output files" \
+    || fail "CHARACTER_LIMIT=0 still produces 7 output files (got $nosplit_count)"
 
-# 7. Size-aware splitting: tight CHARACTER_LIMIT produces more than 2 files
+# 7. CHARACTER_LIMIT does not affect file count (warns but does not split)
 rm -f "$DIST"/output-*.sieve
 run_generate_with_limit 4000
-split_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
-[[ "$split_count" -gt 2 ]] \
-    && ok "CHARACTER_LIMIT=4000 produces more than 2 output files (got $split_count)" \
-    || fail "CHARACTER_LIMIT=4000 produces more than 2 output files (got $split_count)"
+warn_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
+[[ "$warn_count" -eq 7 ]] \
+    && ok "CHARACTER_LIMIT=4000 produces 7 output files (warns, does not split)" \
+    || fail "CHARACTER_LIMIT=4000 produces 7 output files (warns, does not split) (got $warn_count)"
 
-# 8. With tight limit, each output file contains setup content
+# 8. With any CHARACTER_LIMIT, each output file contains setup content
 for f in "$DIST"/output-*.sieve; do
     first=$(head -1 "$f")
     [[ "$first" == "$setup_first" ]] \
-        && ok "setup in $(basename "$f") under tight CHARACTER_LIMIT" \
-        || fail "setup in $(basename "$f") under tight CHARACTER_LIMIT"
+        && ok "setup in $(basename "$f")" \
+        || fail "setup in $(basename "$f")"
 done
 
 # 9. No output file is empty

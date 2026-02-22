@@ -26,19 +26,23 @@ if not anyof(
   header :list [
     "from",
     "to",
-    "X-Original-To"] ":addrbook:personal?label=Conversations",
+    "X-Original-To"
+  ] ":addrbook:personal?label=Conversations",
   header :list [
     "from",
     "to",
-    "X-Original-To"] ":addrbook:personal?label=Family",
+    "X-Original-To"
+  ] ":addrbook:personal?label=Family",
   header :list [
     "from",
     "to",
-    "X-Original-To"] ":addrbook:personal?label=Personal",
+    "X-Original-To"
+  ] ":addrbook:personal?label=Personal",
   header :list [
     "from",
     "to",
-    "X-Original-To"] ":addrbook:personal?label=Support",
+    "X-Original-To"
+  ] ":addrbook:personal?label=Support",
   header :comparator "i;unicode-casemap" :regex "subject" [
     # <copy LABEL DECORATION - licence key checks>
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
@@ -47,10 +51,10 @@ if not anyof(
     ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
     # </copy LABEL DECORATION - licence key checks>
     ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
-  ]) {
+]) {
 
-  # PAPER TRAIL - auto archive by 
-      
+  # PAPER TRAIL - auto archive by
+
   # PAPER TRAIL - statements
 
   if header :comparator "i;unicode-casemap" :regex ["Subject"] [
@@ -58,7 +62,7 @@ if not anyof(
     ".*(^|[^a-zA-Z0-9])report.*securities([^a-zA-Z0-9]|$).*", # Fidelity securites loan statements
     ".*(^|[^a-zA-Z0-9])e?statement([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])your.*transaction history([^a-zA-Z0-9]|$).*"
-    ] {
+  ] {
 
     fileinto "statements";
 
@@ -165,7 +169,7 @@ if not anyof(
     fileinto "expiring";
     if header :list "from" ":addrbook:personal" {
       addflag "\\Seen";
-    } 
+    }
     fileinto "Paper Trail";
     stop;
   } elsif anyof(
@@ -325,7 +329,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])thank(s|you) for([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])your([^a-zA-Z0-9]|$).*"
       ])
-    ) {
+  ) {
 
     fileinto "receipts";
 

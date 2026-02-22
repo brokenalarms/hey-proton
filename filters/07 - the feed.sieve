@@ -10,7 +10,7 @@ if header :list [
   "from",
   "to",
   "X-Original-To"
-  ] ":addrbook:personal?label=Newsletters" {
+] ":addrbook:personal?label=Newsletters" {
   fileinto "The Feed";
   fileinto "newsletters";
   if not anyof(

@@ -8,7 +8,7 @@
 #
 # Things like utilities/services (gas, cell, internet etc.)
 # should be mostly manageable through contact groups instead.
-# 
+#
 # Dual anyof(:regex) used in here and Paper Trail are usually in the format:
 # - first match list: noun fragments;
 # - second match list: verb fragments.
@@ -29,9 +29,9 @@ if header :regex [
   "To",
   "X-Simplelogin-Envelope-To",
   "X-Original-To"
-  ] [
+] [
     {{email alias regexes.txt string expansion}}
-] {
+  ] {
   # match 0 is whole string
   set :lower "company" "${1}";
   set :lower "category" "${2}";
@@ -43,7 +43,7 @@ if header :regex [
   if string :value "gt" :comparator "i;ascii-numeric" "${category}" "0" {
 
     # mapped labels - the downside of on-the-fly email aliases!
-   
+
     if string :is "${category}" "banking" {
       fileinto "finance";
     } else {
@@ -64,7 +64,6 @@ if header :comparator "i;unicode-casemap" :matches "subject" [
 ] {
   fileinto "cell";
 }
-
 
 # LABEL DECORATION - conversations
 
@@ -138,7 +137,8 @@ if allof(
 if anyof(
   header :comparator "i;unicode-casemap" :matches "subject" [
     "*booking*",
-    "*reservation*"],
+    "*reservation*"
+  ],
   header :comparator "i;unicode-casemap" :matches "from" [
     # some of these generate unique email addresses so can't be managed through Proton UI
     "*agoda*",
@@ -146,7 +146,7 @@ if anyof(
     "*booking.com*",
     "*kayak.com",
     "*skyscanner*"
-    ]
+  ]
   )
 {
   fileinto "reservations";
@@ -179,10 +179,10 @@ if header :comparator "i;unicode-casemap" :matches [
   "from",
   "X-Simplelogin-Original-From",
   "subject"
-  ] [
-  "*calendar*"
+] [
+    "*calendar*"
   ] {
-    fileinto "calendar";
+  fileinto "calendar";
 }
 
 # LABEL DECORATION - air
@@ -212,7 +212,7 @@ if anyof(
       "from",
       "X-Simplelogin-Original-From",
       "subject"
-      ] [
+    ] [
         ".*(^|[^a-zA-Z0-9])bus(es)?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])ferr(y|ies)([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])train([^a-zA-Z0-9]|$).*",
@@ -237,7 +237,7 @@ if allof(
     "from",
     "X-Simplelogin-Original-From",
     "subject"
-    ] [
+  ] [
       ".*(^|[^a-zA-Z0-9])ferr(y|ies)([^a-zA-Z0-9]|$).*"
   ],
   header :comparator "i;unicode-casemap" :matches "subject" [
@@ -253,19 +253,20 @@ if allof(
 
 # LABEL DECORATION - support tickets and fun tickets
 
- if header :comparator "i;unicode-casemap" :regex ["subject"] [
+if header :comparator "i;unicode-casemap" :regex ["subject"] [
     "^\[[0-9]+-[0-9].*\]$" # Google support tickets
-  ] {
-    fileinto "support";
-  }
+] {
+  fileinto "support";
+}
 
-  if header :comparator "i;unicode-casemap" :regex [
-    "from",
-    "to",
-    "X-Original-To",
-    "subject"] [
+if header :comparator "i;unicode-casemap" :regex [
+  "from",
+  "to",
+  "X-Original-To",
+  "subject"
+] [
     ".*(^|[^a-zA-Z0-9])ticket.*"
-  ] {
+] {
   if anyof(
       header :comparator "i;unicode-casemap" :matches [
         "from",
@@ -288,11 +289,11 @@ if allof(
         ".*(^|[^a-zA-Z0-9])ticket( id )?#?[0-9]{1,}([^a-zA-Z0-9]|$).*"
     ]
   ) {
-      fileinto "support";
-    } else {
-      fileinto "tickets";
-      fileinto "reservations";
-    }
+    fileinto "support";
+  } else {
+    fileinto "tickets";
+    fileinto "reservations";
+  }
 }
 
 # LABEL DECORATION - software licences & subscriptions
@@ -309,19 +310,22 @@ if allof(
     # </label decoration - licence keys>
   ],
 
-  not header :comparator "i;unicode-casemap" :matches ["subject", "from"] [
-    "*change*",
-    "*corrected link*",
-    "*dmv*",
-    "*urgent*",
-    "*warning*",
-    "*payment*",
-    "*prescription*",
-    "*insurance*",
-    "*policy*",
-    "*receipt*",
-    "*vehicle*"
-  ]
+  not header :comparator "i;unicode-casemap" :matches [
+    "subject",
+    "from"
+  ] [
+  "*change*",
+  "*corrected link*",
+  "*dmv*",
+  "*urgent*",
+  "*warning*",
+  "*payment*",
+  "*prescription*",
+  "*insurance*",
+  "*policy*",
+  "*receipt*",
+  "*vehicle*"
+]
 ) {
   if header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*"
@@ -336,49 +340,49 @@ if allof(
 
 if allof(
   not header :comparator "i;unicode-casemap" :regex [
-      "Subject",
-      "From",
-      "To",
-      "X-Simplelogin-Original-From",
-      "X-Simplelogin-Envelope-To"
-      ] [
-     "J. ?Crew" #not J.Crew Passport! 
-    ], 
+    "Subject",
+    "From",
+    "To",
+    "X-Simplelogin-Original-From",
+    "X-Simplelogin-Envelope-To"
+  ] [
+        "J. ?Crew" #not J.Crew Passport!
+      ], 
   header :comparator "i;unicode-casemap" :regex [
     "from",
     "X-Simplelogin-Original-From",
     "subject"
-    ] [
+  ] [
       ".*e-?3.*",
       ".*greencard.*",
       ".*h1-?b.*",
       ".*passport.*",
       ".*visa.*"
-  ]) {
-    fileinto "legal";
-  }
+    ]) {
+  fileinto "legal";
+}
 
 # LABEL DECORATION - medical
 if header :comparator "i;unicode-casemap" :regex [
-    "from",
-    "X-Simplelogin-Original-From",
-    "subject"
-    ] [
+  "from",
+  "X-Simplelogin-Original-From",
+  "subject"
+] [
       ".*my ?health.*",
       ".*health ?care.*",
       ".*medical.*",
       ".*phys(io|ical )therapy.*",
       ".*vaccin.*"
-  ] {
-    fileinto "medical";
-  }
+    ] {
+  fileinto "medical";
+}
 
 # LABEL DECORATION - contact groups
 # to populate without using generate script,
 # add your own contact groups in the format, where ${contact group} matches
 # your Contact Group, and ${label} matches the label for it.
 # if header :list "from" ":addrbook:personal?label=${contact group}" {
-  # fileinto "${label}";
+# fileinto "${label}";
 # }
 # do not include My Addresses, Migration Exceptions, Old Addresses, or Screened Out here.
 {{contact groups.txt fileinto expansion excluding My Addresses, Migration Exceptions, Old Addresses, Screened Out}}

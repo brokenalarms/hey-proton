@@ -40,7 +40,6 @@ if allof(
   stop;
 }
 
-
 # SCREENER - final fallthrough
 # Anything that makes it this far and has a sender not added into the address book
 # (with or without a Contact Group) will go to the Screener.
@@ -56,7 +55,7 @@ if allof(
 
 if allof(
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
-  not header :list "from" ":addrbook:personal") {
+not header :list "from" ":addrbook:personal") {
   fileinto "inbox";
   stop;
 }

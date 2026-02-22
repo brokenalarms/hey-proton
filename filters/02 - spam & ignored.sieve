@@ -22,12 +22,12 @@ if allof(
     header :list "from" ":addrbook:personal?label=Old Addresses"
   ),
   not header :comparator "i;unicode-casemap" :regex [
-      "from",
-      "to",
-      "X-Original-To"
-    ] [
+    "from",
+    "to",
+    "X-Original-To"
+  ] [
       {{test address regexes.txt string expansion}}
     ]
- ) {
+) {
   stop;
 }

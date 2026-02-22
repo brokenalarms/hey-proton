@@ -13,7 +13,8 @@
 if header :list [
   "from",
   "to",
-  "X-Original-To"] ":addrbook:personal?label=Screened Out" {
+  "X-Original-To"
+] ":addrbook:personal?label=Screened Out" {
   expire "day" "${screened_out_expiry_days}";
   addflag "\\Seen";
   fileinto "expiring";
@@ -26,21 +27,21 @@ if header :list [
 if header :comparator "i;unicode-casemap" :matches [
   "from",
   "X-Simplelogin-Original-From"
-  ] [
+] [
     "*craigslist*"
   ] {
   fileinto "craigslist";
   if header :comparator "i;unicode-casemap" :matches [
     "from",
     "X-Simplelogin-Original-From"
-    ] [
-    "*automated*message*"
-  ] {
+  ] [
+      "*automated*message*"
+    ] {
     # Posting notification; I manage these via my craigslist app
     expire "day" "${screened_out_expiry_days}";
     addflag "\\Seen";
     fileinto "expiring";
-    fileinto "Screened Out"; 
+    fileinto "Screened Out";
   }
   stop;
 }
@@ -57,15 +58,15 @@ if anyof(
   header :comparator "i;unicode-casemap" :matches [
     "from",
     "X-Simplelogin-Original-From"
-    ] [
-    "*calendar-notification@google.com*"
-  ],
-  header :comparator "i;unicode-casemap" :regex ["Subject"] [ 
+  ] [
+      "*calendar-notification@google.com*"
+    ],
+  header :comparator "i;unicode-casemap" :regex ["Subject"] [
     ".*accepted:.*",
     ".*cancellation.*event.*",
     ".*notification.*@.*",
     ".*reminder.*event.*"
-]) {
+  ]) {
   expire "day" "${screened_out_expiry_days}";
   fileinto "expiring";
   fileinto "calendar";

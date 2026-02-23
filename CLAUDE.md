@@ -4,11 +4,11 @@
 
 ## generate.sh
 
-`scripts/generate.sh` expands macros in `filters/` using private data from `private/` and writes output to `dist/output-NN.sieve`.
+`scripts/generate.sh` expands macros in `filters/` using private data from `private/` and writes output to `dist/output-NN - <slug>.sieve`.
 
 Key behaviors:
 - `01 - setup.sieve` is always prepended to every output file (required for each Proton filter to function independently).
-- `CHARACTER_LIMIT`: Proton's per-filter character limit. Filters are packed greedily to stay within it. Set to 0 to disable splitting.
+- `CHARACTER_LIMIT`: Proton's per-filter character limit. Each source filter produces its own output file (`output-02 - spam & ignored.sieve` … `output-08 - needs admin and archive.sieve`); if a file exceeds the limit a warning is printed. Set to 0 to disable the check.
 - After generating, the script copies each output to clipboard in turn and prompts the user to paste into Proton before advancing to the next.
 - Private data files (`private/*`) are gitignored; `private-examples/` contains representative fixtures.
-- Tests: `bash tests/generate_test.sh` (uses example fixtures for any missing private files, cleans up after itself).
+- Tests: `bash tests/generate_test.sh` (uses example fixtures for any missing private files, cleans up after itself). Run tests in fail-fast mode — fix the first failing test before looking at subsequent ones.

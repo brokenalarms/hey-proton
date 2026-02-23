@@ -9,21 +9,24 @@
 # To find your limit: paste a filter into Proton and note when it rejects it.
 CHARACTER_LIMIT=32000
 
+no_paste=false
+[[ "${1:-}" == "--no-paste" ]] && no_paste=true
+
 # Directory containing files to process
 input_dir="filters"
 
 # Setup file prepended to every output group
-setup_file="$input_dir/01 - setup.sieve"
+setup_file="$input_dir/00 - setup.sieve"
 
 # All filter files in processing order (setup is handled separately)
 filter_files=(
-    "$input_dir/02 - spam & ignored.sieve"
-    "$input_dir/03 - screened out.sieve"
-    "$input_dir/04 - label decoration.sieve"
-    "$input_dir/05 - alerts.sieve"
-    "$input_dir/06 - paper trail.sieve"
-    "$input_dir/07 - the feed.sieve"
-    "$input_dir/08 - needs admin and archive.sieve"
+    "$input_dir/01 - spam & ignored.sieve"
+    "$input_dir/02 - screened out.sieve"
+    "$input_dir/03 - label decoration.sieve"
+    "$input_dir/04 - alerts.sieve"
+    "$input_dir/05 - paper trail.sieve"
+    "$input_dir/06 - the feed.sieve"
+    "$input_dir/07 - needs admin and archive.sieve"
 )
 
 # Private data files used for macro expansion
@@ -262,54 +265,27 @@ for file in "${filter_files[@]}"; do
 done
 
 # ============================================================
-# Grouping
+# Write output files (one per source filter)
 # ============================================================
 
-groups=()  # Each entry is a space-separated list of filter_files indices
-
-if [[ $CHARACTER_LIMIT -gt 0 ]]; then
-    current_indices=()
-    current_size=$setup_size
-
-    for i in "${!filter_tmps[@]}"; do
-        size=${filter_sizes[$i]}
-        if [[ ${#current_indices[@]} -eq 0 ]]; then
-            current_indices=($i)
-            current_size=$((setup_size + size))
-            if [[ $current_size -gt $CHARACTER_LIMIT ]]; then
-                printf "Warning: filter %d alone with setup is %d chars, over the %d limit.\n" \
-                    $((i + 2)) "$current_size" "$CHARACTER_LIMIT" >&2
-            fi
-        elif [[ $((current_size + size)) -le $CHARACTER_LIMIT ]]; then
-            current_indices+=($i)
-            current_size=$((current_size + size))
-        else
-            groups+=("${current_indices[*]}")
-            current_indices=($i)
-            current_size=$((setup_size + size))
-        fi
-    done
-    [[ ${#current_indices[@]} -gt 0 ]] && groups+=("${current_indices[*]}")
-else
-    all_indices=()
-    for i in "${!filter_files[@]}"; do all_indices+=($i); done
-    groups=("${all_indices[*]}")
-fi
-
-# ============================================================
-# Write output files
-# ============================================================
-
-rm -f dist/output-*.sieve
+rm -f dist/hey-proton-*.sieve
 
 output_files=()
-for g in "${!groups[@]}"; do
-    output="dist/output-$(printf "%02d" $((g + 1))).sieve"
+for i in "${!filter_files[@]}"; do
+    basename_f=$(basename "${filter_files[$i]}" .sieve)
+    output="dist/hey-proton-${basename_f}.sieve"
     output_files+=("$output")
-    cp "$setup_tmp" "$output"
-    for i in ${groups[$g]}; do
-        cat "${filter_tmps[$i]}" >> "$output"
-    done
+    printf "# hey-proton: 00 - setup (prepended to every filter)\n" > "$output"
+    cat "$setup_tmp" >> "$output"
+    printf "# hey-proton: %s\n" "$basename_f" >> "$output"
+    cat "${filter_tmps[$i]}" >> "$output"
+    if [[ $CHARACTER_LIMIT -gt 0 ]]; then
+        combined=$((setup_size + filter_sizes[i]))
+        if [[ $combined -gt $CHARACTER_LIMIT ]]; then
+            printf "Warning: %s is %d chars, over the %d limit.\n" \
+                "$output" "$combined" "$CHARACTER_LIMIT" >&2
+        fi
+    fi
 done
 
 # ============================================================
@@ -321,6 +297,15 @@ printf "Generated %d filter file(s):\n" "$total"
 for f in "${output_files[@]}"; do
     printf "  %s  (%d chars)\n" "$f" "$(wc -c < "$f")"
 done
+printf "\n"
+
+if [[ "$no_paste" == true ]]; then
+    exit 0
+fi
+
+printf "Begin guided copy/paste into Proton Mail? [y/N] "
+read -r begin_paste
+[[ "$begin_paste" == [yY] ]] || exit 0
 printf "\n"
 
 for n in "${!output_files[@]}"; do

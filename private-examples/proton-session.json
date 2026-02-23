@@ -1,0 +1,4 @@
+{
+  "UID": "value-of-x-pm-uid-request-header",
+  "Cookie": "AUTH-uid=token; Session-Id=...; (paste full cookie header value here)"
+}

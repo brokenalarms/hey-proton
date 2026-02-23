@@ -1,2 +1,2 @@
 #!/bin/bash
-exec "$(dirname "$0")/../scripts/generate.sh"
+exec "$(dirname "$0")/../scripts/generate.sh" --no-paste

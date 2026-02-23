@@ -9,6 +9,9 @@
 # To find your limit: paste a filter into Proton and note when it rejects it.
 CHARACTER_LIMIT=32000
 
+no_paste=false
+[[ "${1:-}" == "--no-paste" ]] && no_paste=true
+
 # Directory containing files to process
 input_dir="filters"
 
@@ -294,6 +297,15 @@ printf "Generated %d filter file(s):\n" "$total"
 for f in "${output_files[@]}"; do
     printf "  %s  (%d chars)\n" "$f" "$(wc -c < "$f")"
 done
+printf "\n"
+
+if [[ "$no_paste" == true ]]; then
+    exit 0
+fi
+
+printf "Begin guided copy/paste into Proton Mail? [y/N] "
+read -r begin_paste
+[[ "$begin_paste" == [yY] ]] || exit 0
 printf "\n"
 
 for n in "${!output_files[@]}"; do

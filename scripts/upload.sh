@@ -68,6 +68,16 @@ if ! command -v curl &>/dev/null; then
 fi
 
 # ============================================================
+# Optionally refresh output files via generate.sh
+# ============================================================
+
+printf "Run generate.sh to refresh output files first? [y/N] "
+read -r refresh
+if [[ "$refresh" == [yY] ]]; then
+    bash "$(dirname "$0")/generate.sh" --no-paste
+fi
+
+# ============================================================
 # Load credentials (env vars take priority over JSON file)
 # ============================================================
 

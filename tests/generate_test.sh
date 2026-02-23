@@ -69,13 +69,13 @@ count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
     && ok "produces exactly 7 output files (one per source filter)" \
     || fail "produces exactly 7 output files (one per source filter) (got $count)"
 
-# 2. Setup prepended to each output: first line matches setup first line
-setup_first=$(head -1 "filters/01 - setup.sieve")
+# 2. Setup prepended to each output: first line is the setup section header
+setup_header="# hey-proton: 00 - setup (prepended to every filter)"
 for f in "$DIST"/output-*.sieve; do
     first=$(head -1 "$f")
-    [[ "$first" == "$setup_first" ]] \
-        && ok "setup first line present in $(basename "$f")" \
-        || fail "setup first line present in $(basename "$f")"
+    [[ "$first" == "$setup_header" ]] \
+        && ok "setup header present in $(basename "$f")" \
+        || fail "setup header present in $(basename "$f")"
 done
 
 # 3. Filter 02 content is in output-02 (not output-03)
@@ -122,7 +122,7 @@ warn_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
 # 8. With any CHARACTER_LIMIT, each output file contains setup content
 for f in "$DIST"/output-*.sieve; do
     first=$(head -1 "$f")
-    [[ "$first" == "$setup_first" ]] \
+    [[ "$first" == "$setup_header" ]] \
         && ok "setup in $(basename "$f")" \
         || fail "setup in $(basename "$f")"
 done

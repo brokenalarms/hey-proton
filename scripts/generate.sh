@@ -13,7 +13,7 @@ CHARACTER_LIMIT=32000
 input_dir="filters"
 
 # Setup file prepended to every output group
-setup_file="$input_dir/01 - setup.sieve"
+setup_file="$input_dir/00 - setup.sieve"
 
 # All filter files in processing order (setup is handled separately)
 filter_files=(
@@ -272,7 +272,9 @@ for i in "${!filter_files[@]}"; do
     basename_f=$(basename "${filter_files[$i]}" .sieve)
     output="dist/output-${basename_f}.sieve"
     output_files+=("$output")
-    cp "$setup_tmp" "$output"
+    printf "# hey-proton: 00 - setup (prepended to every filter)\n" > "$output"
+    cat "$setup_tmp" >> "$output"
+    printf "# hey-proton: %s\n" "$basename_f" >> "$output"
     cat "${filter_tmps[$i]}" >> "$output"
     if [[ $CHARACTER_LIMIT -gt 0 ]]; then
         combined=$((setup_size + filter_sizes[i]))

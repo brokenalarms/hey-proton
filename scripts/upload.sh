@@ -7,12 +7,10 @@
 #     (see private-examples/proton-session.json and docs/proton-api.md)
 #
 # USAGE:
-#   PROTON_UID=<uid> PROTON_COOKIE=<cookie-header-value> bash scripts/upload.sh [--prefix <name>] [--dry-run] [output-NN.sieve ...]
+#   PROTON_UID=<uid> PROTON_COOKIE=<cookie-header-value> bash scripts/upload.sh [--dry-run] [hey-proton-NN.sieve ...]
 #
 #   Env vars take priority over private/proton-session.json.
-#   With no file arguments, uploads all dist/output-*.sieve files.
-#   --prefix    Override the Proton filter name prefix (default: value from
-#               env/proton-session.json, or "hey-proton").
+#   With no file arguments, uploads all dist/hey-proton-*.sieve files.
 #   --dry-run   Show what would be created/updated without making API calls.
 #
 # SECURITY: See docs/proton-api.md before using.
@@ -29,7 +27,6 @@ API_BASE="https://mail.proton.me/api"
 session_file="private/proton-session.json"
 dist_dir="dist"
 dry_run=false
-prefix_override=""
 target_files=()
 
 # ============================================================
@@ -39,12 +36,11 @@ target_files=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --dry-run) dry_run=true; shift ;;
-        --prefix) prefix_override="$2"; shift 2 ;;
         --help|-h)
             sed -n '3,20p' "$0" | sed 's/^# \{0,1\}//'
             exit 0
             ;;
-        dist/output-*.sieve|output-*.sieve)
+        dist/hey-proton-*.sieve|hey-proton-*.sieve)
             # Accept bare filename or dist/-prefixed
             f="${1#dist/}"
             target_files+=("$dist_dir/$f")
@@ -83,7 +79,6 @@ fi
 
 UID_VALUE="${PROTON_UID:-}"
 COOKIE_VALUE="${PROTON_COOKIE:-}"
-NAME_PREFIX="hey-proton"
 
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     if [[ ! -f "$session_file" ]]; then
@@ -94,10 +89,7 @@ if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     fi
     [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
     [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
-    NAME_PREFIX=$(jq -r '.FILTER_NAME_PREFIX // "hey-proton"' "$session_file")
 fi
-
-[[ -n "$prefix_override" ]] && NAME_PREFIX="$prefix_override"
 
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     printf "Error: UID and Cookie are required.\n" >&2
@@ -112,11 +104,11 @@ fi
 if [[ ${#target_files[@]} -eq 0 ]]; then
     while IFS= read -r -d '' f; do
         target_files+=("$f")
-    done < <(find "$dist_dir" -name "output-*.sieve" -print0 | sort -z)
+    done < <(find "$dist_dir" -name "hey-proton-*.sieve" -print0 | sort -z)
 fi
 
 if [[ ${#target_files[@]} -eq 0 ]]; then
-    printf "No dist/output-*.sieve files found. Run scripts/generate.sh first.\n" >&2
+    printf "No dist/hey-proton-*.sieve files found. Run scripts/generate.sh first.\n" >&2
     exit 1
 fi
 
@@ -205,11 +197,7 @@ for f in "${target_files[@]}"; do
         continue
     fi
 
-    # Derive the filter name from the filename:
-    #   output-07 - the feed.sieve → hey-proton-07 - the feed
-    basename_f=$(basename "$f" .sieve)
-    slug="${basename_f#output-}"
-    filter_name="${NAME_PREFIX}-${slug}"
+    filter_name=$(basename "$f" .sieve)
 
     sieve_content=$(cat "$f")
     existing_id=$(lookup_id_by_name "$filter_name")
@@ -247,8 +235,7 @@ if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
     while IFS= read -r id; do
         [[ -n "$id" ]] && other_ids+=("$id")
     done < <(printf "%s" "$filters_response" | \
-        jq -r --arg prefix "$NAME_PREFIX" \
-        '.Filters[] | select(.Name | startswith($prefix) | not) | .ID')
+        jq -r '.Filters[] | select(.Name | startswith("hey-proton-") | not) | .ID')
 
     all_ids=("${ordered_ids[@]}" "${other_ids[@]+"${other_ids[@]}"}")
     order_body=$(printf '%s\n' "${all_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')

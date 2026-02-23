@@ -36,7 +36,7 @@ teardown() {
     for f in "${NEEDS_CLEANUP[@]+"${NEEDS_CLEANUP[@]}"}"; do
         rm -f "$f"
     done
-    rm -f "$DIST"/output-*.sieve
+    rm -f "$DIST"/hey-proton-*.sieve
 }
 
 trap teardown EXIT
@@ -64,63 +64,63 @@ run_generate_with_limit() {
 run_generate
 
 # 1. Always produces exactly one output file per source filter (02–08)
-count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
+count=$(ls "$DIST"/hey-proton-*.sieve 2>/dev/null | wc -l | tr -d ' ')
 [[ "$count" -eq 7 ]] \
     && ok "produces exactly 7 output files (one per source filter)" \
     || fail "produces exactly 7 output files (one per source filter) (got $count)"
 
 # 2. Setup prepended to each output: first line is the setup section header
 setup_header="# hey-proton: 00 - setup (prepended to every filter)"
-for f in "$DIST"/output-*.sieve; do
+for f in "$DIST"/hey-proton-*.sieve; do
     first=$(head -1 "$f")
     [[ "$first" == "$setup_header" ]] \
         && ok "setup header present in $(basename "$f")" \
         || fail "setup header present in $(basename "$f")"
 done
 
-# 3. Filter 01 content is in output-01 (not output-02)
+# 3. Filter 01 content is in hey-proton-01 (not hey-proton-02)
 filter01_marker="spamtest :value"
-grep -q "$filter01_marker" "$DIST/output-01 - spam & ignored.sieve" \
-    && ok "filter 01 content in output-01 - spam & ignored" \
-    || fail "filter 01 content in output-01 - spam & ignored"
-grep -q "$filter01_marker" "$DIST/output-02 - screened out.sieve" 2>/dev/null \
-    && fail "filter 01 content must not be in output-02 - screened out" \
-    || ok "filter 01 content not in output-02 - screened out"
+grep -q "$filter01_marker" "$DIST/hey-proton-01 - spam & ignored.sieve" \
+    && ok "filter 01 content in hey-proton-01 - spam & ignored" \
+    || fail "filter 01 content in hey-proton-01 - spam & ignored"
+grep -q "$filter01_marker" "$DIST/hey-proton-02 - screened out.sieve" 2>/dev/null \
+    && fail "filter 01 content must not be in hey-proton-02 - screened out" \
+    || ok "filter 01 content not in hey-proton-02 - screened out"
 
-# 4. Filter 05 content is in output-05 (not output-01)
+# 4. Filter 05 content is in hey-proton-05 (not hey-proton-01)
 filter05_marker="PAPER TRAIL"
-grep -q "$filter05_marker" "$DIST/output-05 - paper trail.sieve" \
-    && ok "filter 05 content in output-05 - paper trail" \
-    || fail "filter 05 content in output-05 - paper trail"
-grep -q "$filter05_marker" "$DIST/output-01 - spam & ignored.sieve" 2>/dev/null \
-    && fail "filter 05 content must not be in output-01 - spam & ignored" \
-    || ok "filter 05 content not in output-01 - spam & ignored"
+grep -q "$filter05_marker" "$DIST/hey-proton-05 - paper trail.sieve" \
+    && ok "filter 05 content in hey-proton-05 - paper trail" \
+    || fail "filter 05 content in hey-proton-05 - paper trail"
+grep -q "$filter05_marker" "$DIST/hey-proton-01 - spam & ignored.sieve" 2>/dev/null \
+    && fail "filter 05 content must not be in hey-proton-01 - spam & ignored" \
+    || ok "filter 05 content not in hey-proton-01 - spam & ignored"
 
 # 5. Stale output files are removed on re-run
-touch "$DIST/output-99.sieve"
+touch "$DIST/hey-proton-99.sieve"
 run_generate
-[[ ! -f "$DIST/output-99.sieve" ]] \
+[[ ! -f "$DIST/hey-proton-99.sieve" ]] \
     && ok "stale output files removed on re-run" \
     || fail "stale output files removed on re-run"
 
 # 6. CHARACTER_LIMIT=0 (no warning check) still produces 7 output files
-rm -f "$DIST"/output-*.sieve
+rm -f "$DIST"/hey-proton-*.sieve
 run_generate_with_limit 0
-nosplit_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
+nosplit_count=$(ls "$DIST"/hey-proton-*.sieve 2>/dev/null | wc -l | tr -d ' ')
 [[ "$nosplit_count" -eq 7 ]] \
     && ok "CHARACTER_LIMIT=0 still produces 7 output files" \
     || fail "CHARACTER_LIMIT=0 still produces 7 output files (got $nosplit_count)"
 
 # 7. CHARACTER_LIMIT does not affect file count (warns but does not split)
-rm -f "$DIST"/output-*.sieve
+rm -f "$DIST"/hey-proton-*.sieve
 run_generate_with_limit 4000
-warn_count=$(ls "$DIST"/output-*.sieve 2>/dev/null | wc -l | tr -d ' ')
+warn_count=$(ls "$DIST"/hey-proton-*.sieve 2>/dev/null | wc -l | tr -d ' ')
 [[ "$warn_count" -eq 7 ]] \
     && ok "CHARACTER_LIMIT=4000 produces 7 output files (warns, does not split)" \
     || fail "CHARACTER_LIMIT=4000 produces 7 output files (warns, does not split) (got $warn_count)"
 
 # 8. With any CHARACTER_LIMIT, each output file contains setup content
-for f in "$DIST"/output-*.sieve; do
+for f in "$DIST"/hey-proton-*.sieve; do
     first=$(head -1 "$f")
     [[ "$first" == "$setup_header" ]] \
         && ok "setup in $(basename "$f")" \
@@ -128,7 +128,7 @@ for f in "$DIST"/output-*.sieve; do
 done
 
 # 9. No output file is empty
-for f in "$DIST"/output-*.sieve; do
+for f in "$DIST"/hey-proton-*.sieve; do
     sz=$(wc -c < "$f")
     [[ $sz -gt 0 ]] \
         && ok "$(basename "$f") is non-empty" \

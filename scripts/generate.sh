@@ -268,12 +268,12 @@ done
 # Write output files (one per source filter)
 # ============================================================
 
-rm -f dist/output-*.sieve
+rm -f dist/hey-proton-*.sieve
 
 output_files=()
 for i in "${!filter_files[@]}"; do
     basename_f=$(basename "${filter_files[$i]}" .sieve)
-    output="dist/output-${basename_f}.sieve"
+    output="dist/hey-proton-${basename_f}.sieve"
     output_files+=("$output")
     printf "# hey-proton: 00 - setup (prepended to every filter)\n" > "$output"
     cat "$setup_tmp" >> "$output"

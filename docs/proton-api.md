@@ -156,15 +156,11 @@ Body:
 
 | Source filter file              | Output file                                    | Proton filter name                        |
 |---------------------------------|------------------------------------------------|-------------------------------------------|
-| `01 - spam & ignored.sieve`     | `dist/output-01 - spam & ignored.sieve`        | `hey-proton-01 - spam & ignored`          |
-| `06 - the feed.sieve`           | `dist/output-06 - the feed.sieve`              | `hey-proton-06 - the feed`                |
+| `01 - spam & ignored.sieve`     | `dist/hey-proton-01 - spam & ignored.sieve`    | `hey-proton-01 - spam & ignored`          |
+| `06 - the feed.sieve`           | `dist/hey-proton-06 - the feed.sieve`          | `hey-proton-06 - the feed`                |
 | …                               | …                                              | …                                         |
 
-`upload.sh` derives the Proton filter name by stripping `output-` from the
-filename stem and prepending the prefix: `hey-proton-NN - <slug>`.
-
-To use a different prefix, set `FILTER_NAME_PREFIX` in `private/proton-session.json`
-or override with the `--prefix` flag (see `scripts/upload.sh --help`).
+`upload.sh` uses the filename stem directly as the Proton filter name.
 
 ---
 

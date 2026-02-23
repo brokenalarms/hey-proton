@@ -7,7 +7,7 @@
 #     (see private-examples/proton-session.json and docs/proton-api.md)
 #
 # USAGE:
-#   PROTON_UID=<uid> PROTON_TOKEN=<token> bash scripts/upload.sh [--prefix <name>] [--dry-run] [output-NN.sieve ...]
+#   PROTON_UID=<uid> PROTON_COOKIE=<cookie-header-value> bash scripts/upload.sh [--prefix <name>] [--dry-run] [output-NN.sieve ...]
 #
 #   Env vars take priority over private/proton-session.json.
 #   With no file arguments, uploads all dist/output-*.sieve files.
@@ -72,25 +72,25 @@ fi
 # ============================================================
 
 UID_VALUE="${PROTON_UID:-}"
-ACCESS_TOKEN="${PROTON_TOKEN:-}"
+COOKIE_VALUE="${PROTON_COOKIE:-}"
 NAME_PREFIX="hey-proton"
 
-if [[ -z "$UID_VALUE" || -z "$ACCESS_TOKEN" ]]; then
+if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     if [[ ! -f "$session_file" ]]; then
-        printf "Error: credentials required. Either set PROTON_UID and PROTON_TOKEN,\n" >&2
+        printf "Error: credentials required. Either set PROTON_UID and PROTON_COOKIE,\n" >&2
         printf "or create %s from private-examples/proton-session.json.\n" "$session_file" >&2
         printf "See docs/proton-api.md for instructions.\n" >&2
         exit 1
     fi
-    [[ -z "$UID_VALUE" ]]     && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
-    [[ -z "$ACCESS_TOKEN" ]]  && ACCESS_TOKEN=$(jq -r '.AccessToken // empty' "$session_file")
+    [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
+    [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
     NAME_PREFIX=$(jq -r '.FILTER_NAME_PREFIX // "hey-proton"' "$session_file")
 fi
 
 [[ -n "$prefix_override" ]] && NAME_PREFIX="$prefix_override"
 
-if [[ -z "$UID_VALUE" || -z "$ACCESS_TOKEN" ]]; then
-    printf "Error: UID and AccessToken are required.\n" >&2
+if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
+    printf "Error: UID and Cookie are required.\n" >&2
     printf "See docs/proton-api.md for how to obtain them from your browser.\n" >&2
     exit 1
 fi
@@ -118,7 +118,7 @@ api_get() {
     local path="$1"
     curl -sS \
         -H "x-pm-uid: $UID_VALUE" \
-        -H "Authorization: Bearer $ACCESS_TOKEN" \
+        -H "Cookie: $COOKIE_VALUE" \
         -H "Content-Type: application/json" \
         -H "x-pm-appversion: Other" \
         "$API_BASE/$path"
@@ -129,7 +129,7 @@ api_post() {
     local body="$2"
     curl -sS -X POST \
         -H "x-pm-uid: $UID_VALUE" \
-        -H "Authorization: Bearer $ACCESS_TOKEN" \
+        -H "Cookie: $COOKIE_VALUE" \
         -H "Content-Type: application/json" \
         -H "x-pm-appversion: Other" \
         -d "$body" \
@@ -141,7 +141,7 @@ api_put() {
     local body="$2"
     curl -sS -X PUT \
         -H "x-pm-uid: $UID_VALUE" \
-        -H "Authorization: Bearer $ACCESS_TOKEN" \
+        -H "Cookie: $COOKIE_VALUE" \
         -H "Content-Type: application/json" \
         -H "x-pm-appversion: Other" \
         -d "$body" \

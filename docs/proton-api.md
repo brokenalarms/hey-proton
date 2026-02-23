@@ -28,26 +28,25 @@ is to extract a live session from the browser and store it in `private/proton-se
 **To obtain session credentials:**
 
 1. Open `mail.proton.me` in a browser and log in.
-2. Open DevTools → Network tab.
+2. Open DevTools → Network tab → filter by `Fetch/XHR`.
 3. Make any request (e.g., refresh the page).
-4. Find any request to `mail.proton.me/api/...`.
-5. From the request headers, copy:
+4. Find any request to `mail.proton.me/api/...` and click it.
+5. From the **Request Headers**, copy:
    - `x-pm-uid` → `UID`
-   - `Authorization: Bearer <token>` → `AccessToken`
+   - `cookie` (the entire value) → `Cookie`
 6. Save to `private/proton-session.json` (see `private-examples/proton-session.json`).
 
 **Required headers for all API requests:**
 
 ```
 x-pm-uid: <UID>
-Authorization: Bearer <AccessToken>
+Cookie: <full cookie header value>
 Content-Type: application/json
 x-pm-appversion: Other
 ```
 
-**Session lifetime:** AccessTokens expire (typically within hours). Refresh by
-re-extracting from the browser, or implement token refresh via `POST /auth/refresh`
-(requires storing the RefreshToken too — see the session example file).
+**Session lifetime:** Cookies expire (typically within hours). Refresh by
+re-extracting from the browser.
 
 ---
 

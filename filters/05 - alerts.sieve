@@ -37,9 +37,9 @@ if allof(
 
 if allof(
   header :comparator "i;unicode-casemap" :matches [
-    "from", 
+    "from",
     "X-Simplelogin-Original-From"
-    ] [
+  ] [
     "*mail delivery subsystem*"
   ],
 
@@ -68,13 +68,13 @@ if allof(
   ],
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*"
-  ]) {
-    fileinto "shopping";
-    fileinto "alerts";
-    expire "day" "${paper_trail_expiry_relative_days}";
-    fileinto "expiring"; 
-    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
-      fileinto "inbox";
+]) {
+  fileinto "shopping";
+  fileinto "alerts";
+  expire "day" "${paper_trail_expiry_relative_days}";
+  fileinto "expiring";
+  if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+    fileinto "inbox";
   }
   stop;
 }
@@ -87,9 +87,10 @@ if allof(
 
 if allof(
   not header :list [
-  "from",
-  "to",
-  "X-Original-To"] ":addrbook:personal?label=Conversations",
+    "from",
+    "to",
+    "X-Original-To"
+  ] ":addrbook:personal?label=Conversations",
   anyof (
     # exclude all statements, unless annual
     not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])statement([^a-zA-Z0-9]|$).*", 
@@ -110,8 +111,7 @@ if allof(
     ".*fwd: .*",
     ".*re: .*"
     # </copy LABEL DECORATION - conversations>
-  ]) {
-
+]) {
 
   # ALERTS - reviews, basket prompts
   # Although these are generally wanted, we surface them as alerts so we can unsubscribe and delete.
@@ -187,7 +187,7 @@ if allof(
       "To",
       "X-Simplelogin-Original-From",
       "X-Simplelogin-Envelope-To"
-      ] [
+    ] [
       ".*(^|[^a-zA-Z0-9])event([^a-zA-Z0-9]|$).*", # exclude Eventbrite Visa meeting invites
       ".*(^|[^a-zA-Z0-9])issue [0-9]+([^a-zA-Z0-9]|$).*", # excluding newsletter issues
       ".*(amazon|lyft|uber).*", # these cancellations can go to Paper Trail

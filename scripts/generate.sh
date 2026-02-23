@@ -17,13 +17,13 @@ setup_file="$input_dir/00 - setup.sieve"
 
 # All filter files in processing order (setup is handled separately)
 filter_files=(
-    "$input_dir/02 - spam & ignored.sieve"
-    "$input_dir/03 - screened out.sieve"
-    "$input_dir/04 - label decoration.sieve"
-    "$input_dir/05 - alerts.sieve"
-    "$input_dir/06 - paper trail.sieve"
-    "$input_dir/07 - the feed.sieve"
-    "$input_dir/08 - needs admin and archive.sieve"
+    "$input_dir/01 - spam & ignored.sieve"
+    "$input_dir/02 - screened out.sieve"
+    "$input_dir/03 - label decoration.sieve"
+    "$input_dir/04 - alerts.sieve"
+    "$input_dir/05 - paper trail.sieve"
+    "$input_dir/06 - the feed.sieve"
+    "$input_dir/07 - needs admin and archive.sieve"
 )
 
 # Private data files used for macro expansion

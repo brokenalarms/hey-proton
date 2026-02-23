@@ -156,8 +156,8 @@ Body:
 
 | Source filter file              | Output file                                    | Proton filter name                        |
 |---------------------------------|------------------------------------------------|-------------------------------------------|
-| `02 - spam & ignored.sieve`     | `dist/output-02 - spam & ignored.sieve`        | `hey-proton-02 - spam & ignored`          |
-| `07 - the feed.sieve`           | `dist/output-07 - the feed.sieve`              | `hey-proton-07 - the feed`                |
+| `01 - spam & ignored.sieve`     | `dist/output-01 - spam & ignored.sieve`        | `hey-proton-01 - spam & ignored`          |
+| `06 - the feed.sieve`           | `dist/output-06 - the feed.sieve`              | `hey-proton-06 - the feed`                |
 | …                               | …                                              | …                                         |
 
 `upload.sh` derives the Proton filter name by stripping `output-` from the

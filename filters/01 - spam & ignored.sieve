@@ -26,7 +26,7 @@ if allof(
     "to",
     "X-Original-To"
   ] [
-      {{test address regexes.txt string expansion}}
+      {{address-patterns.txt string expansion}}
     ]
 ) {
   stop;

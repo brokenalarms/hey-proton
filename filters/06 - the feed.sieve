@@ -18,7 +18,7 @@ if header :list [
     # add your own contact groups in the format:
     # header :list "from" ":addrbook:personal?label=Accommodation",
     # do not include Newsletters here.
-    {{contact groups.txt list expansion excluding Newsletters}}
+    {{contact-groups.txt list expansion excluding Newsletters}}
   ) {
     if header :comparator "i;unicode-casemap" :matches "from" "*hello@deals.going.com*" {
       # Going.com deals no good after a week

@@ -31,18 +31,18 @@ filter_files=(
 
 # Private data files used for macro expansion
 list_files=(
-    "private/contact groups.txt"
-    "private/contact groups.txt"
-    "private/email alias regexes.txt"
-    "private/test address regexes.txt"
+    "private/contact-groups.txt"
+    "private/contact-groups.txt"
+    "private/alias-patterns.txt"
+    "private/address-patterns.txt"
 )
 
 # Array to store regex patterns
 regex_patterns=(
-    '\{\{contact groups\.txt list expansion( excluding (.*))?\}\}'
-    '\{\{contact groups\.txt fileinto expansion( excluding (.*))?\}\}'
-    '\{\{email alias regexes\.txt string expansion\}\}'
-    '\{\{test address regexes\.txt string expansion\}\}'
+    '\{\{contact-groups\.txt list expansion( excluding (.*))?\}\}'
+    '\{\{contact-groups\.txt fileinto expansion( excluding (.*))?\}\}'
+    '\{\{alias-patterns\.txt string expansion\}\}'
+    '\{\{address-patterns\.txt string expansion\}\}'
 )
 
 # Array to store corresponding function names
@@ -54,7 +54,7 @@ expansion_functions=(
 )
 
 # ============================================================
-# Helper functions (unchanged)
+# Helper functions
 # ============================================================
 
 list_elements=()
@@ -98,11 +98,29 @@ print_and_clear_list_elements() {
     list_elements=()
 }
 
+expand_inline_file() {
+    local file="$1"
+    if [[ ! -f "$file" ]]; then
+        printf "Error: Inline file not found at %s.\n" "$file" >&2
+        exit 1
+    fi
+    while IFS= read -r inline_line || [[ -n "$inline_line" ]]; do
+        printf "%s%s\n" "$leading_whitespace" "$inline_line"
+    done < "$file"
+}
+
 generate_expanded_lines() {
     local line="$1"
 
     # Get the leading whitespace and trimmed content of the line
     get_trimmed_line_and_whitespace "$line"
+
+    # Inline file expansion: {{inline path/to/file.txt}}
+    if [[ $trimmed_line =~ ^\{\{inline\ (.*)\}\}$ ]]; then
+        local inline_path="${BASH_REMATCH[1]}"
+        expand_inline_file "$inline_path"
+        return
+    fi
 
     # Iterate over the regex patterns and corresponding expansion functions
     for i in "${!regex_patterns[@]}"; do

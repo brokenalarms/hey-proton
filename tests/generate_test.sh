@@ -20,15 +20,15 @@ fail() { printf "FAIL  %s\n" "$1"; fail=$((fail + 1)); (( FAIL_FAST )) && exit 1
 NEEDS_CLEANUP=()
 
 setup_fixtures() {
-    for src_name in "contact groups.txt" "email alias regexes.txt"; do
+    for src_name in "contact-groups.txt" "alias-patterns.txt"; do
         if [[ ! -f "private/$src_name" ]]; then
             cp "private-examples/$src_name" "private/$src_name"
             NEEDS_CLEANUP+=("private/$src_name")
         fi
     done
-    if [[ ! -f "private/test address regexes.txt" ]]; then
-        printf "test@example\\.com\n" > "private/test address regexes.txt"
-        NEEDS_CLEANUP+=("private/test address regexes.txt")
+    if [[ ! -f "private/address-patterns.txt" ]]; then
+        printf "test@example\\.com\n" > "private/address-patterns.txt"
+        NEEDS_CLEANUP+=("private/address-patterns.txt")
     fi
 }
 

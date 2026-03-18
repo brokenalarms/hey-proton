@@ -3,13 +3,14 @@
 #
 # REQUIREMENTS:
 #   - jq (JSON processor): brew install jq | apt install jq
-#   - Session credentials: env vars (preferred) or private/proton-session.json
-#     (see private-examples/proton-session.json and docs/proton-api.md)
+#   - Session credentials (checked in order):
+#     1. PROTON_UID + PROTON_COOKIE env vars
+#     2. private/proton-session.json
+#     3. Clipboard or paste: "Copy as cURL" from browser dev tools
 #
 # USAGE:
-#   PROTON_UID=<uid> PROTON_COOKIE=<cookie-header-value> bash scripts/upload.sh [--dry-run] [hey-proton-NN.sieve ...]
+#   bash scripts/upload.sh [--dry-run] [hey-proton-NN.sieve ...]
 #
-#   Env vars take priority over private/proton-session.json.
 #   With no file arguments, uploads all dist/hey-proton-*.sieve files.
 #   --dry-run   Show what would be created/updated without making API calls.
 #
@@ -77,24 +78,60 @@ fi
 # Load credentials (env vars take priority over JSON file)
 # ============================================================
 
+parse_curl_command() {
+    local curl_str="$1"
+    UID_VALUE=$(printf "%s" "$curl_str" | grep -oiE "x-pm-uid: [^'\"]+" | head -1 | sed -E 's/[Xx]-[Pp][Mm]-[Uu][Ii][Dd]: //' || true)
+    COOKIE_VALUE=$(printf "%s" "$curl_str" | grep -oiE "cookie: [^'\"]+" | head -1 | sed -E 's/[Cc]ookie: //' || true)
+}
+
 UID_VALUE="${PROTON_UID:-}"
 COOKIE_VALUE="${PROTON_COOKIE:-}"
 
+# 1. Try env vars (already set above)
+# 2. Try session file
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
-    if [[ ! -f "$session_file" ]]; then
-        printf "Error: credentials required. Either set PROTON_UID and PROTON_COOKIE,\n" >&2
-        printf "or create %s from private-examples/proton-session.json.\n" "$session_file" >&2
-        printf "See docs/proton-api.md for instructions.\n" >&2
-        exit 1
+    if [[ -f "$session_file" ]]; then
+        [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
+        [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
     fi
-    [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
-    [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
 fi
 
+# 3. Try clipboard, then interactive paste
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
-    printf "Error: UID and Cookie are required.\n" >&2
-    printf "See docs/proton-api.md for how to obtain them from your browser.\n" >&2
-    exit 1
+    if command -v pbpaste &>/dev/null; then
+        clipboard=$(pbpaste 2>/dev/null || true)
+    elif command -v xclip &>/dev/null; then
+        clipboard=$(xclip -selection clipboard -o 2>/dev/null || true)
+    elif command -v xsel &>/dev/null; then
+        clipboard=$(xsel --clipboard --output 2>/dev/null || true)
+    else
+        clipboard=""
+    fi
+
+    if [[ "$clipboard" == curl* ]]; then
+        parse_curl_command "$clipboard"
+    fi
+
+    # If clipboard didn't work, read pasted input via cat (handles multi-line safely)
+    if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
+        printf "No credentials found. To authenticate:\n"
+        printf "  1. Open mail.proton.me → Cmd+Opt+I → Network tab\n"
+        printf "  2. Right-click any mail.proton.me/api/ request → Copy as cURL\n\n"
+        printf "Paste the cURL command below, then press Ctrl+D:\n"
+        curl_input=$(cat)
+        parse_curl_command "$curl_input"
+    fi
+
+    if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
+        printf "Credentials extracted. Saving to %s for reuse.\n\n" "$session_file"
+        mkdir -p "$(dirname "$session_file")"
+        jq -n --arg uid "$UID_VALUE" --arg cookie "$COOKIE_VALUE" \
+            '{"UID": $uid, "Cookie": $cookie}' > "$session_file"
+    else
+        printf "Error: could not extract credentials.\n" >&2
+        printf "Make sure you copied a cURL command for a mail.proton.me/api/ request.\n" >&2
+        exit 1
+    fi
 fi
 
 # ============================================================

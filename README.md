@@ -106,11 +106,11 @@ I still use the alias auto-labelling approach for some things like newsletters, 
 
 ## Installation
 
-These scripts are set up to be maintained using Github and concatenated into a
-single script on local commit, using the provided `generate.sh` script.
+These scripts are set up to be maintained using Github and expanded into output
+files using the provided `generate.sh` script.
 
-This ensures the whole filter can be run at once in Proton and deleted (to stop)
-for testing purposes and without any deterministic issues.
+Each source filter produces its own output file in `dist/`, so they can be
+uploaded to Proton independently.
 
 ### Minimum required Proton setup
 
@@ -138,9 +138,9 @@ chmod +x scripts/generate.sh
 scripts/generate.sh
 ```
 
-This generates one or more files in `dist/`, copies the first to your clipboard, and walks you through pasting each one into Proton Mail in order. Press Enter after pasting each filter when prompted.
+This generates one output file per source filter in `dist/`, copies each to your clipboard in turn, and walks you through pasting into Proton Mail. Press Enter after pasting each filter when prompted.
 
-By default the output is split into two filters matching Proton's size limit. If you need a different split — because you've added rules, or you know Proton's exact character limit — set `CHARACTER_LIMIT` at the top of `generate.sh` to a positive number and the script will split automatically at filter boundaries to stay within it.
+`CHARACTER_LIMIT` at the top of `generate.sh` is Proton's per-filter character limit. If an output file exceeds it, a warning is printed. Set to 0 to disable the check.
 
 ### Optional contact groups
 
@@ -170,10 +170,10 @@ This is another optional contact group - members won't get flagged up as `needs 
 
 ### Example user config files
 
-Format for each text file is one entry per line. Refer to `/private-examples` for some starting examples (and minimum baseline labels in `contact groups.txt`).
+Format for each text file is one entry per line. Refer to `/private-examples` for some starting examples (and minimum baseline labels in `contact-groups.txt`).
 
-- `contact groups.txt` - list your Proton contact groups in here
-- `email alias regexes.txt` - new emails you generated on the fly where the labelling information is already encoded in the address.
+- `contact-groups.txt` - list your Proton contact groups in here
+- `alias-patterns.txt` - regex patterns for structured email aliases where labelling information is encoded in the address (e.g. `company.category@domain.com`)
 
 ## Development
 
@@ -190,16 +190,6 @@ Each sieve filter is designed to run in a specific order and and conform to cert
 - Avoid filing into `Inbox`, as re-running will mess with emails already manually processed.
 - The exception to this is for `alerts`; if you do want to file anything into `Inbox`, you can
   check against `${migration_julian_day}` first to avoid dredging up your deep mail history.
-
-### Setting Up the `git` pre-push hook
-
-To automatically run `generate.sh` before each push, configure git to use the `.githooks` directory:
-
-```bash
-git config core.hooksPath .githooks
-```
-
-You will then trigger `dist/output-*.sieve` generation on each push.
 
 ### Proton/Sieve Gotchas
 

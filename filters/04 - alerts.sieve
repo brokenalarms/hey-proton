@@ -106,11 +106,7 @@ if allof(
     ".*(^|[^a-zA-Z0-9])bill.*review([^a-zA-Z0-9]|$).*", # exclude "your bill is ready for review"
     ".*(^|[^a-zA-Z0-9])get started([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])Fidelity Alerts: EFT([^a-zA-Z0-9]|$).*",
-    # <copy LABEL DECORATION - conversations>
-    ".*fw: .*",
-    ".*fwd: .*",
-    ".*re: .*"
-    # </copy LABEL DECORATION - conversations>
+    {{inline filters/shared/conversations.txt}}
 ]) {
 
   # ALERTS - reviews, basket prompts

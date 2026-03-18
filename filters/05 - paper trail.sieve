@@ -17,11 +17,7 @@
 
 if not anyof(
   header :comparator "i;unicode-casemap" :regex "subject" [
-    # <copy LABEL DECORATION - conversations>
-    ".*fw: .*",
-    ".*fwd: .*",
-    ".*re: .*"
-    # </copy LABEL DECORATION - conversations>
+    {{inline filters/shared/conversations.txt}}
   ],
   header :list [
     "from",
@@ -44,14 +40,13 @@ if not anyof(
     "X-Original-To"
   ] ":addrbook:personal?label=Support",
   header :comparator "i;unicode-casemap" :regex "subject" [
-    # <copy LABEL DECORATION - licence key checks>
-    ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
-    # </copy LABEL DECORATION - licence key checks>
+    {{inline filters/shared/licence-key-checks.txt}}
     ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
-]) {
+  ],
+  # Allow tax invoices through to Paper Trail (they're receipts)
+  not header :comparator "i;unicode-casemap" :regex "subject"
+    ".*(^|[^a-zA-Z0-9])tax invoice([^a-zA-Z0-9]|$).*"
+) {
 
   # PAPER TRAIL - auto archive by
 
@@ -120,6 +115,7 @@ if not anyof(
       ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*confirm(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*accept(ed|ation)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])shipping information([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])your shipment([^a-zA-Z0-9]|$).*"
     ],
 

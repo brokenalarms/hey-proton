@@ -30,7 +30,7 @@ if header :regex [
   "X-Simplelogin-Envelope-To",
   "X-Original-To"
 ] [
-    {{email alias regexes.txt string expansion}}
+    {{alias-patterns.txt string expansion}}
   ] {
   # match 0 is whole string
   set :lower "company" "${1}";
@@ -68,11 +68,7 @@ if header :comparator "i;unicode-casemap" :matches "subject" [
 # LABEL DECORATION - conversations
 
 if header :comparator "i;unicode-casemap" :regex "subject" [
-  # <LABEL DECORATION - conversations>
-  ".*fw: .*",
-  ".*fwd: .*",
-  ".*re: .*"
-  # </LABEL DECORATION - conversations>
+  {{inline filters/shared/conversations.txt}}
 ] {
   fileinto "conversations";
 }
@@ -101,7 +97,8 @@ if allof(
     ".*(^|[^a-zA-Z0-9])tax(ed|able|ation)?([^a-zA-Z0-9]|$).*"
   ],
   not header :comparator "i;unicode-casemap" :matches ["subject"] [
-    "*sales*"
+    "*sales*",
+    "*tax invoice*"
   ]) {
   fileinto "tax";
 }
@@ -301,13 +298,8 @@ if header :comparator "i;unicode-casemap" :regex [
 if allof(
 
   header :comparator "i;unicode-casemap" :regex "subject" [
-    # <label decoration - licence keys>
-    ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])licen(c|s)e([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])link([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])product ?key([^a-zA-Z0-9]|$).*",
+    {{inline filters/shared/licence-key-checks.txt}}
     ".*(^|[^a-zA-Z0-9])subscription confirmation([^a-zA-Z0-9]|$).*"
-    # </label decoration - licence keys>
   ],
 
   not header :comparator "i;unicode-casemap" :matches [
@@ -385,4 +377,4 @@ if header :comparator "i;unicode-casemap" :regex [
 # fileinto "${label}";
 # }
 # do not include My Addresses, Migration Exceptions, Old Addresses, or Screened Out here.
-{{contact groups.txt fileinto expansion excluding My Addresses, Migration Exceptions, Old Addresses, Screened Out}}
+{{contact-groups.txt fileinto expansion excluding My Addresses, Migration Exceptions, Old Addresses, Screened Out}}

@@ -88,11 +88,18 @@ UID_VALUE="${PROTON_UID:-}"
 COOKIE_VALUE="${PROTON_COOKIE:-}"
 
 # 1. Try env vars (already set above)
+if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
+    printf "Using credentials from environment variables.\n"
+fi
+
 # 2. Try session file
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     if [[ -f "$session_file" ]]; then
         [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
         [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
+        if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
+            printf "Using cached credentials from %s.\n" "$session_file"
+        fi
     fi
 fi
 
@@ -193,7 +200,8 @@ check_response_code() {
     local code
     code=$(printf "%s" "$response" | jq -r '.Code // 0')
     if [[ "$code" != "1000" ]]; then
-        printf "Error in %s (Code: %s): %s\n" \
+        printf "FAILED\n" >&2
+        printf "  Error in %s (Code: %s): %s\n" \
             "$context" "$code" \
             "$(printf "%s" "$response" | jq -r '.Error // "unknown error"')" >&2
         return 1
@@ -204,13 +212,14 @@ check_response_code() {
 # Fetch existing filters
 # ============================================================
 
-printf "Fetching existing Proton filters...\n"
+printf "\nFetching existing Proton filters... "
 filters_response=$(api_get "mail/v4/filters")
 
 if ! check_response_code "$filters_response" "list filters"; then
-    printf "Hint: your AccessToken may have expired. Re-extract from browser devtools.\n" >&2
+    printf "\nHint: your session may have expired. Delete %s and re-run.\n" "$session_file" >&2
     exit 1
 fi
+printf "OK\n"
 
 # Build a lookup: name → id
 existing_ids=$(printf "%s" "$filters_response" | \
@@ -245,19 +254,27 @@ for f in "${target_files[@]}"; do
         '{"Name": $name, "Status": 1, "Version": 2, "Sieve": $sieve}')
 
     if [[ -n "$existing_id" ]]; then
-        printf "Updating  %-40s (id: %s)\n" "$filter_name" "$existing_id"
+        printf "Updating  %-40s " "$filter_name"
         if [[ "$dry_run" == false ]]; then
             response=$(api_put "mail/v4/filters/$existing_id" "$body")
-            check_response_code "$response" "update $filter_name"
+            if check_response_code "$response" "update $filter_name"; then
+                printf "OK\n"
+            fi
+        else
+            printf "(dry run)\n"
         fi
         ordered_ids+=("$existing_id")
     else
-        printf "Creating  %s\n" "$filter_name"
+        printf "Creating  %-40s " "$filter_name"
         if [[ "$dry_run" == false ]]; then
             response=$(api_post "mail/v4/filters" "$body")
-            check_response_code "$response" "create $filter_name"
+            if check_response_code "$response" "create $filter_name"; then
+                printf "OK\n"
+            fi
             new_id=$(printf "%s" "$response" | jq -r '.Filter.ID // empty')
             ordered_ids+=("$new_id")
+        else
+            printf "(dry run)\n"
         fi
     fi
 done
@@ -276,9 +293,11 @@ if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
 
     all_ids=("${ordered_ids[@]}" "${other_ids[@]+"${other_ids[@]}"}")
     order_body=$(printf '%s\n' "${all_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')
+    printf "Setting filter order...          "
     order_response=$(api_put "mail/v4/filters/order" "$order_body")
-    check_response_code "$order_response" "set filter order"
-    printf "Filter order set.\n"
+    if check_response_code "$order_response" "set filter order"; then
+        printf "OK\n"
+    fi
 fi
 
 if [[ "$dry_run" == true ]]; then

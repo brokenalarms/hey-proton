@@ -6,6 +6,11 @@
 # - ANY match in here MUST call 'stop'.
 # - Matches in here with received date beyond migration date MUST be sent to inbox.
 
+# Newsletters are handled by the feed filter; skip all alert rules.
+if header :list "from" ":addrbook:personal?label=Newsletters" {
+  return;
+}
+
 # ALERTS - Potentially serious security alerts
 # Surface regardless of age, to make sure to delete if no longer relevant.
 
@@ -157,9 +162,7 @@ if allof(
   }
 
   # ALERTS - marketing noise (surface to unsubscribe, then expire)
-  if allof(
-    not header :list "from" ":addrbook:personal?label=Newsletters",
-    header :comparator "i;unicode-casemap" :regex "subject" [
+  if header :comparator "i;unicode-casemap" :regex "subject" [
       ".*(^|[^a-zA-Z0-9])webinar([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])webcast([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])register now([^a-zA-Z0-9]|$).*"

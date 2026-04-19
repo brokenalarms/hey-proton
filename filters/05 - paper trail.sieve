@@ -15,6 +15,18 @@
 # and after first contact review, the mail can be manually sent to that folder
 # without needing to manipulate it further to match items in it.
 
+# Tax invoices are receipts — route to Paper Trail before the guard excludes tax subjects
+if header :comparator "i;unicode-casemap" :regex "subject"
+  ".*(^|[^a-zA-Z0-9])tax invoice([^a-zA-Z0-9]|$).*" {
+  fileinto "receipts";
+
+  if header :list "from" ":addrbook:personal" {
+    addflag "\\Seen";
+  }
+  fileinto "Paper Trail";
+  stop;
+}
+
 if not anyof(
   header :comparator "i;unicode-casemap" :regex "subject" [
     {{inline filters/shared/conversations.txt}}
@@ -42,10 +54,7 @@ if not anyof(
   header :comparator "i;unicode-casemap" :regex "subject" [
     {{inline filters/shared/licence-key-checks.txt}}
     ".*(^|[^a-zA-Z0-9])tax(able|ed|ation)?([^a-zA-Z0-9]|$).*"
-  ],
-  # Allow tax invoices through to Paper Trail (they're receipts)
-  not header :comparator "i;unicode-casemap" :regex "subject"
-    ".*(^|[^a-zA-Z0-9])tax invoice([^a-zA-Z0-9]|$).*"
+  ]
 ) {
 
   # PAPER TRAIL - auto archive by

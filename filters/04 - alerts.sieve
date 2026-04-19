@@ -166,8 +166,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])webinar([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])webcast([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])register now([^a-zA-Z0-9]|$).*"
-    ]
-  ) {
+    ] {
     expire "day" "${non_critical_alerts_expiry_days}";
     fileinto "expiring";
     fileinto "alerts";
@@ -217,6 +216,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])issue([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])multiple([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])new message([^a-zA-Z0-9]|$).*",
       # traveling mailbox - item has been received and scanned, not just received
       ".*(^|[^a-zA-Z0-9])traveling mailbox: new mail([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])(new|you|now).*owner([^a-zA-Z0-9]|$).*",
@@ -259,7 +259,9 @@ if allof(
   if anyof(
     header :comparator "i;unicode-casemap" :regex "subject" 
     [
+      ".*(^|[^a-zA-Z0-9])access code([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])code: [0-9]{4,}([^a-zA-Z0-9]|$).*",  # Monarch code: 234324
+      ".*(^|[^a-zA-Z0-9])(confirm|verify) your.*(purchase|order|payment|transaction)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])pin code([^a-zA-Z0-9]|$).*",  # 'Pin code for order status check'
       ".*(^|[^a-zA-Z0-9])your code([^a-zA-Z0-9]|$).*",  # "Here is your code" (don't add your to main limbs, too broad)
       ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*"  # email login links

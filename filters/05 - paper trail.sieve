@@ -137,6 +137,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])package([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])parcel([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])payment([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])forwarding([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])shipment([^a-zA-Z0-9]|$).*"

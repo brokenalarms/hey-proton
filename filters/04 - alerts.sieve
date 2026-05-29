@@ -65,7 +65,7 @@ if allof(
 
 if allof(
   header :comparator "i;unicode-casemap" :regex "subject" [
-    ".*(^|[^a-zA-Z0-9])[0-9]{1,3}%([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])[0-9]{1,3}% ?off([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])discount([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",

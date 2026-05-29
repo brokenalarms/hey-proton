@@ -81,11 +81,21 @@ if not anyof(
 
     # PAPER TRAIL - returns
 
-    header :comparator "i;unicode-casemap" :regex "subject" [
-      ".*(^|[^a-zA-Z0-9])return([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*"
-    ],
+    anyof(
+      header :comparator "i;unicode-casemap" :regex "subject" [
+        ".*(^|[^a-zA-Z0-9])return([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*"
+      ],
+      header :comparator "i;unicode-casemap" :regex [
+        "from",
+        "X-Simplelogin-Original-From"
+      ] [
+        ".*(^|[^a-zA-Z0-9])return([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*"
+      ]
+    ),
     header :comparator "i;unicode-casemap" :regex "subject" [
       ".*(^|[^a-zA-Z0-9])authoriz(e|ed|ing|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])by mail([^a-zA-Z0-9]|$).*",

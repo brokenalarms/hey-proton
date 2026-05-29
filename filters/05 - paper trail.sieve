@@ -77,30 +77,39 @@ if not anyof(
     }
     fileinto "Paper Trail";
     stop;
-  } elsif allof (
+  } elsif anyof (
 
     # PAPER TRAIL - returns
 
-    header :comparator "i;unicode-casemap" :regex "subject" [
+    header :comparator "i;unicode-casemap" :regex [
+      "from",
+      "X-Simplelogin-Original-From"
+    ] [
       ".*(^|[^a-zA-Z0-9])return([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*"
+      ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*"
     ],
-    header :comparator "i;unicode-casemap" :regex "subject" [
-      ".*(^|[^a-zA-Z0-9])authoriz(e|ed|ing|ation)([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])by mail([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])confirm(ed|ing|ation)([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])complete(d|ing)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])notif(y|ied|ing|ication)([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])parcel([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])process(ed|ing)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])receive?(d|ing)?([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])request([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])your?([^a-zA-Z0-9]|$).*"
-    ]
+    allof(
+      header :comparator "i;unicode-casemap" :regex "subject" [
+        ".*(^|[^a-zA-Z0-9])return([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])refund([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*"
+      ],
+      header :comparator "i;unicode-casemap" :regex "subject" [
+        ".*(^|[^a-zA-Z0-9])authoriz(e|ed|ing|ation)([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])by mail([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])confirm(ed|ing|ation)([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])complete(d|ing)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])notif(y|ied|ing|ication)([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])parcel([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])process(ed|ing)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])rma([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])receive?(d|ing)?([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])request([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])your?([^a-zA-Z0-9]|$).*"
+      ]
+    )
   ) {
     fileinto "shopping";
     fileinto "returns";

@@ -64,7 +64,7 @@ if not anyof(
   if header :comparator "i;unicode-casemap" :regex ["Subject"] [
     ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])report.*securities([^a-zA-Z0-9]|$).*", # Fidelity securites loan statements
-    ".*(^|[^a-zA-Z0-9])e?statement([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])e?statement(s)?([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])your.*transaction history([^a-zA-Z0-9]|$).*"
   ] {
 

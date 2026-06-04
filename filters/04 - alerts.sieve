@@ -98,7 +98,7 @@ if allof(
   ] ":addrbook:personal?label=Conversations",
   anyof (
     # exclude all statements, unless annual
-    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])statement([^a-zA-Z0-9]|$).*", 
+    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])statement(s)?([^a-zA-Z0-9]|$).*", 
     header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])annual([^a-zA-Z0-9]|$).*"
   ),
   anyof(
@@ -205,7 +205,7 @@ if allof(
       ".*(^|[^a-zA-Z0-9])credit(s)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])decision([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])did you mean([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])disclosure([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])disclosure(s)?([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])dispute([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9-])end(s|ing)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])expir(y|ed|es|ing|ation)([^a-zA-Z0-9]|$).*",

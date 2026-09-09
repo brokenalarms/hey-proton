@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
 # ============================================================
 # Configuration
 # ============================================================
@@ -7,7 +9,7 @@
 # Maximum characters per Proton Mail filter, as enforced by Proton.
 # Filters are packed greedily to stay within this limit.
 # To find your limit: paste a filter into Proton and note when it rejects it.
-CHARACTER_LIMIT=32000
+CHARACTER_LIMIT="${CHARACTER_LIMIT:-32000}"
 
 no_paste=false
 [[ "${1:-}" == "--no-paste" ]] && no_paste=true

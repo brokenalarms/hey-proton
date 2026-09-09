@@ -71,7 +71,10 @@ if allof(
     ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])discount([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])voucher([^a-zA-Z0-9]|$).*"
+    ".*(^|[^a-zA-Z0-9])voucher([^a-zA-Z0-9]|$).*",
+    # Capital One Shopping - "Activate Rewards on items like...", "Spend $75, get $25 in Rewards"
+    ".*(^|[^a-zA-Z0-9])(activate|earn|get).*rewards([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])spend \\$?[0-9]+([^a-zA-Z0-9]|$).*"
   ],
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*"
@@ -105,8 +108,19 @@ if allof(
   ),
   anyof(
     # exclude tips, unless flagged as important
-    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])tip(s)?([^a-zA-Z0-9]|$).*", 
+    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])tip(s)?([^a-zA-Z0-9]|$).*",
     header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*"
+  ),
+  anyof(
+    # exclude appointment bookings and reminders (go to Paper Trail), unless cancelled or rescheduled
+    not header :comparator "i;unicode-casemap" :regex "Subject" [
+      # <copy PAPER TRAIL - appointments>
+      ".*(^|[^a-zA-Z0-9])appointment.*(book(ed|ing)|confirm(ed|ation)|is on|today|tomorrow|upcoming)([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])(remind(er)?|upcoming).*appointment([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])booked:([^a-zA-Z0-9]|$).*"
+      # </copy PAPER TRAIL - appointments>
+    ],
+    header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])(cancel|reschedul).*"
   ),
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])(associate|report).*id([^a-zA-Z0-9]|$).*", # Amazon associates reports

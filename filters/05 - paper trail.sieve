@@ -271,6 +271,27 @@ if not anyof(
     }
     fileinto "Paper Trail";
     stop;
+  } elsif header :comparator "i;unicode-casemap" :regex "subject" [
+
+    # PAPER TRAIL - appointments
+    # Bookings and reminders only; cancellations and reschedules are caught by Alerts first.
+
+    # <PAPER TRAIL - appointments>
+    ".*(^|[^a-zA-Z0-9])appointment.*(book(ed|ing)|confirm(ed|ation)|is on|today|tomorrow|upcoming)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])(remind(er)?|upcoming).*appointment([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])booked:([^a-zA-Z0-9]|$).*"
+    # </PAPER TRAIL - appointments>
+  ] {
+
+    fileinto "reservations";
+
+    expire "day" "${paper_trail_expiry_relative_days}";
+    fileinto "expiring";
+    if header :list "from" ":addrbook:personal" {
+      addflag "\\Seen";
+    }
+    fileinto "Paper Trail";
+    stop;
   } elsif anyof(
 
     # PAPER TRAIL - receipts

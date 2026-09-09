@@ -62,10 +62,8 @@ if allof(
 }
 
 # ALERTS - discount codes (long expiration)
-# Newsletters excluded so editorial subjects ("...Are for Sale") reach The Feed.
 
 if allof(
-  not header :list "from" ":addrbook:personal?label=Newsletters",
   header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])[0-9]{1,3}% ?off([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
@@ -114,11 +112,7 @@ if allof(
   anyof(
     # exclude appointment bookings and reminders (go to Paper Trail), unless cancelled or rescheduled
     not header :comparator "i;unicode-casemap" :regex "Subject" [
-      # <copy PAPER TRAIL - appointments>
-      ".*(^|[^a-zA-Z0-9])appointment.*(book(ed|ing)|confirm(ed|ation)|is on|today|tomorrow|upcoming)([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])(remind(er)?|upcoming).*appointment([^a-zA-Z0-9]|$).*",
-      ".*(^|[^a-zA-Z0-9])booked:([^a-zA-Z0-9]|$).*"
-      # </copy PAPER TRAIL - appointments>
+      {{inline filters/shared/appointments.txt}}
     ],
     header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])(cancel|reschedul).*"
   ),

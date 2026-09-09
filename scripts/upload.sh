@@ -20,6 +20,8 @@
 
 set -euo pipefail
 
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
 # ============================================================
 # Configuration
 # ============================================================
@@ -71,7 +73,7 @@ fi
 printf "Run generate.sh to refresh output files first? [y/N] "
 read -r refresh
 if [[ "$refresh" == [yY] ]]; then
-    bash "$(dirname "$0")/generate.sh" --no-paste
+    bash scripts/generate.sh --no-paste
 fi
 
 # ============================================================

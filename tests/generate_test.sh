@@ -52,11 +52,7 @@ run_generate() {
 
 run_generate_with_limit() {
     local limit="$1"
-    local patched
-    patched=$(mktemp)
-    sed "s/^CHARACTER_LIMIT=.*/CHARACTER_LIMIT=$limit/" "$GENERATE" > "$patched"
-    printf "\n\n\n\n\n\n\n\n\n" | bash "$patched" > /dev/null 2>&1 || true
-    rm "$patched"
+    printf "\n\n\n\n\n\n\n\n\n" | CHARACTER_LIMIT="$limit" bash "$GENERATE" > /dev/null 2>&1 || true
 }
 
 # ── tests ─────────────────────────────────────────────────────────────────────

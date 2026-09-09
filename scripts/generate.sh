@@ -70,11 +70,6 @@ read_list_elements() {
     local file="$1"
     local elements=()
 
-    if [[ ! -f "$file" ]]; then
-        printf "Error: List file not found at %s.\n" "$file" >&2
-        exit 1
-    fi
-
     # Read each line from the file into the elements array
     while IFS= read -r line || [[ -n "$line" ]]; do
         elements+=("$line")
@@ -261,6 +256,24 @@ copy_to_clipboard() {
         return 1
     fi
 }
+
+# ============================================================
+# Validate private inputs before building
+# ============================================================
+
+# read_list_elements runs inside a process substitution, so an exit there
+# only ends the subshell; check up front so a missing file stops the build.
+missing_list_files=""
+for f in "${list_files[@]}"; do
+    [[ -f "$f" ]] && continue
+    [[ "$missing_list_files" == *"|$f|"* ]] && continue
+    missing_list_files="${missing_list_files}|$f|"
+    printf "Error: List file not found at %s.\n" "$f" >&2
+done
+if [[ -n "$missing_list_files" ]]; then
+    printf "See private-examples/ and private/README.md.\n" >&2
+    exit 1
+fi
 
 # ============================================================
 # Build: expand all filters to temp files

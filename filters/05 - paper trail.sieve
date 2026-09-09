@@ -65,7 +65,8 @@ if not anyof(
     ".*(^|[^a-zA-Z0-9])bill([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])report.*securities([^a-zA-Z0-9]|$).*", # Fidelity securites loan statements
     ".*(^|[^a-zA-Z0-9])e?statement(s)?([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])your.*transaction history([^a-zA-Z0-9]|$).*"
+    ".*(^|[^a-zA-Z0-9])your.*transaction history([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])activity on your.*account([^a-zA-Z0-9]|$).*" # Aetna claim summaries
   ] {
 
     fileinto "statements";
@@ -131,6 +132,8 @@ if not anyof(
       ".*(^|[^a-zA-Z0-9])dispatched:([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])pick(- )?up confirm(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*",
+      # Amazon - "Shipped 3 items: Laptop Accessories, Water Bottles"
+      ".*(^|[^a-zA-Z0-9])(arriv(ed|ing)|delivered|dispatched|shipped) [0-9]+ items?:([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*confirm(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*accept(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping information([^a-zA-Z0-9]|$).*",
@@ -142,7 +145,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])delivery([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])driver([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])gear([^a-zA-Z0-9]|$).*",
-        ".*(^|[^a-zA-Z0-9])item([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])items?([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])label([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])order([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])package([^a-zA-Z0-9]|$).*",
@@ -268,6 +271,23 @@ if not anyof(
     }
     fileinto "Paper Trail";
     stop;
+  } elsif header :comparator "i;unicode-casemap" :regex "subject" [
+
+    # PAPER TRAIL - appointments
+    # Bookings and reminders only; cancellations and reschedules are caught by Alerts first.
+
+    {{inline filters/shared/appointments.txt}}
+  ] {
+
+    fileinto "reservations";
+
+    expire "day" "${paper_trail_expiry_relative_days}";
+    fileinto "expiring";
+    if header :list "from" ":addrbook:personal" {
+      addflag "\\Seen";
+    }
+    fileinto "Paper Trail";
+    stop;
   } elsif anyof(
 
     # PAPER TRAIL - receipts
@@ -298,6 +318,8 @@ if not anyof(
       ".*invoice.*",
       ".*(^|[^a-zA-Z0-9])order #? ?[0-9]+([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])ordered:([^a-zA-Z0-9]|$).*",
+      # Amazon - "Ordered 1 item: Camera Accessories"
+      ".*(^|[^a-zA-Z0-9])ordered [0-9]+ items?:([^a-zA-Z0-9]|$).*",
       ".*receipt.*"
     ],
 
@@ -312,6 +334,7 @@ if not anyof(
         "*credit*",
         "*domain*",
         "*earnings*",
+        "*folio*", # hotel folios
         "*forwarding request*",
         "*item*",
         "*order*",

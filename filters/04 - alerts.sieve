@@ -69,7 +69,10 @@ if allof(
     ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])discount([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])sale([^a-zA-Z0-9]|$).*",
-    ".*(^|[^a-zA-Z0-9])voucher([^a-zA-Z0-9]|$).*"
+    ".*(^|[^a-zA-Z0-9])voucher([^a-zA-Z0-9]|$).*",
+    # Capital One Shopping - "Activate Rewards on items like...", "Spend $75, get $25 in Rewards"
+    ".*(^|[^a-zA-Z0-9])(activate|earn|get).*rewards([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])spend \\$?[0-9]+([^a-zA-Z0-9]|$).*"
   ],
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])download([^a-zA-Z0-9]|$).*"
@@ -103,8 +106,15 @@ if allof(
   ),
   anyof(
     # exclude tips, unless flagged as important
-    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])tip(s)?([^a-zA-Z0-9]|$).*", 
+    not header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])tip(s)?([^a-zA-Z0-9]|$).*",
     header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*"
+  ),
+  anyof(
+    # exclude appointment bookings and reminders (go to Paper Trail), unless cancelled or rescheduled
+    not header :comparator "i;unicode-casemap" :regex "Subject" [
+      {{inline filters/shared/appointments.txt}}
+    ],
+    header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])(cancel|reschedul).*"
   ),
   not header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])(associate|report).*id([^a-zA-Z0-9]|$).*", # Amazon associates reports
@@ -116,6 +126,8 @@ if allof(
 
   # ALERTS - reviews, basket prompts
   # Although these are generally wanted, we surface them as alerts so we can unsubscribe and delete.
+  # Deliberately not expired (unlike cart reminders and marketing noise below):
+  # they must stay visible until the unsubscribe is actually done.
   if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
@@ -264,7 +276,8 @@ if allof(
       ".*(^|[^a-zA-Z0-9])(confirm|verify) your.*(purchase|order|payment|transaction)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])pin code([^a-zA-Z0-9]|$).*",  # 'Pin code for order status check'
       ".*(^|[^a-zA-Z0-9])your code([^a-zA-Z0-9]|$).*",  # "Here is your code" (don't add your to main limbs, too broad)
-      ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*"  # email login links
+      ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*",  # email login links
+      ".*(^|[^a-zA-Z0-9])(magic|secure) link([^a-zA-Z0-9]|$).*"  # "Your secure link to Claude.ai is here"
     ],
     allof(
       header :comparator "i;unicode-casemap" :regex "subject" [

@@ -40,28 +40,11 @@ if allof(
   stop;
 }
 
-# SCREENER - final fallthrough
-# Anything that makes it this far and has a sender not added into the address book
-# (with or without a Contact Group) will go to the Screener.
-#
-# This includes items going to Paper Trail, to make sure we're aware of new contacts.
-#
-# Even with mail that has been labelled using an aliased address,
-# an aliased address is really "me", not "from", and so should go to screener
-# if the contact using it is unexpected.
-#
-# Doesn't drag every single old item into Screener,
-# uses migration date to just get contact group representation clean from that date.
-
-if allof(
-  string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
-not header :list "from" ":addrbook:personal") {
-  fileinto "inbox";
-  stop;
-}
-
 # ARCHIVE - for addresses we are aware of and want to hide in future (airbnb, booking.com, agoda, view through app instead)
 # and that arent't alerts, auto hide/archive these
+#
+# Must run before the screener fallthrough: booking.com/agoda relay senders are
+# unique per booking and never in the address book, so they'd otherwise hit inbox.
 
 if allof(
   anyof(
@@ -83,23 +66,22 @@ if allof(
   stop;
 }
 
+# SCREENER - final fallthrough
+# Anything that makes it this far and has a sender not added into the address book
+# (with or without a Contact Group) will go to the Screener.
+#
+# This includes items going to Paper Trail, to make sure we're aware of new contacts.
+#
+# Even with mail that has been labelled using an aliased address,
+# an aliased address is really "me", not "from", and so should go to screener
+# if the contact using it is unexpected.
+#
+# Doesn't drag every single old item into Screener,
+# uses migration date to just get contact group representation clean from that date.
+
 if allof(
-  anyof(
-    header :list [
-      "from",
-      "X-Simplelogin-Original-From"
-    ] ":addrbook:personal?label=auto-archive",
-    header :comparator "i;unicode-casemap" :matches [
-      "from",
-      "X-Simplelogin-Original-From"
-    ] [
-      "*through booking.com*",
-      "*via booking.com*"
-    ]
-  ),
-  string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"
-) {
-  addflag "\\Seen";
-  fileinto "archive";
+  string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
+not header :list "from" ":addrbook:personal") {
+  fileinto "inbox";
   stop;
 }

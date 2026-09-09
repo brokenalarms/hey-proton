@@ -62,8 +62,10 @@ if allof(
 }
 
 # ALERTS - discount codes (long expiration)
+# Newsletters excluded so editorial subjects ("...Are for Sale") reach The Feed.
 
 if allof(
+  not header :list "from" ":addrbook:personal?label=Newsletters",
   header :comparator "i;unicode-casemap" :regex "subject" [
     ".*(^|[^a-zA-Z0-9])[0-9]{1,3}% ?off([^a-zA-Z0-9]|$).*",
     ".*(^|[^a-zA-Z0-9])coupon([^a-zA-Z0-9]|$).*",
@@ -116,6 +118,8 @@ if allof(
 
   # ALERTS - reviews, basket prompts
   # Although these are generally wanted, we surface them as alerts so we can unsubscribe and delete.
+  # Deliberately not expired (unlike cart reminders and marketing noise below):
+  # they must stay visible until the unsubscribe is actually done.
   if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
@@ -264,7 +268,8 @@ if allof(
       ".*(^|[^a-zA-Z0-9])(confirm|verify) your.*(purchase|order|payment|transaction)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])pin code([^a-zA-Z0-9]|$).*",  # 'Pin code for order status check'
       ".*(^|[^a-zA-Z0-9])your code([^a-zA-Z0-9]|$).*",  # "Here is your code" (don't add your to main limbs, too broad)
-      ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*"  # email login links
+      ".*(^|[^a-zA-Z0-9])sign in ?to([^a-zA-Z0-9]|$).*",  # email login links
+      ".*(^|[^a-zA-Z0-9])(magic|secure) link([^a-zA-Z0-9]|$).*"  # "Your secure link to Claude.ai is here"
     ],
     allof(
       header :comparator "i;unicode-casemap" :regex "subject" [

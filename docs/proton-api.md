@@ -169,10 +169,19 @@ Body (either form):
 The request returns immediately; the server processes the mailbox in the background
 ("this might take a few minutes"). There is no job ID or progress endpoint. All IDs
 in one request run as a single job that evaluates the filters in their configured
-order per message, the same way incoming mail is processed. The Proton settings UI
-only ever sends one ID per request, so applying several filters from the UI submits
-independent jobs whose relative ordering is not guaranteed. `scripts/upload.sh --apply`
-sends one request with every uploaded filter ID.
+order per message, the same way incoming mail is processed.
+
+Only one apply job runs per account at a time and jobs are **not queued**. While one
+is running, any further request returns HTTP 409:
+
+```json
+{ "Code": 409, "Error": "Another action is currently in progress. Try again later", "Details": {} }
+```
+
+The Proton settings UI only ever sends one ID per request, so applying several filters
+from the UI in quick succession means every click after the first is rejected until the
+running job finishes. `scripts/upload.sh --apply` sends one request with every uploaded
+filter ID, and reports the 409 case so you know to rerun later.
 
 ---
 

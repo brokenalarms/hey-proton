@@ -6,8 +6,8 @@
 #   - Session credentials (checked in order):
 #     1. Clipboard: "Copy as cURL" from browser dev tools (always wins if present)
 #     2. PROTON_UID + PROTON_COOKIE env vars
-#     3. private/proton-session.json
-#     4. Interactive paste of a cURL command
+#     3. private/proton-session.json (override the path with PROTON_SESSION_FILE)
+#     4. Interactive paste of a cURL command, ended by an empty line
 #
 # USAGE:
 #   bash scripts/upload.sh [--dry-run] [--apply] [hey-proton-NN.sieve ...]
@@ -31,7 +31,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # ============================================================
 
 API_BASE="https://mail.proton.me/api"
-session_file="private/proton-session.json"
+session_file="${PROTON_SESSION_FILE:-private/proton-session.json}"
 dist_dir="dist"
 dry_run=false
 apply=false
@@ -136,13 +136,22 @@ if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     fi
 fi
 
-# 4. Interactive paste (cat handles multi-line safely)
+# 4. Interactive paste. A "Copy as cURL" command never contains a blank
+#    line, so an empty line ends the paste; EOF (Ctrl+D) is accepted too.
+read_pasted_curl() {
+    local line
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && break
+        printf "%s\n" "$line"
+    done
+}
+
 if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
     printf "No credentials found. To authenticate:\n"
     printf "  1. Open mail.proton.me → Cmd+Opt+I → Network tab\n"
     printf "  2. Right-click any mail.proton.me/api/ request → Copy as cURL\n\n"
-    printf "Paste the cURL command below, then press Ctrl+D:\n"
-    curl_input=$(cat)
+    printf "Paste the cURL command below, then press Enter on an empty line:\n"
+    curl_input=$(read_pasted_curl)
     parse_curl_command "$curl_input"
 
     if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
@@ -211,13 +220,19 @@ check_response_code() {
     local response="$1"
     local context="$2"
     local code
-    code=$(printf "%s" "$response" | jq -r '.Code // 0')
-    if [[ "$code" != "1000" ]]; then
-        printf "Error in %s (Code: %s): %s\n" \
-            "$context" "$code" \
-            "$(printf "%s" "$response" | jq -r '.Error // "unknown error"')" >&2
+    code=$(printf "%s" "$response" | jq -r '.Code // empty' 2>/dev/null || true)
+    if [[ "$code" == "1000" ]]; then
+        return 0
+    fi
+    if [[ -z "$code" ]]; then
+        printf "Error in %s: unrecognised response:\n%s\n" \
+            "$context" "$(printf "%s" "$response" | head -c 1000)" >&2
         return 1
     fi
+    printf "Error in %s (Code: %s): %s\n" \
+        "$context" "$code" \
+        "$(printf "%s" "$response" | jq -r '.Error // "unknown error"')" >&2
+    return 1
 }
 
 # ============================================================
@@ -319,7 +334,14 @@ if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
     if [[ "$apply" == true ]]; then
         apply_body=$(printf '%s\n' "${ordered_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')
         apply_response=$(api_post "mail/v4/messages/apply-filters" "$apply_body")
-        check_response_code "$apply_response" "apply filters to existing messages"
+        if ! check_response_code "$apply_response" "apply filters to existing messages"; then
+            if [[ "$(printf "%s" "$apply_response" | jq -r '.Code // empty' 2>/dev/null || true)" == "409" ]]; then
+                printf "Proton only runs one apply job at a time and does not queue them.\n" >&2
+                printf "A previous job (from the Proton UI or an earlier run) is still running.\n" >&2
+                printf "The filters are uploaded; rerun with --apply once it finishes.\n" >&2
+            fi
+            exit 1
+        fi
         printf "Filters are being applied to existing messages. This may take a few minutes.\n"
     fi
 fi

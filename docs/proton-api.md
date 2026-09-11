@@ -152,6 +152,28 @@ Body:
 { "FilterIDs": ["id1", "id2", "id3"] }
 ```
 
+### Apply filters to existing messages
+
+```
+POST /mail/v4/messages/apply-filters
+```
+
+Body (either form):
+```json
+{ "FilterIDs": ["id1", "id2", "id3"] }
+```
+```json
+{ "AllFilters": 1 }
+```
+
+The request returns immediately; the server processes the mailbox in the background
+("this might take a few minutes"). There is no job ID or progress endpoint. All IDs
+in one request run as a single job that evaluates the filters in their configured
+order per message, the same way incoming mail is processed. The Proton settings UI
+only ever sends one ID per request, so applying several filters from the UI submits
+independent jobs whose relative ordering is not guaranteed. `scripts/upload.sh --apply`
+sends one request with every uploaded filter ID.
+
 ---
 
 ## Filter naming convention for this repo

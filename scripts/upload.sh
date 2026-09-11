@@ -10,10 +10,13 @@
 #     4. Interactive paste of a cURL command
 #
 # USAGE:
-#   bash scripts/upload.sh [--dry-run] [hey-proton-NN.sieve ...]
+#   bash scripts/upload.sh [--dry-run] [--apply] [hey-proton-NN.sieve ...]
 #
 #   With no file arguments, uploads all dist/hey-proton-*.sieve files.
 #   --dry-run   Show what would be created/updated without making API calls.
+#   --apply     After uploading, apply the uploaded filters to existing messages
+#               as a single server-side job that evaluates them in filter order.
+#               Without this flag you are prompted whether to apply.
 #
 # SECURITY: See docs/proton-api.md before using.
 # CAUTION:  This operates on your live Proton account. Back up your existing
@@ -31,6 +34,7 @@ API_BASE="https://mail.proton.me/api"
 session_file="private/proton-session.json"
 dist_dir="dist"
 dry_run=false
+apply=false
 target_files=()
 
 # ============================================================
@@ -40,8 +44,9 @@ target_files=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --dry-run) dry_run=true; shift ;;
+        --apply) apply=true; shift ;;
         --help|-h)
-            sed -n '3,21p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '3,/^$/p' "$0" | sed 's/^# \{0,1\}//'
             exit 0
             ;;
         dist/hey-proton-*.sieve|hey-proton-*.sieve)
@@ -294,6 +299,29 @@ if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
     order_response=$(api_put "mail/v4/filters/order" "$order_body")
     check_response_code "$order_response" "set filter order"
     printf "Filter order set.\n"
+fi
+
+# ============================================================
+# Apply to existing messages
+# ============================================================
+
+# One apply-filters call with every ID runs a single job that evaluates the
+# filters in order per message, matching incoming-mail behaviour. Applying
+# filters one at a time from the Proton UI submits independent jobs whose
+# relative ordering is not guaranteed.
+if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
+    if [[ "$apply" == false ]]; then
+        printf "\nApply the uploaded filters to existing messages? [y/N] "
+        read -r apply_answer
+        [[ "$apply_answer" == [yY] ]] && apply=true
+    fi
+
+    if [[ "$apply" == true ]]; then
+        apply_body=$(printf '%s\n' "${ordered_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')
+        apply_response=$(api_post "mail/v4/messages/apply-filters" "$apply_body")
+        check_response_code "$apply_response" "apply filters to existing messages"
+        printf "Filters are being applied to existing messages. This may take a few minutes.\n"
+    fi
 fi
 
 if [[ "$dry_run" == true ]]; then

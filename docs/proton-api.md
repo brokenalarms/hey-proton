@@ -36,6 +36,10 @@ is to extract a live session from the browser and store it in `private/proton-se
    - `cookie` (the entire value) → `Cookie`
 6. Save to `private/proton-session.json` (see `private-examples/proton-session.json`).
 
+Or skip steps 5–6: right-click the request → **Copy as cURL**, then run `scripts/upload.sh`.
+A curl command on the clipboard always takes precedence over the saved session file and
+overwrites it, since Proton rotates the `AUTH-*` cookie value on each token refresh.
+
 **Required headers for all API requests:**
 
 ```
@@ -147,6 +151,28 @@ Body:
 ```json
 { "FilterIDs": ["id1", "id2", "id3"] }
 ```
+
+### Apply filters to existing messages
+
+```
+POST /mail/v4/messages/apply-filters
+```
+
+Body (either form):
+```json
+{ "FilterIDs": ["id1", "id2", "id3"] }
+```
+```json
+{ "AllFilters": 1 }
+```
+
+The request returns immediately; the server processes the mailbox in the background
+("this might take a few minutes"). There is no job ID or progress endpoint. All IDs
+in one request run as a single job that evaluates the filters in their configured
+order per message, the same way incoming mail is processed. The Proton settings UI
+only ever sends one ID per request, so applying several filters from the UI submits
+independent jobs whose relative ordering is not guaranteed. `scripts/upload.sh --apply`
+sends one request with every uploaded filter ID.
 
 ---
 

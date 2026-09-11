@@ -36,6 +36,10 @@ is to extract a live session from the browser and store it in `private/proton-se
    - `cookie` (the entire value) → `Cookie`
 6. Save to `private/proton-session.json` (see `private-examples/proton-session.json`).
 
+Or skip steps 5–6: right-click the request → **Copy as cURL**, then run `scripts/upload.sh`.
+A curl command on the clipboard always takes precedence over the saved session file and
+overwrites it, since Proton rotates the `AUTH-*` cookie value on each token refresh.
+
 **Required headers for all API requests:**
 
 ```

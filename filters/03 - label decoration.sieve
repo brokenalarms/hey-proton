@@ -3,8 +3,7 @@
 # without blocking. Use for cumulative addition of context.
 #
 # Rules:
-# - Only "subject" and "from" fields are inspected here to determine labelling,
-#   plus the List-Unsubscribe header for mailing lists.
+# - Only "subject" and "from" fields are inspected here to determine labelling.
 # - ANY match in here MUST NOT call `stop`.
 #
 # Things like utilities/services (gas, cell, internet etc.)
@@ -370,13 +369,6 @@ if header :comparator "i;unicode-casemap" :regex [
       ".*vaccin.*"
     ] {
   fileinto "medical";
-}
-
-# LABEL DECORATION - mailing lists
-# Bulk senders advertise an unsubscribe header; label them so they can be
-# reviewed and unsubscribed from in one place.
-if exists "List-Unsubscribe" {
-  fileinto "mailing list";
 }
 
 # LABEL DECORATION - contact groups

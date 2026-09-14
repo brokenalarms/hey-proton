@@ -1,0 +1,9 @@
+{
+  "Code": 1000,
+  "Labels": [
+    { "ID": "g1", "Name": "Therapy", "Type": 2 },
+    { "ID": "g2", "Name": "Apps", "Type": 2 },
+    { "ID": "g3", "Name": "Newsletters", "Type": 2 },
+    { "ID": "g4", "Name": "Screened Out", "Type": 2 }
+  ]
+}

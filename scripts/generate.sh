@@ -31,10 +31,10 @@ filter_files=(
     "$input_dir/07 - needs admin and archive.sieve"
 )
 
-# Private data files used for macro expansion
+# Data files used for macro expansion
 list_files=(
-    "private/contact-groups.txt"
-    "private/contact-groups.txt"
+    "filters/shared/contact-groups.txt"
+    "filters/shared/contact-groups.txt"
     "private/alias-patterns.txt"
     "private/address-patterns.txt"
 )

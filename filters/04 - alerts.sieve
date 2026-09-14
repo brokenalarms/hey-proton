@@ -126,8 +126,8 @@ if allof(
 
   # ALERTS - reviews, basket prompts
   # Although these are generally wanted, we surface them as alerts so we can unsubscribe and delete.
-  # Deliberately not expired (unlike cart reminders and marketing noise below):
-  # they must stay visible until the unsubscribe is actually done.
+  # Expire on a longer horizon than cart reminders and marketing noise below,
+  # to leave time to actually do the unsubscribe.
   if allof(
     not header :comparator "i;unicode-casemap" :regex "Subject" [
       ".*(^|[^a-zA-Z0-9])activity([^a-zA-Z0-9]|$).*",
@@ -146,9 +146,11 @@ if allof(
       ".*(^|[^a-zA-Z0-9])your experience with your([^a-zA-Z0-9]|$).*"
     ]
   ) {
+    expire "day" "${review_alerts_expiry_days}";
+    fileinto "expiring";
     fileinto "alerts";
-    fileinto "needs admin";
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "needs admin";
       fileinto "inbox";
     }
     stop;
@@ -166,8 +168,8 @@ if allof(
     expire "day" "${non_critical_alerts_expiry_days}";
     fileinto "expiring";
     fileinto "alerts";
-    fileinto "needs admin";
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "needs admin";
       fileinto "inbox";
     }
     stop;
@@ -182,8 +184,8 @@ if allof(
     expire "day" "${non_critical_alerts_expiry_days}";
     fileinto "expiring";
     fileinto "alerts";
-    fileinto "needs admin";
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
+      fileinto "needs admin";
       fileinto "inbox";
     }
     stop;

@@ -27,6 +27,7 @@ set "expiry_grace_period_days" "7";
 # but if you set to 2000, it just doesn't set it.
 set "paper_trail_expiry_days" "730";
 set "non_critical_alerts_expiry_days" "7";
+set "review_alerts_expiry_days" "30";
 
 # Current date
 if currentdate :zone "+0000" :matches "julian" "*" {

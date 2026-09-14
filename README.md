@@ -47,8 +47,8 @@ Most of what you recieve via email is a `receipt`, `statement`, `return`, `track
 Anything going into the `Paper Trail` is marked as seen and set to expire in 2 years, unless it has an attachment or is part of your personal `conversations`.
 
 ### Screener
-_UPDATE - I don't find this plus the 'needs admin' label necessary in the Inbox Zero world that these filters enable, and have since removed._
-Except for important or timely alerts, any messages from contacts you haven't seen before should go to the `Screener` first, and have those contacts classified in some way before their emails will fully enter your workflow in future.
+
+Except for important or timely alerts and anything bound for the `Paper Trail`, any messages from contacts you haven't seen before should go to the `Screener` first, and have those contacts classified in some way before their emails will fully enter your workflow in future. This keeps the `Inbox` as a pure todo list.
 
 ### The Feed
 

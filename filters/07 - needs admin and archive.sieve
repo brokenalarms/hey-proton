@@ -70,7 +70,8 @@ if allof(
 # Anything that makes it this far and has a sender not added into the address book
 # (with or without a Contact Group) will go to the Screener.
 #
-# This includes items going to Paper Trail, to make sure we're aware of new contacts.
+# Paper Trail matches stop before reaching here: receipts and the like are
+# hidden whoever sent them, so only other mail from new senders is screened.
 #
 # Even with mail that has been labelled using an aliased address,
 # an aliased address is really "me", not "from", and so should go to screener
@@ -82,6 +83,6 @@ if allof(
 if allof(
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
 not header :list "from" ":addrbook:personal") {
-  fileinto "inbox";
+  fileinto "Screener";
   stop;
 }

@@ -6,23 +6,18 @@
 #
 # Rules
 # ANY match in here MUST:
-# IF the contact is an existing contact
 # - move to `Paper Trail` folder
 # - mark as seen
-# ELSE fall through to Screener.
 #
-# This allows all Paper Trail-like metadata to be applied,
-# and after first contact review, the mail can be manually sent to that folder
-# without needing to manipulate it further to match items in it.
+# Mail from unknown senders is still surfaced by the Screener fallthrough
+# so new contacts get reviewed, but it never sits unread in Paper Trail.
 
 # Tax invoices are receipts — route to Paper Trail before the guard excludes tax subjects
 if header :comparator "i;unicode-casemap" :regex "subject"
   ".*(^|[^a-zA-Z0-9])tax invoice([^a-zA-Z0-9]|$).*" {
   fileinto "receipts";
 
-  if header :list "from" ":addrbook:personal" {
-    addflag "\\Seen";
-  }
+  addflag "\\Seen";
   fileinto "Paper Trail";
   stop;
 }
@@ -73,9 +68,7 @@ if not anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   } elsif anyof (
@@ -117,9 +110,7 @@ if not anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   } elsif anyof(
@@ -185,9 +176,7 @@ if not anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   } elsif anyof(
@@ -266,9 +255,7 @@ if not anyof(
     # expire "day" "${paper_trail_expiry_relative_days}";
     # fileinto "expiring";
 
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   } elsif header :comparator "i;unicode-casemap" :regex "subject" [
@@ -283,9 +270,7 @@ if not anyof(
 
     expire "day" "${paper_trail_expiry_relative_days}";
     fileinto "expiring";
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   } elsif anyof(
@@ -383,9 +368,7 @@ if not anyof(
 
     # expire "day" "${paper_trail_expiry_relative_days}";
     # fileinto "expiring";
-    if header :list "from" ":addrbook:personal" {
-      addflag "\\Seen";
-    }
+    addflag "\\Seen";
     fileinto "Paper Trail";
     stop;
   }

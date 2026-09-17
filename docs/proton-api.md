@@ -167,7 +167,15 @@ Body (either form):
 ```
 
 The request returns immediately; the server processes the mailbox in the background
-("this might take a few minutes"). There is no job ID or progress endpoint. All IDs
+("this might take a few minutes"). There is no job ID or progress endpoint.
+
+Unlike the other endpoints, an accepted request does not answer with `Code: 1000`:
+it returns HTTP 202 with an empty object, so success has to be read from the status.
+
+```json
+{}
+```
+ All IDs
 in one request run as a single job that evaluates the filters in their configured
 order per message, the same way incoming mail is processed.
 

@@ -126,6 +126,7 @@ if not anyof(
       ".*(^|[^a-zA-Z0-9])shipped:([^a-zA-Z0-9]|$).*",
       # Amazon - "Shipped 3 items: Laptop Accessories, Water Bottles"
       ".*(^|[^a-zA-Z0-9])(arriv(ed|ing)|delivered|dispatched|shipped) [0-9]+ items?:([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])(has|have|was|were) (been )?(delivered|dispatched|shipped)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*confirm(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping.*accept(ed|ation)([^a-zA-Z0-9]|$).*",
       ".*(^|[^a-zA-Z0-9])shipping information([^a-zA-Z0-9]|$).*",
@@ -261,9 +262,11 @@ if not anyof(
     stop;
   } elsif header :comparator "i;unicode-casemap" :regex "subject" [
 
-    # PAPER TRAIL - appointments
-    # Bookings and reminders only; cancellations and reschedules are caught by Alerts first.
+    # PAPER TRAIL - appointments and reservations
+    # Bookings only; reminders, cancellations and reschedules are caught by Alerts first.
 
+    ".*(^|[^a-zA-Z0-9])reservations?([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])(booking|confirmation|itinerary|reservation|trip) (#|(id|number)([^a-zA-Z0-9]|$)).*",
     {{inline filters/shared/appointments.txt}}
   ] {
 

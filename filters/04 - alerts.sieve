@@ -110,7 +110,7 @@ if allof(
     header :comparator "i;unicode-casemap" :regex "Subject" ".*(^|[^a-zA-Z0-9])important([^a-zA-Z0-9]|$).*"
   ),
   anyof(
-    # exclude appointment bookings and reminders (go to Paper Trail), unless cancelled or rescheduled
+    # exclude appointment bookings (go to Paper Trail), unless cancelled or rescheduled
     not header :comparator "i;unicode-casemap" :regex "Subject" [
       {{inline filters/shared/appointments.txt}}
     ],
@@ -186,6 +186,21 @@ if allof(
     fileinto "alerts";
     if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
       fileinto "needs admin";
+      fileinto "inbox";
+    }
+    stop;
+  }
+
+  # ALERTS - reminders
+  # Only useful until the thing they remind about has happened, so surface then expire.
+  if header :comparator "i;unicode-casemap" :regex "Subject" [
+    ".*(^|[^a-zA-Z0-9])(remind(er)?|upcoming).*(appointment|booking|reservation|trip)([^a-zA-Z0-9]|$).*",
+    ".*(^|[^a-zA-Z0-9])(appointment|booking|reservation|trip).*(almost here|coming up|is on|starts? (at|in|soon)|today|tomorrow|upcoming)([^a-zA-Z0-9]|$).*"
+  ] {
+    expire "day" "${non_critical_alerts_expiry_days}";
+    fileinto "expiring";
+    fileinto "alerts";
+    if string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}" {
       fileinto "inbox";
     }
     stop;

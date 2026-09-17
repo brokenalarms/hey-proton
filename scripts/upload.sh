@@ -186,9 +186,14 @@ if [[ "$dry_run" == false && ${#ordered_ids[@]} -gt 0 ]]; then
 
     if [[ "$apply" == true ]]; then
         apply_body=$(printf '%s\n' "${ordered_ids[@]}" | jq -R . | jq -s '{"FilterIDs": .}')
-        apply_response=$(api_post "mail/v4/messages/apply-filters" "$apply_body")
-        if ! check_response_code "$apply_response" "apply filters to existing messages"; then
-            if [[ "$(printf "%s" "$apply_response" | jq -r '.Code // empty' 2>/dev/null || true)" == "409" ]]; then
+        apply_response_file=$(mktemp)
+        apply_status=$(api_post_status "mail/v4/messages/apply-filters" "$apply_body" "$apply_response_file")
+        apply_response=$(<"$apply_response_file")
+        rm -f "$apply_response_file"
+        # An accepted job answers with an empty object rather than Code 1000.
+        if [[ "$apply_status" != 2* ]]; then
+            check_response_code "$apply_response" "apply filters to existing messages" || true
+            if [[ "$apply_status" == "409" ]]; then
                 printf "Proton only runs one apply job at a time and does not queue them.\n" >&2
                 printf "A previous job (from the Proton UI or an earlier run) is still running.\n" >&2
                 printf "The filters are uploaded; rerun with --apply once it finishes.\n" >&2

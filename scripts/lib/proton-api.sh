@@ -125,12 +125,16 @@ api_request() {
     if [[ -n "$body" ]]; then
         args+=(-d "$body")
     fi
-    curl "${args[@]}" "$API_BASE/$path"
+    curl "${args[@]}" "${@:4}" "$API_BASE/$path"
 }
 
 api_get()  { api_request GET  "$1"; }
 api_post() { api_request POST "$1" "$2"; }
 api_put()  { api_request PUT  "$1" "$2"; }
+
+# For endpoints whose success response is an empty object with no Code to inspect:
+# prints the HTTP status and writes the response body to the file given as $3.
+api_post_status() { api_request POST "$1" "$2" -o "$3" -w '%{http_code}'; }
 
 check_response_code() {
     local response="$1"

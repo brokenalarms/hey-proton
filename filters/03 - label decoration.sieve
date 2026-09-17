@@ -26,13 +26,20 @@
 # These can be better managed in future by just adding or updating
 # the contact group(s) for the generated address and keeping addresses
 # category free, e.g., website.randomword@mydomain.com,
-if header :regex [
-  "To",
-  "X-Simplelogin-Envelope-To",
-  "X-Original-To"
-] [
+#
+# Only a fallback for senders not yet in the address book: one alias can be shared
+# by several senders of different categories, so once a sender is a contact,
+# its contact groups are the sole source of its labels.
+if allof(
+  not header :list "from" ":addrbook:personal",
+  header :regex [
+    "To",
+    "X-Simplelogin-Envelope-To",
+    "X-Original-To"
+  ] [
     {{alias-patterns.txt string expansion}}
-  ] {
+  ]
+) {
   # match 0 is whole string
   set :lower "company" "${1}";
   set :lower "category" "${2}";

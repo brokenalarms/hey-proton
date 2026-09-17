@@ -129,7 +129,7 @@ Beyond this, you can add as many extra labels mentioned in `03 - label decoratio
 
 Using separate files for user-specific setup data along with script-based expansion macros ensures a single source of truth can be preserved for these lists on first creation or when they need updating.
 
-The `scripts/generate.sh` script is used to expand entries in files in your `/private` directory. You will need to create the source text files in `private` yourself since they contain personal information.
+The `scripts/generate.sh` script expands entries from `filters/shared/contact-groups.txt` and from files in your `/private` directory. You will need to create the `private` text files yourself since they contain personal information; the contact groups list is written for you by `scripts/sync-groups.sh`.
 
 You can run this script directly one-time in Bash:
 
@@ -168,11 +168,16 @@ This is another optional contact group - members won't get flagged up as `needs 
 - for mail that you can't ever migrate
   - for example, if you have moved all email from a Google account, but still use Drive or Photos on it, you can still expect emails from `@google.com` to that address.
 
+### Contact groups list
+
+Contact groups only exist inside Proton, so the list that `generate.sh` mirrors into labels is not maintained by hand. `scripts/sync-groups.sh` reads your contact groups and labels from the Proton API (using the same session handling as `upload.sh`) and writes every group that has a label of the same lowercased name to `filters/shared/contact-groups.txt`. Commit that file: it is the backup, and it is what `generate.sh` reads, so generating never needs a live session.
+
+The script also reports groups with no matching label (not mirrored) and labels with neither a group nor a rule in `filters/`, so Proton can be tidied up.
+
 ### Example user config files
 
-Format for each text file is one entry per line. Refer to `/private-examples` for some starting examples (and minimum baseline labels in `contact-groups.txt`).
+Format for each text file is one entry per line. Refer to `/private-examples` for some starting examples.
 
-- `contact-groups.txt` - list your Proton contact groups in here
 - `alias-patterns.txt` - regex patterns for structured email aliases where labelling information is encoded in the address (e.g. `company.category@domain.com`)
 
 ## Development

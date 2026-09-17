@@ -3,7 +3,7 @@
 #
 # REQUIREMENTS:
 #   - jq (JSON processor): brew install jq | apt install jq
-#   - Session credentials (checked in order):
+#   - Session credentials, loaded by scripts/lib/proton-api.sh (checked in order):
 #     1. Clipboard: "Copy as cURL" from browser dev tools (always wins if present)
 #     2. PROTON_UID + PROTON_COOKIE env vars
 #     3. private/proton-session.json (override the path with PROTON_SESSION_FILE)
@@ -26,12 +26,12 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
+source scripts/lib/proton-api.sh
+
 # ============================================================
 # Configuration
 # ============================================================
 
-API_BASE="https://mail.proton.me/api"
-session_file="${PROTON_SESSION_FILE:-private/proton-session.json}"
 dist_dir="dist"
 dry_run=false
 apply=false
@@ -59,18 +59,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# ============================================================
-# Dependency check
-# ============================================================
-
-if ! command -v jq &>/dev/null; then
-    printf "Error: jq is required. Install via: brew install jq | apt install jq\n" >&2
-    exit 1
-fi
-if ! command -v curl &>/dev/null; then
-    printf "Error: curl is required.\n" >&2
-    exit 1
-fi
+require_api_dependencies
 
 # ============================================================
 # Optionally refresh output files via generate.sh
@@ -82,86 +71,7 @@ if [[ "$refresh" == [yY] ]]; then
     bash scripts/generate.sh --no-paste
 fi
 
-# ============================================================
-# Load credentials (clipboard curl > env vars > session file > paste)
-# ============================================================
-
-parse_curl_command() {
-    local curl_str="$1"
-    UID_VALUE=$(printf "%s" "$curl_str" | grep -oiE "x-pm-uid: [^'\"]+" | head -1 | sed -E 's/[Xx]-[Pp][Mm]-[Uu][Ii][Dd]: //' || true)
-    COOKIE_VALUE=$(printf "%s" "$curl_str" | grep -oiE "cookie: [^'\"]+" | head -1 | sed -E 's/[Cc]ookie: //' || true)
-}
-
-read_clipboard() {
-    if command -v pbpaste &>/dev/null; then
-        pbpaste 2>/dev/null || true
-    elif command -v xclip &>/dev/null; then
-        xclip -selection clipboard -o 2>/dev/null || true
-    elif command -v xsel &>/dev/null; then
-        xsel --clipboard --output 2>/dev/null || true
-    fi
-}
-
-save_session() {
-    printf "Credentials extracted. Saving to %s for reuse.\n\n" "$session_file"
-    mkdir -p "$(dirname "$session_file")"
-    jq -n --arg uid "$UID_VALUE" --arg cookie "$COOKIE_VALUE" \
-        '{"UID": $uid, "Cookie": $cookie}' > "$session_file"
-}
-
-UID_VALUE=""
-COOKIE_VALUE=""
-
-# 1. A curl command on the clipboard is the freshest source, so it wins
-#    over a saved session whose AUTH cookie may have rotated since.
-clipboard=$(read_clipboard)
-if [[ "$clipboard" == curl* ]]; then
-    parse_curl_command "$clipboard"
-    if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
-        save_session
-    fi
-fi
-
-# 2. Env vars
-if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
-    UID_VALUE="${PROTON_UID:-}"
-    COOKIE_VALUE="${PROTON_COOKIE:-}"
-fi
-
-# 3. Session file
-if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
-    if [[ -f "$session_file" ]]; then
-        [[ -z "$UID_VALUE" ]]    && UID_VALUE=$(jq -r '.UID // empty' "$session_file")
-        [[ -z "$COOKIE_VALUE" ]] && COOKIE_VALUE=$(jq -r '.Cookie // empty' "$session_file")
-    fi
-fi
-
-# 4. Interactive paste. A "Copy as cURL" command never contains a blank
-#    line, so an empty line ends the paste; EOF (Ctrl+D) is accepted too.
-read_pasted_curl() {
-    local line
-    while IFS= read -r line; do
-        [[ -z "$line" ]] && break
-        printf "%s\n" "$line"
-    done
-}
-
-if [[ -z "$UID_VALUE" || -z "$COOKIE_VALUE" ]]; then
-    printf "No credentials found. To authenticate:\n"
-    printf "  1. Open mail.proton.me → Cmd+Opt+I → Network tab\n"
-    printf "  2. Right-click any mail.proton.me/api/ request → Copy as cURL\n\n"
-    printf "Paste the cURL command below, then press Enter on an empty line:\n"
-    curl_input=$(read_pasted_curl)
-    parse_curl_command "$curl_input"
-
-    if [[ -n "$UID_VALUE" && -n "$COOKIE_VALUE" ]]; then
-        save_session
-    else
-        printf "Error: could not extract credentials.\n" >&2
-        printf "Make sure you copied a cURL command for a mail.proton.me/api/ request.\n" >&2
-        exit 1
-    fi
-fi
+load_credentials
 
 # ============================================================
 # Resolve target files
@@ -177,63 +87,6 @@ if [[ ${#target_files[@]} -eq 0 ]]; then
     printf "No dist/hey-proton-*.sieve files found. Run scripts/generate.sh first.\n" >&2
     exit 1
 fi
-
-# ============================================================
-# API helpers
-# ============================================================
-
-api_get() {
-    local path="$1"
-    curl -sS \
-        -H "x-pm-uid: $UID_VALUE" \
-        -H "Cookie: $COOKIE_VALUE" \
-        -H "Content-Type: application/json" \
-        -H "x-pm-appversion: Other" \
-        "$API_BASE/$path"
-}
-
-api_post() {
-    local path="$1"
-    local body="$2"
-    curl -sS -X POST \
-        -H "x-pm-uid: $UID_VALUE" \
-        -H "Cookie: $COOKIE_VALUE" \
-        -H "Content-Type: application/json" \
-        -H "x-pm-appversion: Other" \
-        -d "$body" \
-        "$API_BASE/$path"
-}
-
-api_put() {
-    local path="$1"
-    local body="$2"
-    curl -sS -X PUT \
-        -H "x-pm-uid: $UID_VALUE" \
-        -H "Cookie: $COOKIE_VALUE" \
-        -H "Content-Type: application/json" \
-        -H "x-pm-appversion: Other" \
-        -d "$body" \
-        "$API_BASE/$path"
-}
-
-check_response_code() {
-    local response="$1"
-    local context="$2"
-    local code
-    code=$(printf "%s" "$response" | jq -r '.Code // empty' 2>/dev/null || true)
-    if [[ "$code" == "1000" ]]; then
-        return 0
-    fi
-    if [[ -z "$code" ]]; then
-        printf "Error in %s: unrecognised response:\n%s\n" \
-            "$context" "$(printf "%s" "$response" | head -c 1000)" >&2
-        return 1
-    fi
-    printf "Error in %s (Code: %s): %s\n" \
-        "$context" "$code" \
-        "$(printf "%s" "$response" | jq -r '.Error // "unknown error"')" >&2
-    return 1
-}
 
 # ============================================================
 # Fetch existing filters

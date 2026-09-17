@@ -1,0 +1,9 @@
+{
+  "Code": 1000,
+  "Labels": [
+    { "ID": "l1", "Name": "therapy", "Type": 1 },
+    { "ID": "l2", "Name": "newsletters", "Type": 1 },
+    { "ID": "l3", "Name": "receipts", "Type": 1 },
+    { "ID": "l4", "Name": "orphan label", "Type": 1 }
+  ]
+}

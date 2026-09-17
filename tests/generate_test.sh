@@ -20,7 +20,7 @@ fail() { printf "FAIL  %s\n" "$1"; fail=$((fail + 1)); (( FAIL_FAST )) && exit 1
 NEEDS_CLEANUP=()
 
 setup_fixtures() {
-    for src_name in "contact-groups.txt" "alias-patterns.txt"; do
+    for src_name in "alias-patterns.txt"; do
         if [[ ! -f "private/$src_name" ]]; then
             cp "private-examples/$src_name" "private/$src_name"
             NEEDS_CLEANUP+=("private/$src_name")

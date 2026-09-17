@@ -185,6 +185,34 @@ filter ID, and reports the 409 case so you know to rerun later.
 
 ---
 
+## Labels and contact groups
+
+Used by `scripts/sync-groups.sh`. From `packages/shared/lib/api/labels.ts` and the
+`LABEL_TYPE` enum in `packages/shared/lib/constants.ts`.
+
+```
+GET /core/v4/labels?Type=N
+```
+
+| Type | Meaning       |
+|------|---------------|
+| 1    | Message label |
+| 2    | Contact group |
+| 3    | Folder        |
+| 4    | System folder |
+
+Response:
+```json
+{
+  "Code": 1000,
+  "Labels": [
+    { "ID": "abc123", "Name": "Therapy", "Type": 2, "Color": "#..." }
+  ]
+}
+```
+
+---
+
 ## Filter naming convention for this repo
 
 `generate.sh` outputs one file per source filter, preserving the source slug:

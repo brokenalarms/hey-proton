@@ -2,12 +2,6 @@ require ["include", "environment", "variables", "relational", "comparator-i;asci
 require ["fileinto", "extlists", "imap4flags", "vnd.proton.expire", "regex"];
 require ["date", "relational", "vnd.proton.eval"];
 
-# Makes sure expire does not persist if we are running a full-inbox test,
-# so items incorrectly expired during testing aren't lost.
-# Comment this out if you don't want existing expiring emails to be reset,
-# or once you have finished testing or setting up new filters.
-unexpire;
-
 # VARIABLE DECLARATIONS
 # Relative dates are set up to work in days, so we can parse and compare using julian days method.
 

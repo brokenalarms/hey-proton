@@ -8,6 +8,7 @@
 
 Key behaviors:
 - `00 - setup.sieve` is always prepended to every output file (required for each Proton filter to function independently).
+- `00 - unexpire.sieve` is appended after setup in the first output file only. Proton runs every filter on each message even after an earlier one calls `stop`, so an `unexpire` in any later filter cancels expiries set by earlier ones.
 - `CHARACTER_LIMIT`: Proton's per-filter character limit. Each source filter produces its own output file (`hey-proton-01 - spam & ignored.sieve` … `hey-proton-07 - needs admin and archive.sieve`); if a file exceeds the limit a warning is printed. Set to 0 to disable the check.
 - After generating, the script copies each output to clipboard in turn and prompts the user to paste into Proton before advancing to the next.
 - Private data files (`private/*`) are gitignored; `private-examples/` contains representative fixtures.

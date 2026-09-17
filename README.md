@@ -221,6 +221,10 @@ Very un-ascertainable from the code on the page and maybe a questionable design 
 
 Not that this _doesn't_ apply to `expire` since it's implemented by Proton - I got it confirmed from the Proton team that `expire` applies immediately and is not subject to implicit `keep`.
 
+#### `stop` only ends the current filter, not the ones after it.
+
+Each Proton filter is its own Sieve script. `stop` (and `return`) end that script only; Proton still runs every later filter on the same message. Since `expire` and `unexpire` apply immediately, an unconditional `unexpire` at the top of a later filter silently cancels an expiry set by an earlier one, leaving the `expiring` label with no actual expiry. This is why `unexpire` lives in `00 - unexpire.sieve`, which `generate.sh` adds to the first filter only.
+
 #### `expiry` has an undocumented maximum expiration period.
 
 UPDATE: Proton have now added this to the documentation at my request - thanks! I still wish it wasn't arbitrarily restricted to 2 years, though 😉

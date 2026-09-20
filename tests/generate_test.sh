@@ -131,6 +131,21 @@ for f in "$DIST"/hey-proton-*.sieve; do
         || fail "$(basename "$f") is non-empty"
 done
 
-# ── summary ───────────────────────────────────────────────────────────────────
+# 10. unexpire runs in the first filter only, so later filters keep earlier expiries
+for f in "$DIST"/hey-proton-*.sieve; do
+    name=$(basename "$f")
+    unexpire_count=$(grep -c '^unexpire;' "$f")
+    if [[ "$name" == "hey-proton-01 - spam & ignored.sieve" ]]; then
+        [[ "$unexpire_count" -eq 1 ]] \
+            && ok "unexpire present once in $name" \
+            || fail "unexpire present once in $name (got $unexpire_count)"
+    else
+        [[ "$unexpire_count" -eq 0 ]] \
+            && ok "unexpire absent from $name" \
+            || fail "unexpire absent from $name (got $unexpire_count)"
+    fi
+done
+
+# ── summary───────────────────────────────────────────────────────────────────
 printf "\n%d passed, %d failed\n" "$pass" "$fail"
 (( fail == 0 ))

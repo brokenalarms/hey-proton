@@ -20,6 +20,9 @@ input_dir="filters"
 # Setup file prepended to every output group
 setup_file="$input_dir/00 - setup.sieve"
 
+# Appended after setup in the first output only
+first_filter_only_file="$input_dir/00 - unexpire.sieve"
+
 # All filter files in processing order (setup is handled separately)
 filter_files=(
     "$input_dir/01 - spam & ignored.sieve"
@@ -274,6 +277,11 @@ setup_tmp="$tmp_dir/setup"
 process_file "$setup_file" "$setup_tmp"
 setup_size=$(wc -c < "$setup_tmp")
 
+first_filter_only_tmp="$tmp_dir/first-filter-only"
+> "$first_filter_only_tmp"
+process_file "$first_filter_only_file" "$first_filter_only_tmp"
+first_filter_only_size=$(wc -c < "$first_filter_only_tmp")
+
 filter_tmps=()
 filter_sizes=()
 for file in "${filter_files[@]}"; do
@@ -297,10 +305,15 @@ for i in "${!filter_files[@]}"; do
     output_files+=("$output")
     printf "# hey-proton: 00 - setup (prepended to every filter)\n" > "$output"
     cat "$setup_tmp" >> "$output"
+    combined=$((setup_size + filter_sizes[i]))
+    if [[ $i -eq 0 ]]; then
+        printf "# hey-proton: 00 - unexpire (first filter only)\n" >> "$output"
+        cat "$first_filter_only_tmp" >> "$output"
+        combined=$((combined + first_filter_only_size))
+    fi
     printf "# hey-proton: %s\n" "$basename_f" >> "$output"
     cat "${filter_tmps[$i]}" >> "$output"
     if [[ $CHARACTER_LIMIT -gt 0 ]]; then
-        combined=$((setup_size + filter_sizes[i]))
         if [[ $combined -gt $CHARACTER_LIMIT ]]; then
             printf "Warning: %s is %d chars, over the %d limit.\n" \
                 "$output" "$combined" "$CHARACTER_LIMIT" >&2

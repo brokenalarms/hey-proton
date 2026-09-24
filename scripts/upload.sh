@@ -61,17 +61,20 @@ done
 
 require_api_dependencies
 
-# ============================================================
-# Optionally refresh output files via generate.sh
-# ============================================================
-
-printf "Run generate.sh to refresh output files first? [y/N] "
-read -r refresh
-if [[ "$refresh" == [yY] ]]; then
-    bash scripts/generate.sh --no-paste
-fi
-
 load_credentials
+
+# ============================================================
+# Sync labels to contact groups, then regenerate output files
+# ============================================================
+
+# Labels are the source of truth for contact groups, so the sync runs before
+# every upload, and the output files are always regenerated from the result
+# so a stale dist can never be uploaded.
+sync_args=()
+[[ "$dry_run" == true ]] && sync_args+=(--dry-run)
+PROTON_UID="$UID_VALUE" PROTON_COOKIE="$COOKIE_VALUE" bash scripts/sync-groups.sh "${sync_args[@]+"${sync_args[@]}"}"
+printf "\n"
+bash scripts/generate.sh --no-paste
 
 # ============================================================
 # Resolve target files

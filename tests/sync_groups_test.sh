@@ -37,15 +37,18 @@ printf "%s" "$report" | grep -qE '^  Screened Out$' \
     && ok "reports Screened Out as a group with no matching label" \
     || fail "reports Screened Out as a group with no matching label"
 
-# 3. A label with no group and no fileinto in filters/ is reported as an orphan
-printf "%s" "$report" | grep -qE '^  orphan label$' \
-    && ok "reports a label with no group and no rule as an orphan" \
-    || fail "reports a label with no group and no rule as an orphan"
+# 3. A label with no group and no fileinto in filters/ gets a title-cased group
+printf "%s" "$report" | grep -qE '^  Orphan Label  <-  orphan label$' \
+    && ok "reports a label with no group and no rule as a group to create, title-cased" \
+    || fail "reports a label with no group and no rule as a group to create, title-cased"
+printf "%s" "$report" | grep -qE '^Contact groups to create .* [(]1[)]:$' \
+    && ok "counts the groups to create" \
+    || fail "counts the groups to create"
 
-# 4. A label set by a sieve rule is not an orphan
-printf "%s" "$report" | grep -qE '^  receipts$' \
-    && fail "receipts must not be reported as an orphan (filters/ file into it)" \
-    || ok "does not report a label that filters/ file into"
+# 4. A label set by a sieve rule does not get a group
+printf "%s" "$report" | grep -qiE '^  receipts$' \
+    && fail "receipts must not get a group (filters/ file into it)" \
+    || ok "does not create a group for a label that filters/ file into"
 
 # 5. Re-running against an up-to-date file reports no change
 report2=$(CONTACT_GROUPS_FILE="$out" bash "$SYNC" --input-dir "$FIXTURES" 2>&1)

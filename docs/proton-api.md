@@ -195,7 +195,7 @@ filter ID, and reports the 409 case so you know to rerun later.
 
 ## Labels and contact groups
 
-Used by `scripts/sync-groups.sh`. From `packages/shared/lib/api/labels.ts` and the
+Used by `scripts/sync-groups.sh` to read both and to create contact groups for labels. From `packages/shared/lib/api/labels.ts` and the
 `LABEL_TYPE` enum in `packages/shared/lib/constants.ts`.
 
 ```
@@ -218,6 +218,20 @@ Response:
   ]
 }
 ```
+
+### Create a label or contact group
+
+```
+POST /core/v4/labels
+```
+
+Body:
+```json
+{ "Name": "Therapy", "Color": "#8080FF", "Type": 2 }
+```
+
+`Color` is required. `sync-groups.sh` copies the label's colour onto the group it
+creates. The response carries the new entry as `Label`.
 
 ---
 

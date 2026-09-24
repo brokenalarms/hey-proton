@@ -61,17 +61,32 @@ done
 
 require_api_dependencies
 
-# ============================================================
-# Optionally refresh output files via generate.sh
-# ============================================================
-
-printf "Run generate.sh to refresh output files first? [y/N] "
-read -r refresh
-if [[ "$refresh" == [yY] ]]; then
-    bash scripts/generate.sh --no-paste
-fi
-
 load_credentials
+
+# ============================================================
+# Sync labels to contact groups, then refresh output files
+# ============================================================
+
+# Labels are the source of truth for contact groups, so the sync runs before
+# every upload. If it changes the list the dist files are stale and must be
+# regenerated; otherwise regenerating is offered as before.
+groups_file="filters/shared/contact-groups.txt"
+groups_before=$(cat "$groups_file" 2>/dev/null || true)
+sync_args=()
+[[ "$dry_run" == true ]] && sync_args+=(--dry-run)
+PROTON_UID="$UID_VALUE" PROTON_COOKIE="$COOKIE_VALUE" bash scripts/sync-groups.sh "${sync_args[@]+"${sync_args[@]}"}"
+printf "\n"
+
+if [[ "$(cat "$groups_file" 2>/dev/null || true)" != "$groups_before" ]]; then
+    printf "Contact groups list changed; regenerating output files.\n"
+    bash scripts/generate.sh --no-paste
+else
+    printf "Run generate.sh to refresh output files first? [y/N] "
+    read -r refresh
+    if [[ "$refresh" == [yY] ]]; then
+        bash scripts/generate.sh --no-paste
+    fi
+fi
 
 # ============================================================
 # Resolve target files

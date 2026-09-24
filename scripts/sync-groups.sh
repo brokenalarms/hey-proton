@@ -1,15 +1,17 @@
 #!/bin/bash
-# sync-groups.sh — Mirror Proton contact groups into the list generate.sh expands.
+# sync-groups.sh — Mirror Proton labels into contact groups and write the list
+# generate.sh expands.
 #
-# Contact groups only exist inside Proton, so rather than maintaining the list
-# by hand this reads contact groups and labels from the Proton API and writes
-# every group that has a label of the same lowercased name to
+# Labels are the source of truth. A label that nothing in filters/ files into
+# is meant to come from a contact group of the same name, so this reads labels
+# and contact groups from the Proton API, creates any such group that is
+# missing (named from the label in title case, using the label's colour), and
+# writes every group that has a label of the same lowercased name to
 # filters/shared/contact-groups.txt. That file is committed as the backup and
 # is what generate.sh reads, so generating never needs a live session.
 #
 # Groups with no matching label are not mirrored and are listed so they can
 # be given one (behavioural groups such as Screened Out are expected here).
-# Labels with neither a group nor a fileinto in filters/ are listed as orphans.
 #
 # REQUIREMENTS:
 #   - jq, curl, and session credentials as for scripts/upload.sh
@@ -17,10 +19,12 @@
 # USAGE:
 #   bash scripts/sync-groups.sh [--dry-run] [--input-dir DIR]
 #
-#   --dry-run         Print the audit and the list without writing the file.
+#   --dry-run         Print the audit and the list without creating groups or
+#                     writing the file.
 #   --input-dir DIR   Read DIR/groups.json and DIR/labels.json (saved responses
 #                     from GET core/v4/labels?Type=2 and ?Type=1) instead of
-#                     calling Proton. Used by the tests.
+#                     calling Proton. Offline, so groups are reported rather
+#                     than created. Used by the tests.
 #
 # The output path can be overridden with CONTACT_GROUPS_FILE.
 
@@ -102,7 +106,9 @@ unmirrored=$(LC_ALL=C comm -23 <(printf "%s\n" "$groups") <(printf "%s\n" "$mirr
 
 grouped_lower=$(printf "%s\n" "$groups" | tr '[:upper:]' '[:lower:]' | LC_ALL=C sort -u)
 
-orphans=""
+# A label with neither a group nor a fileinto in filters/ can only be meant
+# for a contact group, so it gets one.
+missing_groups=""
 while IFS= read -r label; do
     [[ -z "$label" ]] && continue
     if printf "%s\n" "$grouped_lower" | grep -qxF "$label"; then
@@ -111,16 +117,62 @@ while IFS= read -r label; do
     if grep -rqF "fileinto \"$label\"" "$filters_dir"; then
         continue
     fi
-    orphans+="$label"$'\n'
+    missing_groups+="$label"$'\n'
 done <<< "$labels"
+
+# ============================================================
+# Create missing groups
+# ============================================================
+
+count_lines() {
+    printf "%s\n" "$1" | sed '/^$/d' | wc -l | tr -d ' '
+}
+
+title_case() {
+    printf "%s" "$1" | awk '{
+        for (i = 1; i <= NF; i++) $i = toupper(substr($i, 1, 1)) substr($i, 2)
+    } 1'
+}
+
+label_color() {
+    jq -r --arg name "$1" '.Labels[] | select(.Name == $name) | .Color // empty' "$labels_json"
+}
+
+# Proton requires a colour on every label; the group takes the label's so the
+# two read as one thing in both UIs.
+default_color="#8080FF"
+
+create_group() {
+    local label="$1" name="$2" color body response
+    color=$(label_color "$label")
+    body=$(jq -n --arg name "$name" --arg color "${color:-$default_color}" \
+        '{"Name": $name, "Color": $color, "Type": 2}')
+    response=$(api_post "core/v4/labels" "$body")
+    check_response_code "$response" "create contact group $name"
+}
+
+created=""
+if [[ -n "$missing_groups" ]]; then
+    if [[ "$dry_run" == true || -n "$input_dir" ]]; then
+        printf "Contact groups to create for labels with no group and no rule in filters/ (%s):\n" "$(count_lines "$missing_groups")"
+    else
+        printf "Creating contact groups for labels with no group and no rule in filters/ (%s):\n" "$(count_lines "$missing_groups")"
+    fi
+    while IFS= read -r label; do
+        [[ -z "$label" ]] && continue
+        name=$(title_case "$label")
+        printf "  %s  <-  %s\n" "$name" "$label"
+        if [[ "$dry_run" == false && -z "$input_dir" ]]; then
+            create_group "$label" "$name"
+            created+="$name"$'\n'
+        fi
+    done <<< "$missing_groups"
+    printf "\n"
+fi
 
 # ============================================================
 # Report
 # ============================================================
-
-count_lines() {
-    printf "%s" "$1" | sed '/^$/d' | wc -l | tr -d ' '
-}
 
 printf "Mirrored groups (%s), each labelled with its lowercased name:\n" "$(count_lines "$mirrored")"
 printf "%s\n" "$mirrored" | sed '/^$/d;s/^/  /'
@@ -128,20 +180,17 @@ printf "%s\n" "$mirrored" | sed '/^$/d;s/^/  /'
 printf "\nGroups with no matching label, not mirrored (%s):\n" "$(count_lines "$unmirrored")"
 printf "%s\n" "$unmirrored" | sed '/^$/d;s/^/  /'
 
-printf "\nLabels with no group and no rule in filters/ (%s), may still come from alias patterns:\n" "$(count_lines "$orphans")"
-printf "%s" "$orphans" | sed '/^$/d;s/^/  /'
-
 # ============================================================
 # Write
 # ============================================================
+
+new_file="$tmp_dir/contact-groups.txt"
+{ printf "%s\n" "$mirrored"; printf "%s" "$created"; } | sed '/^$/d' | LC_ALL=C sort > "$new_file"
 
 if [[ "$dry_run" == true ]]; then
     printf "\n(dry run — %s not written)\n" "$output_file"
     exit 0
 fi
-
-new_file="$tmp_dir/contact-groups.txt"
-printf "%s\n" "$mirrored" | sed '/^$/d' > "$new_file"
 
 if [[ -f "$output_file" ]] && cmp -s "$new_file" "$output_file"; then
     printf "\n%s is already up to date.\n" "$output_file"

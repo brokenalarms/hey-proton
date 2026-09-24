@@ -172,7 +172,7 @@ This is another optional contact group - members won't get flagged up as `needs 
 
 Contact groups only exist inside Proton, so the list that `generate.sh` mirrors into labels is not maintained by hand. Labels are the source of truth: to have all mail on a topic in one place, create the label, and `scripts/sync-groups.sh` does the rest. It reads your labels and contact groups from the Proton API (using the same session handling as `upload.sh`), creates a contact group for every label that has no group and is not filed into by a rule in `filters/` (title-cased, in the label's colour), and writes every group that has a label of the same lowercased name to `filters/shared/contact-groups.txt`. Commit that file: it is the backup, and it is what `generate.sh` reads, so generating never needs a live session.
 
-`scripts/upload.sh` runs the sync before every upload and regenerates the output files if the list changed, so the flow is: create the label in Proton, run `upload.sh`, then add senders to the new group. `--dry-run` reports what would be created without touching Proton.
+`scripts/upload.sh` runs the sync before every upload then regenerates the output files, so the flow is: create the label in Proton, run `upload.sh`, then add senders to the new group. `--dry-run` reports what would be created without touching Proton.
 
 The script also reports groups with no matching label (not mirrored), so Proton can be tidied up.
 

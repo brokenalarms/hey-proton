@@ -282,8 +282,8 @@ if header :comparator "i;unicode-casemap" :regex [
         ] [
           "*support*"
         ],
-        not header :comparator "i;unicode-casemap" :regex ["subject"] [
-          ".*(^|[^a-zA-Z0-9])tickets([^a-zA-Z0-9]|$).*"
+        header :comparator "i;unicode-casemap" :regex ["subject"] [
+          ".*(^|[^a-zA-Z0-9])ticket([^a-zA-Z0-9]|$).*"
         ]
       ),
       header :comparator "i;unicode-casemap" :regex ["subject"] [

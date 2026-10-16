@@ -295,7 +295,7 @@ if not anyof(
       # Paypal: "seller: $xxx.xx USD"
       ".*:.{1,2}[0-9]{1,}\\.[0-9]{2,2}.*",
       # Storage - these are sent every month
-      ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renewal([^a-zA-Z0-9]|$).*",
+      ".*(^|[^a-zA-Z0-9])safestor policy (auto-)?renew(al|ed)([^a-zA-Z0-9]|$).*",
       # Uber
       ".*(^|[^a-zA-Z0-9])your.*(morning|afternoon|evening).*trip([^a-zA-Z0-9]|$).*",
       # Airbnb

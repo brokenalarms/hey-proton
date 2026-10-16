@@ -275,12 +275,17 @@ if header :comparator "i;unicode-casemap" :regex [
     ".*(^|[^a-zA-Z0-9])ticket.*"
 ] {
   if anyof(
-      header :comparator "i;unicode-casemap" :matches [
-        "from",
-        "X-Simplelogin-Original-From"
-      ] [
-        "*support*"
-      ],
+      allof(
+        header :comparator "i;unicode-casemap" :matches [
+          "from",
+          "X-Simplelogin-Original-From"
+        ] [
+          "*support*"
+        ],
+        not header :comparator "i;unicode-casemap" :regex ["subject"] [
+          ".*(^|[^a-zA-Z0-9])tickets([^a-zA-Z0-9]|$).*"
+        ]
+      ),
       header :comparator "i;unicode-casemap" :regex ["subject"] [
         ".*(^|[^a-zA-Z0-9])account([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])case([^a-zA-Z0-9]|$).*",

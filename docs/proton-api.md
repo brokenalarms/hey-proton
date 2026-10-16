@@ -195,7 +195,7 @@ filter ID, and reports the 409 case so you know to rerun later.
 
 ## Labels and contact groups
 
-Used by `scripts/sync-groups.sh` to read both and to create contact groups for labels. From `packages/shared/lib/api/labels.ts` and the
+Used by `scripts/sync-groups.sh` to keep labels and contact groups in step as pairs. From `packages/shared/lib/api/labels.ts` and the
 `LABEL_TYPE` enum in `packages/shared/lib/constants.ts`.
 
 ```
@@ -230,8 +230,29 @@ Body:
 { "Name": "Therapy", "Color": "#8080FF", "Type": 2 }
 ```
 
-`Color` is required. `sync-groups.sh` copies the label's colour onto the group it
-creates. The response carries the new entry as `Label`.
+`Color` is required. `sync-groups.sh` copies the colour of the side it creates from.
+`Type` is `1` for a label and `2` for a contact group. The response carries the new
+entry as `Label`.
+
+### Rename a label or contact group
+
+```
+PUT /core/v4/labels/{id}
+```
+
+Body:
+```json
+{ "Name": "Counselling", "Color": "#8080FF" }
+```
+
+### Delete a label or contact group
+
+```
+DELETE /core/v4/labels/{id}
+```
+
+Deleting a contact group removes it from every contact; deleting a label removes it
+from every message. `sync-groups.sh` only deletes after interactive confirmation.
 
 ---
 

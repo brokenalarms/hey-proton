@@ -18,6 +18,7 @@ if allof (
 # remove 'My Addresses' match for any testing, or you'll get no matches!
 if allof(
   anyof(
+    header :list "from" ":addrbook:myself",
     header :list "from" ":addrbook:personal?label=My Addresses",
     header :list "from" ":addrbook:personal?label=Old Addresses"
   ),

@@ -1,0 +1,8 @@
+[
+  { "Group": { "ID": "g1", "Name": "Therapy" }, "Label": { "ID": "l1", "Name": "therapy" } },
+  { "Group": { "ID": "g2", "Name": "Cycling" }, "Label": { "ID": "l2", "Name": "cycling" } },
+  { "Group": { "ID": "g3", "Name": "Storage" }, "Label": { "ID": "l3", "Name": "storage" } },
+  { "Group": { "ID": "g4", "Name": "Music" }, "Label": { "ID": "l4", "Name": "music" } },
+  { "Group": { "ID": "g5", "Name": "Tax" }, "Label": { "ID": "l5", "Name": "tax" } },
+  { "Group": { "ID": "g6", "Name": "Legal" }, "Label": { "ID": "l6", "Name": "legal" } }
+]

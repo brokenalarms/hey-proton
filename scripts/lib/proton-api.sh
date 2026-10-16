@@ -131,6 +131,7 @@ api_request() {
 api_get()  { api_request GET  "$1"; }
 api_post() { api_request POST "$1" "$2"; }
 api_put()  { api_request PUT  "$1" "$2"; }
+api_delete() { api_request DELETE "$1"; }
 
 # For endpoints whose success response is an empty object with no Code to inspect:
 # prints the HTTP status and writes the response body to the file given as $3.

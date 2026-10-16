@@ -139,8 +139,13 @@ generate_expanded_lines() {
 
             # Extract exclusion elements if present into the global exclude_elements array
             exclude_elements=()
-            if [[ -n "${BASH_REMATCH[2]}" ]]; then
-                IFS=',' read -ra exclude_elements <<< "$(echo "${BASH_REMATCH[2]}" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | sed -E 's/[[:space:]]*,[[:space:]]*/,/g')"
+            local exclusion="${BASH_REMATCH[2]}"
+            if [[ "$exclusion" == *.txt ]]; then
+                while IFS= read -r element; do
+                    [[ -n "$element" ]] && exclude_elements+=("$element")
+                done < <(read_list_elements "filters/shared/$exclusion")
+            elif [[ -n "$exclusion" ]]; then
+                IFS=',' read -ra exclude_elements <<< "$(echo "$exclusion" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | sed -E 's/[[:space:]]*,[[:space:]]*/,/g')"
             fi
 
             # Output the opening HTML-like comment with calculated whitespace and trimmed line

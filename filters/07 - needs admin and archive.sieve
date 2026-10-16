@@ -43,8 +43,8 @@ if allof(
 # ARCHIVE - for addresses we are aware of and want to hide in future (airbnb, booking.com, agoda, view through app instead)
 # and that arent't alerts, auto hide/archive these
 #
-# Must run before the screener fallthrough: booking.com/agoda relay senders are
-# unique per booking and never in the address book, so they'd otherwise hit inbox.
+# booking.com/agoda relay senders are unique per booking and never in the
+# address book, so they are matched by pattern or they'd hit inbox.
 
 if allof(
   anyof(
@@ -64,26 +64,5 @@ if allof(
   addflag "\\Seen";
   fileinto "auto-archive";
   fileinto "archive";
-  stop;
-}
-
-# SCREENER - final fallthrough
-# Anything that makes it this far and has a sender not added into the address book
-# (with or without a Contact Group) will go to the Screener.
-#
-# Paper Trail matches stop before reaching here: receipts and the like are
-# hidden whoever sent them, so only other mail from new senders is screened.
-#
-# Even with mail that has been labelled using an aliased address,
-# an aliased address is really "me", not "from", and so should go to screener
-# if the contact using it is unexpected.
-#
-# Doesn't drag every single old item into Screener,
-# uses migration date to just get contact group representation clean from that date.
-
-if allof(
-  string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}",
-not header :list "from" ":addrbook:personal") {
-  fileinto "Screener";
   stop;
 }

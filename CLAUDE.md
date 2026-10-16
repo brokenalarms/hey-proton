@@ -6,7 +6,7 @@
 - Filters run in numbered order, 01 to 07. `upload.sh` sets that order in Proton.
 - `stop` ends all remaining filters. `return` ends only the current one.
 - Processing is cumulative until a message is placed: labels, flags and expiries accrue across filters without stopping. Only the final placement, a folder `fileinto` or an alert, calls `stop`, so the first filter to place a message decides where it lives and later filters never see it.
-- Priority follows the order: group-only routing (01, 02), label decoration (03, never stops), alerts (04), Paper Trail (05), The Feed (06), then needs admin, auto-archive and the Screener as the fallthrough (07).
+- Priority follows the order: group-only routing (01, 02), label decoration (03, never stops), alerts (04), Paper Trail (05), The Feed (06), then needs admin and auto-archive (07). Anything left, including mail from unknown senders, stays in Inbox to be screened during triage.
 - Proton Sieve can't tell sent from received. Sent mail is recognised by its sender being one of your own addresses (`:addrbook:myself`, My Addresses, Old Addresses), and filter 01 stops on it.
 
 ## generate.sh

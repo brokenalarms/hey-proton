@@ -29,12 +29,11 @@ I may be up for accepting suggestions or even PRs, but this is a personal projec
 
 ## Concepts
 
-The workflow can be represented by only 4 folders in use:
+The workflow can be represented by only 3 folders in use:
 
 - `Inbox`
 - `The Feed`
 - `Paper Trail`
-- `Screener`
 
 with labels used for any further classification within these.
 
@@ -46,9 +45,9 @@ Most of what you recieve via email is a `receipt`, `statement`, `return`, `track
 
 Anything going into the `Paper Trail` is marked as seen and set to expire in 2 years, unless it has an attachment or is part of your personal `conversations`.
 
-### Screener
+### Screening
 
-Except for important or timely alerts and anything bound for the `Paper Trail`, any messages from contacts you haven't seen before should go to the `Screener` first, and have those contacts classified in some way before their emails will fully enter your workflow in future. This keeps the `Inbox` as a pure todo list.
+Except for important or timely alerts and anything bound for the `Paper Trail`, messages from senders you haven't seen before arrive in the `Inbox` unlabelled, to be screened there as part of triage: reply, archive, unsubscribe, or add the sender to a contact group so their mail is routed and labelled from then on. Screening happens where you already look, so new senders are never hidden in a folder you have to remember to check.
 
 ### The Feed
 
@@ -61,7 +60,7 @@ If an email arrives from the `Newsletter` contact group, it will be placed in `T
 Finally, only those emails:
 
 - requiring immediate or more timely attention as an `alert`; or
-- mail from contacts you have previously screened and classifed, which don't fit into the categories above;
+- mail from senders that doesn't fit into the categories above, whether already classified or still to be screened;
 
 will actually make it to your Inbox and ask for your attention.
 
@@ -81,7 +80,7 @@ Using Protons' contact groups, we can create a contact to hold a new unknown ema
   <img src="docs/contact%20example.png" alt="contact" width="300"/>
 </div>
 
-Once an email address is added to a contact, it will no longer hit the `Screener`, and the lower case version of its name will be applied as a label (if you have created it, as below).
+Once an email address is added to a contact, the lower case version of its name will be applied as a label (if you have created it, as below).
 
 You don't need to add the email to any contact groups for this, but additionally assigning it to various contact groups will then have any mapped labels of those groups applied to each new email from that address:
 
@@ -118,7 +117,7 @@ You will need to go through the code and understand the labels used to modify fo
 
 However, some labels are suggested for minimum baseline functionality. These are:
 
-- Folders: `The Feed`, `Paper Trail` and `Screener`.
+- Folders: `The Feed` and `Paper Trail`.
 - Contact Groups: `Newsletters`, `My Addresses` and optional `Old Addresses` and `Migration Exceptions` as below.
 - Minimum labels: `alerts`, `security` `expiring`,`needs admin`, and `newsletters`.
 - Paper Trail labels: `receipts` `returns`, `shopping`, `statements`, `tracking` and `transactions`
@@ -150,7 +149,7 @@ Emails will be ignored if they are sent from a mail in the `My Addresses` contac
 
 #### `Old Addresses`
 
-Email adresses can also be added to an `Old Addresses` contact group if they refer to old pre-Proton accounts for which you wish to be reminded to update the senders/accounts. Use this if you want this mail also marked as `needs admin` and sent to the `Screener`, to remind you to update the accounts still containing this address.
+Email adresses can also be added to an `Old Addresses` contact group if they refer to old pre-Proton accounts for which you wish to be reminded to update the senders/accounts. Use this if you want this mail also marked as `needs admin` and sent to the `Inbox`, to remind you to update the accounts still containing this address.
 
 This can be further managed by the variable `migration_date_in_days_ago` to make sure every single old email copied to proton is not flagged on first run. It is also specified as a relative rather than absolute day to ensure that after you have fixed a bunch of accounts, but still have the old emails, these will not all get flagged up again if you re-run from scratch some time later.
 

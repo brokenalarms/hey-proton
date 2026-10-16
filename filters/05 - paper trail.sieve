@@ -191,7 +191,8 @@ if not anyof(
           # Venmo transactions, without adding overly broad "you(r)" to main limbs
           ".*(^|[^a-zA-Z0-9])requests.*[0-9]{1,}\\.[0-9]{2,2}.*",
           # Schwab etrade confirmations
-          ".*(^|[^a-zA-Z0-9])econfirms([^a-zA-Z0-9]|$).*"
+          ".*(^|[^a-zA-Z0-9])econfirms([^a-zA-Z0-9]|$).*",
+          ".*(^|[^a-zA-Z0-9])txn([^a-zA-Z0-9]|$).*"
     ],
 
     allof(
@@ -222,6 +223,7 @@ if not anyof(
         ".*(^|[^a-zA-Z0-9])purchase([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])rent([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])request([^a-zA-Z0-9]|$).*",
+        ".*(^|[^a-zA-Z0-9])top[ -]?up([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])trade([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])transaction([^a-zA-Z0-9]|$).*",
         ".*(^|[^a-zA-Z0-9])transfer([^a-zA-Z0-9]|$).*",

@@ -170,11 +170,18 @@ This is another optional contact group - members won't get flagged up as `needs 
 
 ### Contact groups list
 
-Contact groups only exist inside Proton, so the list that `generate.sh` mirrors into labels is not maintained by hand. Labels are the source of truth: to have all mail on a topic in one place, create the label, and `scripts/sync-groups.sh` does the rest. It reads your labels and contact groups from the Proton API (using the same session handling as `upload.sh`), creates a contact group for every label that has no group and is not filed into by a rule in `filters/` (title-cased, in the label's colour), and writes every group that has a label of the same lowercased name to `filters/shared/contact-groups.txt`. Commit that file: it is the backup, and it is what `generate.sh` reads, so generating never needs a live session.
+Contact groups only exist inside Proton, so the list that `generate.sh` mirrors into labels is not maintained by hand. Each topic label is paired with a contact group of the same name, so all mail from the group's senders gets the label. To have all mail on a topic in one place, create either the label or the group, and `scripts/sync-groups.sh` does the rest. It reads your labels and contact groups from the Proton API (using the same session handling as `upload.sh`) and keeps the pairs in step:
 
-`scripts/upload.sh` runs the sync before every upload then regenerates the output files, so the flow is: create the label in Proton, run `upload.sh`, then add senders to the new group. `--dry-run` reports what would be created without touching Proton.
+- a label with no group gets one, title-cased, unless a rule in `filters/` files into that label;
+- a group with no label gets one, lowercased;
+- renaming either side renames the other;
+- deleting either side offers to delete the other. Deleting a group loses its members and deleting a label removes it from every message, so each deletion is confirmed interactively, and runs that aren't interactive only report them.
 
-The script also reports groups with no matching label (not mirrored), so Proton can be tidied up.
+New entries take the colour of the side they are created from. Groups listed in `filters/shared/group-only-groups.txt` (My Addresses, Old Addresses, Migration Exceptions and Screened Out) drive routing rather than labelling, so they never get a label.
+
+Renames and deletions are detected by ID against the pairs from the last sync, kept in `filters/shared/contact-group-pairs.json`. Every paired group is written to `filters/shared/contact-groups.txt`, which is what `generate.sh` reads, so generating never needs a live session. Commit both files.
+
+`scripts/upload.sh` runs the sync before every upload then regenerates the output files, so the flow is: create the label or group in Proton, run `upload.sh`, then add senders to the group. `--dry-run` reports what would change without touching Proton.
 
 ### Example user config files
 
@@ -222,10 +229,6 @@ stop;
 Very un-ascertainable from the code on the page and maybe a questionable design decision today, but good to finally know!
 
 Not that this _doesn't_ apply to `expire` since it's implemented by Proton - I got it confirmed from the Proton team that `expire` applies immediately and is not subject to implicit `keep`.
-
-#### `stop` only ends the current filter, not the ones after it.
-
-Each Proton filter is its own Sieve script. `stop` (and `return`) end that script only; Proton still runs every later filter on the same message. Since `expire` and `unexpire` apply immediately, an unconditional `unexpire` at the top of a later filter silently cancels an expiry set by an earlier one, leaving the `expiring` label with no actual expiry. This is why `unexpire` lives in `00 - unexpire.sieve`, which `generate.sh` adds to the first filter only.
 
 #### `expiry` has an undocumented maximum expiration period.
 

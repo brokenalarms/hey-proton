@@ -399,4 +399,4 @@ if exists "List-Unsubscribe" {
 # fileinto "${label}";
 # }
 # do not include My Addresses, Migration Exceptions, Old Addresses, or Screened Out here.
-{{contact-groups.txt fileinto expansion excluding My Addresses, Migration Exceptions, Old Addresses, Screened Out}}
+{{contact-groups.txt fileinto expansion excluding group-only-groups.txt}}

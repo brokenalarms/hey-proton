@@ -62,6 +62,7 @@ if allof(
   string :comparator "i;ascii-numeric" :value "ge" "${received_julian_day}" "${migration_julian_day}"
 ) {
   addflag "\\Seen";
+  fileinto "auto-archive";
   fileinto "archive";
   stop;
 }

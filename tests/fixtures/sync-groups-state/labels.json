@@ -1,0 +1,10 @@
+{
+  "Code": 1000,
+  "Labels": [
+    { "ID": "l1", "Name": "therapy", "Type": 1, "Color": "#111111" },
+    { "ID": "l2", "Name": "bikes", "Type": 1, "Color": "#222222" },
+    { "ID": "l4", "Name": "music", "Type": 1, "Color": "#444444" },
+    { "ID": "l6", "Name": "lawyers", "Type": 1, "Color": "#666666" },
+    { "ID": "l9", "Name": "receipts", "Type": 1, "Color": "#999999" }
+  ]
+}
